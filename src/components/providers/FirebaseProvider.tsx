@@ -28,7 +28,7 @@ function FirebaseProvider({
       setCurrentUserData(dbUserData);
       setIsDataFetched(true);
     }
-  }, [isDataFetched, dbSettings, dbUserData]);
+  }, []);
   return null;
 }
 

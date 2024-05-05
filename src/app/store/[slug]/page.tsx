@@ -14,19 +14,17 @@ type Props = {
   params: { slug: string };
 };
 
-export async function fetchStoreData({
-  params,
-}: Props): Promise<StoreType | null> {
-  const res = await dbGetStoreData(params.slug);
-  let dbStoreData: StoreType | null = null;
-  if (res.status === 'success') {
-    dbStoreData = res.data;
-    return dbStoreData;
-  } else {
-    console.error(res.error);
-    return null;
-  }
-}
+ async function fetchStoreData({ params }: Props): Promise<StoreType | null> {
+   const res = await dbGetStoreData(params.slug);
+   let dbStoreData: StoreType | null = null;
+   if (res.status === 'success') {
+     dbStoreData = res.data;
+     return dbStoreData;
+   } else {
+     console.error(res.error);
+     return null;
+   }
+ }
 
 export async function generateMetadata(
   { params }: Props,

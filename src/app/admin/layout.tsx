@@ -33,21 +33,22 @@ function AdminLayout({ children }: any) {
     state.setCurrentUsers,
   ]);
 
-  async function getAdminData(): Promise<void> {
-    console.log('Get Admin Data');
-    const stores = await dbGetStores();
-    const users = await dbGetUsers();
-    if (stores.status !== 'error') {
-      setCurrentStores(stores.data || []);
-    }
-    if (users.status !== 'error') {
-      setCurrentUsers(users.data || []);
-    }
-  }
+ 
 
   useEffect(() => {
+    async function getAdminData(): Promise<void> {
+      console.log('Get Admin Data');
+      const stores = await dbGetStores();
+      const users = await dbGetUsers();
+      if (stores.status !== 'error') {
+        setCurrentStores(stores.data || []);
+      }
+      if (users.status !== 'error') {
+        setCurrentUsers(users.data || []);
+      }
+    }
     getAdminData();
-  }, [getAdminData]);
+  }, []);
 
   return (
     <div className="flex flex-col items-center justify-center w-full p-2 md:p-5">
