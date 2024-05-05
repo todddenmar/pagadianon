@@ -7,9 +7,8 @@ import React from 'react';
 
 function AdminSidebar() {
   const pathname = usePathname();
-  console.log({ pathname });
   return (
-    <ul className="grid grid-cols-1 gap-3">
+    <ul className="flex md:grid grid-cols-1 gap-3 ">
       {kAdminPageDataItems?.map((item, idx) => {
         return (
           <li

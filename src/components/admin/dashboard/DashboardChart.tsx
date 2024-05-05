@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import DashboardCardHeader from './DashboardCardHeader';
+import { AdminOverview } from '../AdminOverview';
 
 function DashboardChart() {
   return (
@@ -9,7 +10,9 @@ function DashboardChart() {
         title="Overview"
         description={'Monthly overview for this year.'}
       />
-      <CardContent></CardContent>
+      <CardContent>
+        <AdminOverview />
+      </CardContent>
     </Card>
   );
 }

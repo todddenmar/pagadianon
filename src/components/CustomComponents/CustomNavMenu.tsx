@@ -14,27 +14,28 @@ import {
   navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu';
 import { useAuth } from '@clerk/nextjs';
+import { kSaasCategories, kStoreTypes } from '@/constants';
+import { useAppStore } from '@/lib/store';
+import { StoreType } from '@/typings';
 
-const components: { title: string; href: string; description: string }[] = [
-  {
-    title: 'Products Catalog',
-    href: '/products-catalog',
-    description: 'Showcase and manage the products of your store.',
-  },
-  {
-    title: 'Management System',
-    href: '/management-system',
-    description: 'We offer management systems to help local businesses.',
-  },
-];
+const components: {
+  slug: string;
+  title: string;
+  path: string;
+  description: string;
+}[] = kSaasCategories;
 
 export function CustomNavMenu() {
   const { userId, orgId, has } = useAuth();
-
+  const [currentUserData, currentSettings] = useAppStore((state) => [
+    state.currentUserData,
+    state.currentSettings,
+  ]);
   let hasAdminPermission = false;
   if (userId && orgId) {
     hasAdminPermission = has({ permission: 'org:admin:access' });
   }
+  console.log({ currentUserData, currentSettings });
   return (
     <NavigationMenu>
       <NavigationMenuList>
@@ -52,21 +53,13 @@ export function CustomNavMenu() {
                   </p>
                 </div>
               </li>
-              <Link href="/shops">
-                <ListItem title="Online Shopping">
-                  Find products from people on your city is selling.
-                </ListItem>
-              </Link>
-              <Link href="/menus">
-                <ListItem title="Restaurants Menu">
-                  Know which stores offer your favorite food.
-                </ListItem>
-              </Link>
-              <Link href="/services">
-                <ListItem title="Services">
-                  Establishments who offer services you might need.
-                </ListItem>
-              </Link>
+              {kStoreTypes.map((item, idx) => {
+                return (
+                  <Link href={`/${item.slug}`} key={`store-type-${idx}`}>
+                    <ListItem title={item.name}>{item.description}</ListItem>
+                  </Link>
+                );
+              })}
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>
@@ -75,8 +68,8 @@ export function CustomNavMenu() {
           <NavigationMenuContent>
             <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
               {components.map((component) => (
-                <Link href="/services" key={component.title}>
-                  <ListItem title={component.title} href={component.href}>
+                <Link href={component.path} key={component.title}>
+                  <ListItem title={component.title}>
                     {component.description}
                   </ListItem>
                 </Link>
@@ -84,14 +77,38 @@ export function CustomNavMenu() {
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>
-        <NavigationMenuItem>
+        {/* <NavigationMenuItem>
           <Link href="/docs" legacyBehavior passHref>
             <NavigationMenuLink className={navigationMenuTriggerStyle()}>
               Documentation
             </NavigationMenuLink>
           </Link>
-        </NavigationMenuItem>
-
+        </NavigationMenuItem> */}
+        {currentUserData?.stores.length > 0 && (
+          <NavigationMenuItem>
+            <NavigationMenuTrigger>My Apps</NavigationMenuTrigger>
+            <NavigationMenuContent>
+              <ul className="grid w-fit gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
+                {currentUserData?.stores.map((storeID: string, idx: number) => {
+                  const store = currentSettings?.stores.find(
+                    (item: StoreType) => item.id === storeID
+                  );
+                  console.log({ store });
+                  return (
+                    <Link
+                      href={`/${store?.saasTypeSlug}/${store?.slug}`}
+                      key={`stores-${idx}`}
+                    >
+                      <ListItem title={store?.name}>
+                        {store?.description}
+                      </ListItem>
+                    </Link>
+                  );
+                })}
+              </ul>
+            </NavigationMenuContent>
+          </NavigationMenuItem>
+        )}
         {userId && orgId && hasAdminPermission && (
           <NavigationMenuItem>
             <Link href="/admin" legacyBehavior passHref>

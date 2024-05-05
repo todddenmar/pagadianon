@@ -4,7 +4,7 @@ import Link from 'next/link';
 import React from 'react';
 import ContainerLayout from './layouts/ContainerLayout';
 import { ThemeToggler } from './ThemeToggler';
-import { CustomNavMenu } from './CustomNavMenu';
+import { CustomNavMenu } from './CustomComponents/CustomNavMenu';
 import MobileMenu from './MobileMenu';
 
 function Header() {
@@ -12,13 +12,15 @@ function Header() {
     <div className="h-[60px] flex flex-col justify-center shadow-sm px-2 md:px-5">
       <ContainerLayout>
         <div className="flex justify-between items-center">
-          <Link href={'/'} className="text-x md:text-sm">
-            PAGADIANON
-          </Link>
-          <div className="flex items-center gap-5">
+          <div className="flex space-x-5 items-center">
+            <Link href={'/'} className="text-x md:text-sm">
+              PAGADIANON
+            </Link>
             <div className="relative z-50 hidden md:block">
               <CustomNavMenu />
             </div>
+          </div>
+          <div className="flex items-center gap-5">
             <div className="flex items-center space-x-2">
               <ThemeToggler />
               <SignedOut>
