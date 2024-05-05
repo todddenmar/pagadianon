@@ -47,7 +47,7 @@ function AdminLayout({ children }: any) {
 
   useEffect(() => {
     getAdminData();
-  }, []);
+  }, [getAdminData]);
 
   return (
     <div className="flex flex-col items-center justify-center w-full p-2 md:p-5">

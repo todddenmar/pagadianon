@@ -127,7 +127,10 @@ function StoreBusinessHoursListCard() {
                   );
                 } else {
                   return (
-                    <div className="flex justify-between border rounded-md p-3 text-neutral-500">
+                    <div
+                      key={`sched-item-${idx}`}
+                      className="flex justify-between border rounded-md p-3 text-neutral-500"
+                    >
                       <div>{item}</div>
                       <div className="flex gap-5 items-center">
                         <div className="flex gap-2 items-center">

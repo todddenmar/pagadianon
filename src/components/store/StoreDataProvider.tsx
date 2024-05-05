@@ -7,7 +7,7 @@ function StoreDataProvider({ data }: { data: StoreType }) {
   const setCurrentStoreData = useAppStore((state) => state.setCurrentStoreData);
   useEffect(() => {
     setCurrentStoreData(data);
-  }, []);
+  }, [setCurrentStoreData, data]);
   return null;
 }
 
