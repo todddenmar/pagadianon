@@ -34,7 +34,13 @@ import { PlusIcon } from 'lucide-react';
 import { Button } from '../ui/button';
 import CreateStoreProductForm from './forms/CreateStoreProductForm';
 
-function StoreSettingsSection({ sanityImages }: { sanityImages: string[] }) {
+function StoreSettingsSection({
+  sanityImages,
+  data,
+}: {
+  sanityImages: string[];
+  data: any;
+}) {
   const [currentStoreData, setCurrentStoreSanityImages] = useAppStore(
     (state) => [state.currentStoreData, state.setCurrentStoreSanityImages]
   );
