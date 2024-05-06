@@ -46,14 +46,15 @@ function StoreSettingsSection({
   );
   const [isAddingProduct, setIsAddingProduct] = useState(false);
   const router = useRouter();
+  useEffect(() => {
+    setCurrentStoreSanityImages(sanityImages);
+  }, [sanityImages]);
   if (!currentStoreData) {
     router.push('/');
     return <LoadingComponent />;
   }
 
-  useEffect(() => {
-    setCurrentStoreSanityImages(sanityImages);
-  }, [sanityImages]);
+
   return (
     <ContainerLayout>
       <Breadcrumb>

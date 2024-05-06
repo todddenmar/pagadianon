@@ -43,6 +43,7 @@ function StoreBusinessHoursSection() {
             } else {
               return (
                 <div
+                  key={`sched-item-${idx}`}
                   className={cn(
                     'flex justify-between border rounded-md p-3 text-neutral-500 hover:dark:bg-neutral-900 hover:bg-neutral-200 dark:bg-neutral-950',
                     {
