@@ -44,6 +44,7 @@ function StoreSettingsSection({
   const [currentStoreData, setCurrentStoreSanityImages] = useAppStore(
     (state) => [state.currentStoreData, state.setCurrentStoreSanityImages]
   );
+  console.log({ data });
   const [isAddingProduct, setIsAddingProduct] = useState(false);
   const router = useRouter();
   useEffect(() => {

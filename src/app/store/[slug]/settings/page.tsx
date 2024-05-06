@@ -1,23 +1,11 @@
 import React from 'react';
 import StoreSettingsSection from '@/components/store/StoreSettingsSection';
-import { createClient } from '@sanity/client';
 type Props = {
   params: { slug: string };
 };
-import imageUrlBuilder from '@sanity/image-url';
 import { getStoreSanityData } from '@/lib/queries/sanity';
-export const client = createClient({
-  projectId: 'at1yhror',
-  dataset: 'production',
-  apiVersion: '2022-03-25',
-  useCdn: true,
-});
+import { client, urlFor } from '@/lib/client';
 
-const builder = imageUrlBuilder(client);
-
-export function urlFor(source: any) {
-  return builder.image(source);
-}
 
 async function StoreSettingsPage({ params }: Props) {
   const data = await getStoreSanityData({ slug: params.slug, client: client });
