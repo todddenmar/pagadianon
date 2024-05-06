@@ -1,7 +1,6 @@
 import React from 'react';
 import { client, urlFor } from '../../../../../sanity/sanity-utils';
 import StoreSettingsSection from '@/components/store/StoreSettingsSection';
-import Image from 'next/image';
 
 type Props = {
   params: { slug: string };
