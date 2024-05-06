@@ -1,35 +1,28 @@
-'use client';
-import LoadingComponent from '@/components/admin/LoadingComponent.';
-import ContainerLayout from '@/components/layouts/ContainerLayout';
-import StoreSettingsForm from '@/components/store/StoreSettingsForm';
-import StoreSettingsTabs from '@/components/store/StoreSettingsTabs';
-import { Card } from '@/components/ui/card';
-import { useAppStore } from '@/lib/store';
-import { useRouter } from 'next/navigation';
 import React from 'react';
+import { client, urlFor } from '../../../../../sanity/sanity-utils';
+import StoreSettingsSection from '@/components/store/StoreSettingsSection';
+import Image from 'next/image';
 
-function StoreSettingsPage() {
-  const currentStoreData = useAppStore((state) => state.currentStoreData);
-  const router = useRouter();
-  if (!currentStoreData) {
-    router.push('/');
-    return <LoadingComponent />;
-  }
+type Props = {
+  params: { slug: string };
+};
+async function getStoreSanityData(slug: string) {
+  const query = `*[_type == "store"]{...,"slug":${slug}}`;
+  const data = await client.fetch(query);
+  return data;
+}
+async function StoreSettingsPage({ params }: Props) {
+  const data = await getStoreSanityData(params.slug);
+  let images: string[] = [];
+  data.forEach((item: any) => {
+    return item.images.forEach((image: any) => {
+      const src = urlFor(image).url();
+      images.push(src);
+    });
+  });
   return (
-    <div>
-      <ContainerLayout>
-        <Card className="p-3">
-          <div>
-            <h4 className="text-2xl font-semibold">Settings</h4>
-            <p className="text-sm text-neutral-500">
-              Store Settings for {currentStoreData.name}
-            </p>
-          </div>
-          <div className="mt-5">
-            <StoreSettingsTabs />
-          </div>
-        </Card>
-      </ContainerLayout>
+    <div className="relative">
+      <StoreSettingsSection sanityImages={images} />
     </div>
   );
 }

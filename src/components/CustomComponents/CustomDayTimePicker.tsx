@@ -12,7 +12,7 @@ function CustomDayTimePicker({
   const [closesAt, setClosesAt] = useState(value?.closesAt);
   useEffect(() => {
     onChange({ opensAt, closesAt });
-  }, [opensAt, closesAt, onChange]);
+  }, [opensAt, closesAt]);
   return (
     <div className="grid justify-between gap-5">
       <div className="grid  gap-5 items-center">

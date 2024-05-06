@@ -29,7 +29,7 @@ function CustomTimePicker({ value, onChange }: { value: any; onChange: any }) {
 
   useEffect(() => {
     onChange({ hour, minute, period });
-  }, [hour, minute, period, onChange]);
+  }, [hour, minute, period]);
 
   return (
     <div>

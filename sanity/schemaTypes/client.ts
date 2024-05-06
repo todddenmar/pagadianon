@@ -1,17 +1,17 @@
 export default {
-  name: 'client',
+  name: 'store',
   type: 'document',
-  title: 'Client',
+  title: 'Store',
   fields: [
     {
       name: 'name',
       type: 'string',
-      title: 'Client Name',
+      title: 'Store Name',
     },
     {
       name: 'slug',
       type: 'slug',
-      title: 'Client Slug',
+      title: 'Store Slug',
       options: {
         source: 'name',
       },
@@ -19,7 +19,7 @@ export default {
     {
       name: 'images',
       type: 'array',
-      title: 'Client Images',
+      title: 'Store Images',
       of: [{type: 'image'}],
     },
   ],

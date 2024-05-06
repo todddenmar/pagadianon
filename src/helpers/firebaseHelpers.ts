@@ -1,5 +1,5 @@
 import { db } from '@/firebase';
-import { StoreType, UserType } from '@/typings';
+import { ProductType, StoreType, UserType } from '@/typings';
 import {
   doc,
   setDoc,
@@ -172,6 +172,36 @@ export const dbGetStoreData = async (slug: string) => {
       results.push(doc.data());
     });
     return { status: 'success', data: results[0] };
+  } catch (error) {
+    return { status: 'error', error };
+  }
+};
+
+export const dbGetStoreProducts = async (storeID: string) => {
+  try {
+    const q = query(collection(db, 'stores', storeID, 'products'));
+    let results: any[] = [];
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      // doc.data() is never undefined for query doc snapshots
+      results.push(doc.data());
+    });
+    return { status: 'success', data: results };
+  } catch (error) {
+    return { status: 'error', error };
+  }
+};
+
+export const dbAddStoreProduct = async ({
+  storeID,
+  data,
+}: {
+  storeID: string;
+  data: ProductType;
+}) => {
+  try {
+    await setDoc(doc(db, 'stores', storeID, 'products', data.id), data);
+    return { status: 'success' };
   } catch (error) {
     return { status: 'error', error };
   }

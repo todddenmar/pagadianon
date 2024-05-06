@@ -34,3 +34,15 @@ type DaySchedule = { opensAt: Date | null; closesAt: Date | null };
 export type DaysSchedType = {
   [key: string]: DaySchedule | boolean | null;
 };
+
+export type ProductType = {
+  id: string;
+  name: string;
+  description?: string;
+  slug: string;
+  price: number | string;
+  compareAtPrice?: number | string;
+  category: string;
+  tags?: string;
+  images?: string[];
+};

@@ -12,7 +12,6 @@ function CreateScheduleForm({ setClose }: { setClose: () => void }) {
     state.currentStoreData,
     state.setCurrentStoreData,
   ]);
-  console.log({ currentStoreData });
 
   const [opensAt, setOpensAt] = useState<Date | null>(null);
   const [closesAt, setClosesAt] = useState<Date | null>(null);

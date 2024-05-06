@@ -4,6 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import StoreBusinessHoursListCard from './StoreBusinessHoursListCard';
 import StoreSettingsForm from './StoreSettingsForm';
 import { Card } from '../ui/card';
+import StoreProductsTable from './StoreProductsTable';
 function StoreSettingsTabs() {
   const [tabValue, setTabValue] = useState('contact');
   return (
@@ -16,19 +17,25 @@ function StoreSettingsTabs() {
       >
         <TabsList>
           <TabsTrigger onClick={() => setTabValue('contact')} value="contact">
-            Contact Information
+            Contact
           </TabsTrigger>
           <TabsTrigger onClick={() => setTabValue('hours')} value="hours">
             Business Hours
           </TabsTrigger>
+          <TabsTrigger onClick={() => setTabValue('products')} value="products">
+            Products
+          </TabsTrigger>
         </TabsList>
         <TabsContent value="contact">
-          <Card className="max-w-md w-full p-3">
+          <Card className="w-full p-3">
             <StoreSettingsForm />
           </Card>
         </TabsContent>
         <TabsContent value="hours">
           <StoreBusinessHoursListCard />
+        </TabsContent>
+        <TabsContent value="products">
+          <StoreProductsTable />
         </TabsContent>
       </Tabs>
     </div>

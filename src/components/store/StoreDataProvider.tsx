@@ -1,13 +1,22 @@
 'use client';
 import { useAppStore } from '@/lib/store';
-import { StoreType } from '@/typings';
+import { ProductType, StoreType } from '@/typings';
 import { useEffect } from 'react';
 
-function StoreDataProvider({ data }: { data: StoreType }) {
-  const setCurrentStoreData = useAppStore((state) => state.setCurrentStoreData);
+function StoreDataProvider({
+  data,
+  products,
+}: {
+  data: StoreType;
+  products: ProductType[];
+}) {
+  const [setCurrentStoreData, setCurrentStoreProducts] = useAppStore(
+    (state) => [state.setCurrentStoreData, state.setCurrentStoreProducts]
+  );
   useEffect(() => {
     setCurrentStoreData(data);
-  }, [setCurrentStoreData, data]);
+    setCurrentStoreProducts(products);
+  }, [data, products]);
   return null;
 }
 

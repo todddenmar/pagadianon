@@ -1,5 +1,4 @@
 import React from 'react';
-import { Separator } from '../ui/separator';
 
 function StoreTabHeader({
   title,
@@ -14,7 +13,6 @@ function StoreTabHeader({
       <p className="mt-2 text-sm dark:text-neutral-500 text-neutral-700">
         {description}
       </p>
-      <Separator className="my-3" />
     </div>
   );
 }

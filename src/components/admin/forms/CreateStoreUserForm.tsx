@@ -28,7 +28,7 @@ import { kRoleTypes } from '@/constants';
 import moment from 'moment';
 import Link from 'next/link';
 import { dbAddStoreUser } from '@/helpers/firebaseHelpers';
-import { uuid } from 'uuidv4';
+import { v4 as uuidv4 } from 'uuid';
 
 const userFormSchema = z.object({
   roleType: z.string({
@@ -66,7 +66,7 @@ function CreateStoreUserForm() {
     setIsLoading(true);
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
-    const id = uuid();
+    const id = uuidv4();
     const newData = {
       id,
       ...values,

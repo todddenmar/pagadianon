@@ -1,4 +1,4 @@
-import { dbGetStoreData } from '@/helpers/firebaseHelpers';
+import { dbGetStoreData, dbGetStoreProducts } from '@/helpers/firebaseHelpers';
 import { StoreType } from '@/typings';
 import React from 'react';
 
@@ -14,17 +14,17 @@ type Props = {
   params: { slug: string };
 };
 
- async function fetchStoreData({ params }: Props): Promise<StoreType | null> {
-   const res = await dbGetStoreData(params.slug);
-   let dbStoreData: StoreType | null = null;
-   if (res.status === 'success') {
-     dbStoreData = res.data;
-     return dbStoreData;
-   } else {
-     console.error(res.error);
-     return null;
-   }
- }
+async function fetchStoreData({ params }: Props): Promise<StoreType | null> {
+  const res = await dbGetStoreData(params.slug);
+  let dbStoreData: StoreType | null = null;
+  if (res.status === 'success') {
+    dbStoreData = res.data;
+    return dbStoreData;
+  } else {
+    console.error(res.error);
+    return null;
+  }
+}
 
 export async function generateMetadata(
   { params }: Props,
@@ -42,12 +42,17 @@ export async function generateMetadata(
 export default async function StoreTemplatePage({ params }: Props) {
   const storeData = await fetchStoreData({ params });
   // Generate metadata using dbStoreData
+  let storeProducts: any[] = [];
   if (!storeData) {
     return <LoadingComponent />;
   }
+  const res = await dbGetStoreProducts(storeData?.id);
+  if (res.status === 'success') {
+    storeProducts = res.data!;
+  }
   return (
     <div>
-      <StoreDataProvider data={storeData} />
+      <StoreDataProvider data={storeData} products={storeProducts} />
       <StoreBanner title={storeData.name} description={storeData.description} />
       <StoreSection />
     </div>
