@@ -206,3 +206,23 @@ export const dbAddStoreProduct = async ({
     return { status: 'error', error };
   }
 };
+
+export const dbUpdateProductImages = async ({
+  storeID,
+  productID,
+  data,
+}: {
+  storeID: string;
+  productID: string;
+  data: string[] | null | undefined;
+}) => {
+  const userRef = doc(db, 'stores', storeID, 'products', productID);
+  try {
+    await updateDoc(userRef, {
+      images: data,
+    });
+    return { status: 'success' };
+  } catch (error) {
+    return { status: 'error', error };
+  }
+};

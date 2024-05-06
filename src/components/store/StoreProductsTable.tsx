@@ -11,7 +11,7 @@ import {
 import { Card } from '../ui/card';
 import { useAppStore } from '@/lib/store';
 import { ProductType } from '@/typings';
-import { MoreHorizontalIcon } from 'lucide-react';
+import { LoaderCircleIcon, MoreHorizontalIcon } from 'lucide-react';
 import LoadingComponent from '../admin/LoadingComponent.';
 import {
   DropdownMenu,
@@ -30,12 +30,20 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import CustomMultiImagePicker from '../CustomComponents/CustomMultiImagePicker';
+import { Button } from '../ui/button';
+import { dbUpdateProductImages } from '@/helpers/firebaseHelpers';
+import { toast } from 'sonner';
+import moment from 'moment';
 
 function StoreProductsTable() {
-  const [currentStoreProducts] = useAppStore((state) => [
-    state.currentStoreProducts,
-  ]);
+  const [currentStoreProducts, setCurrentStoreProducts, currentStoreData] =
+    useAppStore((state) => [
+      state.currentStoreProducts,
+      state.setCurrentStoreProducts,
+      state.currentStoreData,
+    ]);
   const [isOpenImageModal, setIsOpenImageModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<null | ProductType>(
     null
   );
@@ -43,6 +51,30 @@ function StoreProductsTable() {
     null | string[] | undefined
   >(null);
   if (!currentStoreProducts) return <LoadingComponent />;
+
+  const onSaveImages = async () => {
+    setIsLoading(true);
+    if (!selectedProduct) return;
+    const res = await dbUpdateProductImages({
+      storeID: currentStoreData.id,
+      productID: selectedProduct.id,
+      data: selectedImages,
+    });
+    if (res.status === 'error') {
+      console.log(res.error);
+      return;
+    }
+    const updateStoreProduct = { ...selectedProduct, images: selectedImages };
+    const updatedProducts = currentStoreProducts.map((item) =>
+      item.id === selectedProduct.id ? updateStoreProduct : item
+    );
+    setCurrentStoreProducts(updatedProducts);
+    setIsLoading(false);
+    toast.success('Product Images updated successfully', {
+      description: moment(new Date()).format('LLL'),
+    });
+    setIsOpenImageModal(false);
+  };
   return (
     <Card className="p-3">
       <Table>
@@ -101,6 +133,17 @@ function StoreProductsTable() {
             value={selectedImages}
             onChange={(val) => setSelectedImages(val)}
           />
+          {isLoading ? (
+            <div className="w-full h-[50px] flex flex-col items-center justify-center pt-5">
+              <span>
+                <LoaderCircleIcon className="animate-spin" />
+              </span>
+            </div>
+          ) : (
+            <div className="w-full grid grid-cols-2 gap-5 pt-5">
+              <Button onClick={onSaveImages}>Save Images</Button>
+            </div>
+          )}
         </DialogContent>
       </Dialog>
     </Card>

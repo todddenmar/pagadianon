@@ -6,7 +6,6 @@ type Props = {
 import { getStoreSanityData } from '@/lib/queries/sanity';
 import { client, urlFor } from '@/lib/client';
 
-
 async function StoreSettingsPage({ params }: Props) {
   const data = await getStoreSanityData({ slug: params.slug, client: client });
   let images: string[] = [];
@@ -18,7 +17,7 @@ async function StoreSettingsPage({ params }: Props) {
   });
   return (
     <div className="relative">
-      <StoreSettingsSection sanityImages={images} data={data} />
+      <StoreSettingsSection sanityImages={images} />
     </div>
   );
 }

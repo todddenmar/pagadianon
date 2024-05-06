@@ -34,17 +34,10 @@ import { PlusIcon } from 'lucide-react';
 import { Button } from '../ui/button';
 import CreateStoreProductForm from './forms/CreateStoreProductForm';
 
-function StoreSettingsSection({
-  sanityImages,
-  data,
-}: {
-  sanityImages: string[];
-  data: any;
-}) {
+function StoreSettingsSection({ sanityImages }: { sanityImages: string[] }) {
   const [currentStoreData, setCurrentStoreSanityImages] = useAppStore(
     (state) => [state.currentStoreData, state.setCurrentStoreSanityImages]
   );
-  console.log({ data });
   const [isAddingProduct, setIsAddingProduct] = useState(false);
   const router = useRouter();
   useEffect(() => {
@@ -54,7 +47,6 @@ function StoreSettingsSection({
     router.push('/');
     return <LoadingComponent />;
   }
-
 
   return (
     <ContainerLayout>

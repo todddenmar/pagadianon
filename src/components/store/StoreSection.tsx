@@ -21,6 +21,7 @@ import { ProductType } from '@/typings';
 import CustomPesoIcon from '../CustomComponents/CustomPesoIcon';
 import CustomEmailLink from '../CustomComponents/CustomEmailLink';
 import CustomMobileLink from '../CustomComponents/CustomMobileLink';
+import Image from 'next/image';
 
 function StoreSection() {
   const [tabValue, setTabValue] = useState('store');
@@ -29,7 +30,6 @@ function StoreSection() {
     state.currentStoreProducts,
     state.currentStoreData,
   ]);
-
   const onMenuTabChange = (tabVal: string) => {
     setTabValue(tabVal);
     setIsOpenMobileDrawer(false);
@@ -74,13 +74,26 @@ function StoreSection() {
                     <TabsContent key={`tab-content-${idx}`} value={item.value}>
                       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-5">
                         {products.map((prod) => {
+                          const firstImage = prod.images
+                            ? prod.images[0]
+                            : null;
                           return (
                             <div
                               key={`prod-card-${prod.id}`}
                               className="w-full"
                             >
-                              <div className="w-full aspect-square flex flex-col items-center justify-center bg-neutral-900 rounded-md overflow-hidden">
-                                <UtensilsIcon />
+                              <div className="w-full aspect-square flex flex-col relative items-center justify-center bg-neutral-900 rounded-md overflow-hidden">
+                                {firstImage ? (
+                                  <Image
+                                    src={firstImage}
+                                    alt={prod.name}
+                                    width={200}
+                                    height={200}
+                                    className="object-cover h-full w-full"
+                                  />
+                                ) : (
+                                  item.icon
+                                )}
                               </div>
                               <div className="mt-2">
                                 <div>{prod.name}</div>

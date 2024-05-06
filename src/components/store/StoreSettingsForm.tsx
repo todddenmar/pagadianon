@@ -107,11 +107,13 @@ function StoreSettingsForm() {
   }
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-      <CustomImagePicker
-        title="Upload Storefront Image"
-        value={storefrontURL}
-        setImageURL={(val) => setStorefrontURL(val)}
-      />
+      <div className="max-w-md w-full mx-auto my-auto">
+        <CustomImagePicker
+          title="Upload Storefront Image"
+          value={storefrontURL}
+          setImageURL={(val) => setStorefrontURL(val)}
+        />
+      </div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
           <FormField
