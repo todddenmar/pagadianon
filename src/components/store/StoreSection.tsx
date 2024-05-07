@@ -1,27 +1,15 @@
 'use client';
 import React, { useState } from 'react';
 import ContainerLayout from '../layouts/ContainerLayout';
-import { Separator } from '@/components/ui/separator';
 import StoreSidebar from './StoreSidebar';
 import { Drawer, DrawerContent } from '@/components/ui/drawer';
 import { Tabs, TabsContent } from '@/components/ui/tabs';
 import { kStoreProductCategories } from '@/constants';
-import {
-  MailIcon,
-  MapPinIcon,
-  PanelBottomOpenIcon,
-  SmartphoneIcon,
-  UtensilsIcon,
-} from 'lucide-react';
+import { PanelBottomOpenIcon } from 'lucide-react';
 import { Button } from '../ui/button';
-import StoreTabHeader from './StoreTabHeader';
 import StoreInfo from './StoreInfo';
 import { useAppStore } from '@/lib/store';
 import { ProductType } from '@/typings';
-import CustomPesoIcon from '../CustomComponents/CustomPesoIcon';
-import CustomEmailLink from '../CustomComponents/CustomEmailLink';
-import CustomMobileLink from '../CustomComponents/CustomMobileLink';
-import Image from 'next/image';
 import StoreProductCard from './StoreProductCard';
 
 function StoreSection() {

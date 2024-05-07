@@ -27,9 +27,9 @@ function StoreBanner({
         <div className="h-auto md:h-[300px] py-5 flex flex-col justify-center text-center md:text-start">
           <h1 className="text-4xl md:text-6xl font-bold">{title}</h1>
           <p className="mt-2 md:mt-5">{description}</p>
-          <div className="py-5">
+          <div className="py-2 md:py-5">
             <div className="grid grid-cols-1 sm:inline-flex justify-between gap-4 text-sm ">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="flex justify-center gap-4">
                 {currentStoreData?.settings?.email && (
                   <CustomEmailLink email={currentStoreData?.settings?.email}>
                     <MailIcon className="h-5" /> Email Us
@@ -57,7 +57,7 @@ function StoreBanner({
                 </a>
               )}
             </div>
-            <div className="flex justify-center gap-5 text-sm mt-5 w-full sm:w-fit">
+            <div className="flex justify-center gap-5 text-sm mt-2 md:mt-5 w-full md:w-fit">
               {facebookUsername && (
                 <a
                   target="_blank"

@@ -98,7 +98,7 @@ function StoreSidebar({
 }
 
 function StoreSidebarTitle({ text }: { text: string }) {
-  return <div className="text-lg px-4 py-2">{text}</div>;
+  return <div className="text-base font-semibold px-4 py-2">{text}</div>;
 }
 
 function StoreSidebarItem({
@@ -116,7 +116,7 @@ function StoreSidebarItem({
     <button
       onClick={onClick}
       className={cn(
-        'px-4 rounded-md py-2 w-full text-left text-sm dark:hover:bg-neutral-900 transition-all  hover:bg-neutral-100 capitalize flex space-x-2',
+        'px-4 rounded-md py-2 w-full items-center text-left text-sm dark:hover:bg-neutral-900 transition-all  hover:bg-neutral-100 capitalize flex space-x-2',
         {
           'dark:bg-neutral-800 bg:bg-neutral-50': isActive,
         }

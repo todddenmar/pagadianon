@@ -38,7 +38,7 @@ const userFormSchema = z.object({
     .min(2, {
       message: 'Address must be at least 2 characters.',
     })
-    .max(50),
+    .max(100),
   coordinates: z
     .string()
     .min(2, {
@@ -61,12 +61,12 @@ function StoreSettingsForm() {
   const form = useForm<z.infer<typeof userFormSchema>>({
     resolver: zodResolver(userFormSchema),
     defaultValues: {
-      mobileNumber: currentStoreData.settings.mobileNumber || '',
-      email: currentStoreData.settings.email || '',
-      address: currentStoreData.settings.address || '',
-      coordinates: currentStoreData.settings.coordinates || '',
-      facebookUsername: currentStoreData.settings.facebookUsername || '',
-      instagramUsername: currentStoreData.settings.instagramUsername || '',
+      mobileNumber: currentStoreData.settings?.mobileNumber || '',
+      email: currentStoreData.settings?.email || '',
+      address: currentStoreData.settings?.address || '',
+      coordinates: currentStoreData.settings?.coordinates || '',
+      facebookUsername: currentStoreData.settings?.facebookUsername || '',
+      instagramUsername: currentStoreData.settings?.instagramUsername || '',
     },
   });
 

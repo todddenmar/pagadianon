@@ -1,5 +1,6 @@
 import { db } from '@/firebase';
 import { ProductType, StoreType, UserType } from '@/typings';
+import { error } from 'console';
 import {
   doc,
   setDoc,
@@ -108,7 +109,7 @@ export const dbGetRootSettings = async () => {
   if (docSnap.exists()) {
     return { status: 'success', data: docSnap.data() };
   } else {
-    return { status: 'error' };
+    return { status: 'error', error: 'settings not found' };
   }
 };
 

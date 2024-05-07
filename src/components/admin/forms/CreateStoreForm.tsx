@@ -10,6 +10,7 @@ import moment from 'moment';
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -68,6 +69,12 @@ function CreateStoreForm() {
           message: 'Slug already exists',
         }
       ),
+    tags: z
+      .string()
+      .min(2, {
+        message: 'Tags must be at least 2 characters.',
+      })
+      .max(50),
   });
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
@@ -75,6 +82,7 @@ function CreateStoreForm() {
     defaultValues: {
       name: '',
       slug: '',
+      tags: '',
       saasTypeSlug: undefined,
     },
   });
@@ -192,6 +200,21 @@ function CreateStoreForm() {
             </FormItem>
           )}
         />
+        <FormField
+          control={form.control}
+          name="tags"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Tags</FormLabel>
+              <FormControl>
+                <Input placeholder="Enter tags here" {...field} />
+              </FormControl>
+              <FormDescription>Split tags by comma</FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         {isLoading ? (
           <div className="w-full h-[50px] flex flex-col items-center justify-center pt-5">
             <span>

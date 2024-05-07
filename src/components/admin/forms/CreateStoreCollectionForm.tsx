@@ -17,8 +17,6 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-
 import {
   Select,
   SelectContent,
@@ -26,41 +24,33 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { dbUpdateSettings, dbUpdateStore } from '@/helpers/firebaseHelpers';
+import { dbAddNewStore, dbUpdateSettings } from '@/helpers/firebaseHelpers';
 import { kSaasTypes } from '@/constants';
 import { LoaderCircleIcon } from 'lucide-react';
-import {
-  checkSlugExists,
-  checkSlugExistsOnOtherStore,
-} from '@/helpers/appHelpers';
-import { StoreType } from '@/typings';
+import { checkSlugExists } from '@/helpers/appHelpers';
+import { v4 as uuidv4 } from 'uuid';
 
-function UpdateStoreForm({
-  store,
-  setClose,
-}: {
-  store: StoreType;
-  setClose: () => void;
-}) {
+function CreateStoreCollectionForm() {
   const [isLoading, setIsLoading] = useState(false);
-  const [updateStore, currentSettings, setCurrentSettings] = useAppStore(
-    (state) => [
-      state.updateStore,
+  const [setIsCreatingModalOpen, currentSettings, setCurrentSettings] =
+    useAppStore((state) => [
+      state.setIsCreatingModalOpen,
       state.currentSettings,
       state.setCurrentSettings,
-    ]
-  );
+    ]);
   const formSchema = z.object({
-    saasTypeSlug: z.string({
-      required_error: 'Please select a Saas Type.',
-    }),
     name: z
       .string()
       .min(2, {
         message: 'Name must be at least 2 characters.',
       })
       .max(50),
-    description: z.string().optional().or(z.literal('')),
+    description: z
+      .string()
+      .min(2, {
+        message: 'Description must be at least 2 characters.',
+      })
+      .max(200),
     slug: z
       .string()
       .min(2, {
@@ -69,31 +59,22 @@ function UpdateStoreForm({
       .max(50)
       .refine(
         (val) =>
-          checkSlugExistsOnOtherStore({
+          checkSlugExists({
             slug: val,
-            id: store.id,
-            list: currentSettings?.stores,
+            list: currentSettings?.collections,
           }) == false,
         {
           message: 'Slug already exists',
         }
       ),
-    tags: z
-      .string()
-      .min(2, {
-        message: 'Name must be at least 2 characters.',
-      })
-      .max(50),
   });
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: store.name,
-      description: store.description || '',
-      slug: store.slug,
-      saasTypeSlug: store.saasTypeSlug,
-      tags: store.tags,
+      name: '',
+      description: '',
+      slug: '',
     },
   });
 
@@ -103,47 +84,35 @@ function UpdateStoreForm({
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     const dateTime = moment(new Date()).format('LLL');
+    const id = uuidv4();
     const newData = {
-      ...store,
-      name: values.name,
-      slug: values.slug,
-      description: values.description,
-      saasTypeSlug: values.saasTypeSlug,
-      tags: values.tags,
-      updatedAt: dateTime,
+      id,
+      ...values,
+      createdAt: dateTime,
     };
-    const res = await dbUpdateStore(newData);
-    if (res.status === 'success') {
-      updateStore(newData);
-      const updatedStores = currentSettings?.stores.map((item: StoreType) =>
-        item.id === newData.id ? newData : item
-      );
-      const updatedSettings = {
-        ...currentSettings,
-        stores: updatedStores,
-        isPublished: true,
-      };
-      const resUpdate = await dbUpdateSettings(updatedSettings);
-      if (resUpdate.status === 'success') {
-        setCurrentSettings(updatedSettings);
-      } else {
-        console.log(resUpdate.error);
-        return;
-      }
+    const updatedCollections = currentSettings?.collections
+      ? [...currentSettings?.collections, newData]
+      : [newData];
+    const updatedSettings = {
+      ...currentSettings,
+      collections: updatedCollections,
+    };
+    const resUpdate = await dbUpdateSettings(updatedSettings);
+    if (resUpdate.status === 'success') {
+      setCurrentSettings(updatedSettings);
     } else {
-      console.log(res.error);
+      console.log(resUpdate.error);
       return;
     }
+    setIsCreatingModalOpen(false);
     setIsLoading(false);
-    setClose();
   }
   function onGenerateSlug(e: any) {
     e.preventDefault();
     const generatedSlug = _.kebabCase(form.getValues('name'));
-    const sameSlugTotal = checkSlugExistsOnOtherStore({
+    const sameSlugTotal = checkSlugExists({
       slug: generatedSlug,
-      id: store.id,
-      list: currentSettings?.stores,
+      list: currentSettings?.collections,
     });
     if (sameSlugTotal) {
       form.setValue('slug', `${generatedSlug}-${sameSlugTotal + 1}`);
@@ -151,41 +120,10 @@ function UpdateStoreForm({
     }
     form.setValue('slug', generatedSlug);
   }
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
-        <FormField
-          control={form.control}
-          name="saasTypeSlug"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>SaaS Type</FormLabel>
-              <FormControl>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="SaaS Type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {kSaasTypes.map((item, idx) => {
-                      return (
-                        <SelectItem
-                          key={`select-saas-item-${idx}`}
-                          value={item.slug}
-                        >
-                          {item.title}
-                        </SelectItem>
-                      );
-                    })}
-                  </SelectContent>
-                </Select>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
         <FormField
           control={form.control}
           name="name"
@@ -193,8 +131,9 @@ function UpdateStoreForm({
             <FormItem>
               <FormLabel>Name</FormLabel>
               <FormControl>
-                <Input placeholder="Enter name here" {...field} />
+                <Input placeholder="Enter collection name here" {...field} />
               </FormControl>
+
               <FormMessage />
             </FormItem>
           )}
@@ -206,7 +145,7 @@ function UpdateStoreForm({
             <FormItem>
               <FormLabel>Description</FormLabel>
               <FormControl>
-                <Textarea {...field} className="resize-none" />
+                <Input placeholder="Enter description here" {...field} />
               </FormControl>
 
               <FormMessage />
@@ -230,20 +169,6 @@ function UpdateStoreForm({
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="tags"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Tags</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter tags here" {...field} />
-              </FormControl>
-              <FormDescription>Split tags by comma</FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
         {isLoading ? (
           <div className="w-full h-[50px] flex flex-col items-center justify-center pt-5">
             <span>
@@ -255,7 +180,7 @@ function UpdateStoreForm({
             <Button
               onClick={(e) => {
                 e.preventDefault();
-                setClose();
+                setIsCreatingModalOpen(false);
               }}
               variant={'destructive'}
             >
@@ -269,4 +194,4 @@ function UpdateStoreForm({
   );
 }
 
-export default UpdateStoreForm;
+export default CreateStoreCollectionForm;

@@ -16,7 +16,7 @@ import {
 import { useAuth } from '@clerk/nextjs';
 import { kSaasCategories, kStoreTypes } from '@/constants';
 import { useAppStore } from '@/lib/store';
-import { StoreType } from '@/typings';
+import { CollectionType, StoreType } from '@/typings';
 
 const components: {
   slug: string;
@@ -35,7 +35,6 @@ export function CustomNavMenu() {
   if (userId && orgId) {
     hasAdminPermission = has({ permission: 'org:admin:access' });
   }
-  console.log({ currentUserData, currentSettings });
   return (
     <NavigationMenu>
       <NavigationMenuList>
@@ -53,13 +52,18 @@ export function CustomNavMenu() {
                   </p>
                 </div>
               </li>
-              {kStoreTypes.map((item, idx) => {
-                return (
-                  <Link href={`/${item.slug}`} key={`store-type-${idx}`}>
-                    <ListItem title={item.name}>{item.description}</ListItem>
-                  </Link>
-                );
-              })}
+              {currentSettings?.collections?.map(
+                (item: CollectionType, idx: number) => {
+                  return (
+                    <Link
+                      href={`/collections/${item.slug}`}
+                      key={`store-type-${idx}`}
+                    >
+                      <ListItem title={item.name}>{item.description}</ListItem>
+                    </Link>
+                  );
+                }
+              )}
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>
@@ -93,12 +97,8 @@ export function CustomNavMenu() {
                   const store = currentSettings?.stores.find(
                     (item: StoreType) => item.id === storeID
                   );
-                  console.log({ store });
                   return (
-                    <Link
-                      href={`/${store?.saasTypeSlug}/${store?.slug}`}
-                      key={`stores-${idx}`}
-                    >
+                    <Link href={`/store/${store?.slug}`} key={`stores-${idx}`}>
                       <ListItem title={store?.name}>
                         {store?.description}
                       </ListItem>

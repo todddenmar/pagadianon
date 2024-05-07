@@ -31,6 +31,7 @@ import {
 } from '@/components/ui/dialog';
 import { StoreType } from '@/typings';
 import UpdateStoreForm from '../forms/UpdateStoreForm';
+import { Badge } from '@/components/ui/badge';
 
 function StoresTable() {
   const [currentStores] = useAppStore((state) => [state.currentStores]);
@@ -52,6 +53,7 @@ function StoresTable() {
             <TableHead className="w-[100px]">No.</TableHead>
             <TableHead>Name</TableHead>
             <TableHead>Slug</TableHead>
+            <TableHead>Tags</TableHead>
             <TableHead>SaaS Type</TableHead>
             <TableHead className="text-right"></TableHead>
           </TableRow>
@@ -61,11 +63,17 @@ function StoresTable() {
             const saas = kSaasTypes.find(
               (item2) => item2.slug === item.saasTypeSlug
             );
+            const tags = item.tags?.split(',');
             return (
               <TableRow key={`store-item-${idx}`}>
                 <TableCell className="font-medium">{idx + 1}</TableCell>
                 <TableCell>{item.name}</TableCell>
                 <TableCell>{item.slug}</TableCell>
+                <TableCell className="capitalize inline-flex flex-wrap gap-2">
+                  {tags?.map((tag: string, tagIdx: number) => (
+                    <Badge key={`tag-${idx}-${tagIdx}`}>{tag}</Badge>
+                  ))}
+                </TableCell>
                 <TableCell>{saas?.title}</TableCell>
                 <TableCell className="text-right">
                   <DropdownMenu>

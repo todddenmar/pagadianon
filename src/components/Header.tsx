@@ -8,6 +8,7 @@ import { CustomNavMenu } from './CustomComponents/CustomNavMenu';
 import MobileMenu from './MobileMenu';
 
 function Header() {
+
   return (
     <div className="h-[60px] flex flex-col justify-center shadow-sm px-2 md:px-5 sticky top-0 z-50 dark:bg-neutral-950 bg-white">
       <ContainerLayout>

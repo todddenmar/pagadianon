@@ -14,7 +14,7 @@ function StoreBusinessHoursSection() {
   return (
     <div>
       <h4 className="font-semibold text-lg md:text-2xl">Business Hours</h4>
-      {schedules && (
+      {schedules ? (
         <div className="grid gap-5 mt-5">
           {kDaysArrayData?.map((item, idx) => {
             if (schedules[item]) {
@@ -63,6 +63,10 @@ function StoreBusinessHoursSection() {
               );
             }
           })}
+        </div>
+      ) : (
+        <div className="h-[400px] w-full flex flex-col items-center justify-center text-sm animate-pulse">
+          Please wait... this page is still being managed.
         </div>
       )}
     </div>

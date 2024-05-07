@@ -7,6 +7,7 @@ import Image from 'next/image';
 import CustomMapLocation from '../CustomComponents/CustomMapLocation';
 import CustomEmailLink from '../CustomComponents/CustomEmailLink';
 import CustomMobileLink from '../CustomComponents/CustomMobileLink';
+import { ImageIcon } from 'lucide-react';
 
 function StoreInfo() {
   const [tabValue, setTabValue] = useState('info');
@@ -28,8 +29,8 @@ function StoreInfo() {
         </TabsList>
         <TabsContent value="info">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 lg:items-start">
-            {currentStoreData?.settings?.storefrontURL && (
-              <div className="w-full relative rounded-md overflow-hidden">
+            <div className="w-full relative rounded-md overflow-hidden bg-neutral-200 dark:bg-neutral-900 aspect-square flex flex-col items-center justify-center">
+              {currentStoreData?.settings?.storefrontURL ? (
                 <Image
                   src={currentStoreData?.settings?.storefrontURL}
                   alt={`image-selected`}
@@ -37,8 +38,10 @@ function StoreInfo() {
                   height={600}
                   className="object-contain object-center h-full w-full"
                 />
-              </div>
-            )}
+              ) : (
+                <ImageIcon />
+              )}
+            </div>
             <StoreBusinessHoursSection />
           </div>
         </TabsContent>

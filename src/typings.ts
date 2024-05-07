@@ -20,6 +20,17 @@ export type StoreType = {
   createdAt: any;
   updatedAt?: any;
   users?: any[];
+  tags: string;
+};
+
+export type CollectionType = {
+  id: string;
+  slug: string;
+  name: string;
+  description?: string | null;
+  createdAt: any;
+  updatedAt?: any;
+  stores?: string[];
 };
 
 export type UserType = {

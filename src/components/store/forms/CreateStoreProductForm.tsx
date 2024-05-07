@@ -83,13 +83,13 @@ function CreateStoreProductForm({ setClose }: { setClose: () => void }) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      category: undefined,
+      category: '',
       name: '',
-      description: undefined,
+      description: '',
       slug: '',
-      price: undefined,
-      compareAtPrice: undefined,
-      tags: undefined,
+      price: '',
+      compareAtPrice: '',
+      tags: '',
     },
   });
 

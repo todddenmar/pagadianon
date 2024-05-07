@@ -1,6 +1,8 @@
 import {
   BeerIcon,
   CoffeeIcon,
+  CombineIcon,
+  HandHelpingIcon,
   LayoutDashboardIcon,
   ShirtIcon,
   StoreIcon,
@@ -9,6 +11,7 @@ import {
 } from 'lucide-react';
 import CreateStoreForm from './components/admin/forms/CreateStoreForm';
 import CreateStoreUserForm from './components/admin/forms/CreateStoreUserForm';
+import CreateStoreCollectionForm from './components/admin/forms/CreateStoreCollectionForm';
 
 export const kRoleType = {
   MANAGER: 'manager',
@@ -34,6 +37,18 @@ export const kAdminPageData = {
       form: <CreateStoreForm />,
     },
   },
+  COLLECTIONS: {
+    path: '/admin/collections',
+    title: 'Collections',
+    icon: <CombineIcon />,
+    createDialog: {
+      buttonText: 'Add Collection',
+      title: 'Create New Collection',
+      description: 'A collection of stores',
+      isSettings: false,
+      form: <CreateStoreCollectionForm />,
+    },
+  },
   USERS: {
     path: '/admin/users',
     title: 'Users',
@@ -51,6 +66,7 @@ export const kAdminPageData = {
 export const kAdminPageDataItems = [
   kAdminPageData.DASHBOARD,
   kAdminPageData.STORES,
+  kAdminPageData.COLLECTIONS,
   kAdminPageData.USERS,
 ];
 export const kSaasCategory = {
@@ -117,6 +133,7 @@ export const kStoreProductCategories = [
   { value: 'drink', icon: <BeerIcon className="w-[16px]" /> },
   { value: 'coffee', icon: <CoffeeIcon className="w-[16px]" /> },
   { value: 'clothing', icon: <ShirtIcon className="w-[16px]" /> },
+  { value: 'service', icon: <HandHelpingIcon className="w-[16px]" /> },
 ];
 
 export const kDaysArrayData = [
