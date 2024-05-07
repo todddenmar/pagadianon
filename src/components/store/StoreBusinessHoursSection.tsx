@@ -13,8 +13,9 @@ function StoreBusinessHoursSection() {
   if (!currentStoreData) return <LoadingComponent />;
   return (
     <div>
+      <h4 className="font-semibold text-lg md:text-2xl">Business Hours</h4>
       {schedules && (
-        <div className="grid gap-5">
+        <div className="grid gap-5 mt-5">
           {kDaysArrayData?.map((item, idx) => {
             if (schedules[item]) {
               const { opensAt, closesAt } = schedules[item];
@@ -22,7 +23,7 @@ function StoreBusinessHoursSection() {
                 <div
                   key={`sched-item-${idx}`}
                   className={cn(
-                    'flex justify-between border hover:dark:bg-neutral-900 rounded-md hover:bg-neutral-200 p-3 dark:bg-neutral-950 transition-all',
+                    'grid sm:flex gap-3 justify-between border hover:dark:bg-neutral-900 rounded-md hover:bg-neutral-200 p-3 dark:bg-neutral-950 transition-all',
                     {
                       'text-yellow-500 border-yellow-500': idx === dayNumber,
                     }
@@ -45,14 +46,14 @@ function StoreBusinessHoursSection() {
                 <div
                   key={`sched-item-${idx}`}
                   className={cn(
-                    'flex justify-between border rounded-md p-3 text-neutral-500 hover:dark:bg-neutral-900 hover:bg-neutral-200 dark:bg-neutral-950',
+                    'grid sm:flex gap-3 justify-between border rounded-md p-3 text-neutral-500 hover:dark:bg-neutral-900 hover:bg-neutral-200 dark:bg-neutral-950',
                     {
                       'text-yellow-500 border-yellow-500': idx === dayNumber,
                     }
                   )}
                 >
                   <div>{item}</div>
-                  <div className="flex gap-5 items-center">
+                  <div className="flex gap-5 items-center ">
                     <div className="flex gap-2 items-center">
                       <MoonIcon className="h-5" />{' '}
                       {idx === dayNumber ? 'Closed Today' : 'Closed'}

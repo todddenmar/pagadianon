@@ -22,6 +22,7 @@ import CustomPesoIcon from '../CustomComponents/CustomPesoIcon';
 import CustomEmailLink from '../CustomComponents/CustomEmailLink';
 import CustomMobileLink from '../CustomComponents/CustomMobileLink';
 import Image from 'next/image';
+import StoreProductCard from './StoreProductCard';
 
 function StoreSection() {
   const [tabValue, setTabValue] = useState('store');
@@ -72,48 +73,13 @@ function StoreSection() {
                   );
                   return (
                     <TabsContent key={`tab-content-${idx}`} value={item.value}>
-                      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-5">
+                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-5">
                         {products.map((prod) => {
-                          const firstImage = prod.images
-                            ? prod.images[0]
-                            : null;
                           return (
-                            <div
+                            <StoreProductCard
                               key={`prod-card-${prod.id}`}
-                              className="w-full"
-                            >
-                              <div className="w-full aspect-square flex flex-col relative items-center justify-center bg-neutral-900 rounded-md overflow-hidden">
-                                {firstImage ? (
-                                  <Image
-                                    src={firstImage}
-                                    alt={prod.name}
-                                    width={200}
-                                    height={200}
-                                    className="object-cover h-full w-full"
-                                  />
-                                ) : (
-                                  item.icon
-                                )}
-                              </div>
-                              <div className="mt-2">
-                                <div>{prod.name}</div>
-                                <p className="text-sm text-neutral-500 line-clamp-1">
-                                  {prod.description}
-                                </p>
-                                <div className="flex space-x-2 items-end justify-start">
-                                  <div className="text-2xl font-semibold">
-                                    <CustomPesoIcon />
-                                    {prod.price}
-                                  </div>
-                                  {prod.compareAtPrice && (
-                                    <div className="text-destructive line-through">
-                                      <CustomPesoIcon />
-                                      {prod.compareAtPrice}
-                                    </div>
-                                  )}
-                                </div>
-                              </div>
-                            </div>
+                              data={prod}
+                            />
                           );
                         })}
                       </div>

@@ -43,7 +43,7 @@ function StoreSidebar({
 
   return (
     <div className="py-4 flex flex-col justify-between h-full">
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col">
         <div>
           <StoreSidebarTitle text="Discover" />
           <ul className="grid grid-cols-1 gap-1">
@@ -98,7 +98,7 @@ function StoreSidebar({
 }
 
 function StoreSidebarTitle({ text }: { text: string }) {
-  return <div className="text-lg font-semibold px-4 py-2">{text}</div>;
+  return <div className="text-lg px-4 py-2">{text}</div>;
 }
 
 function StoreSidebarItem({

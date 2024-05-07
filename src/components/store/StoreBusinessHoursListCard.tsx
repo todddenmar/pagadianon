@@ -102,10 +102,10 @@ function StoreBusinessHoursListCard() {
                   return (
                     <div
                       key={`sched-item-${idx}`}
-                      className="flex justify-between border rounded-md p-3"
+                      className="grid sm:flex justify-between border rounded-md p-3 gap-3"
                     >
-                      <div>{item}</div>
-                      <div className="flex gap-5 items-center">
+                      <div className="text-left">{item}</div>
+                      <div className="flex gap-2  md:gap-5 items-center">
                         <div>
                           {opensAt.hour} : {opensAt.minute} {opensAt.period}
                         </div>
@@ -129,10 +129,10 @@ function StoreBusinessHoursListCard() {
                   return (
                     <div
                       key={`sched-item-${idx}`}
-                      className="flex justify-between border rounded-md p-3 text-neutral-500"
+                      className="grid sm:flex gap-3 justify-between border rounded-md p-3 text-neutral-500"
                     >
                       <div>{item}</div>
-                      <div className="flex gap-5 items-center">
+                      <div className="flex gap-2 md:gap-5 items-center ">
                         <div className="flex gap-2 items-center">
                           <MoonIcon className="h-5" /> Closed at this day
                         </div>
