@@ -12,22 +12,15 @@ import Link from 'next/link';
 import ContainerLayout from '@/components/layouts/ContainerLayout';
 import StoreSettingsTabs from '@/components/store/StoreSettingsTabs';
 import { Card } from '@/components/ui/card';
-import { useRouter } from 'next/navigation';
 import { useAppStore } from '@/lib/store';
 import LoadingComponent from '../admin/LoadingComponent.';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog';
 
 import { PlusIcon } from 'lucide-react';
@@ -39,12 +32,10 @@ function StoreSettingsSection({ sanityImages }: { sanityImages: string[] }) {
     (state) => [state.currentStoreData, state.setCurrentStoreSanityImages]
   );
   const [isAddingProduct, setIsAddingProduct] = useState(false);
-  const router = useRouter();
   useEffect(() => {
     setCurrentStoreSanityImages(sanityImages);
   }, [sanityImages]);
   if (!currentStoreData) {
-    router.push('/');
     return <LoadingComponent />;
   }
 

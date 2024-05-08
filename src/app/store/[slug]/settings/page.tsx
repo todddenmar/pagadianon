@@ -12,14 +12,21 @@ export const metadata: Metadata = {
 };
 
 async function StoreSettingsPage({ params }: Props) {
-  const data = await getStoreSanityData({ slug: params.slug, client: client });
   let images: string[] = [];
-  data.forEach((item: any) => {
-    return item.images.forEach((image: any) => {
-      const src = urlFor(image).url();
-      images.push(src);
+  try {
+    const data = await getStoreSanityData({
+      slug: params.slug,
+      client: client,
     });
-  });
+    data.forEach((item: any) => {
+      return item.images.forEach((image: any) => {
+        const src = urlFor(image).url();
+        images.push(src);
+      });
+    });
+  } catch (error) {
+    console.log({ error });
+  }
   return (
     <div className="relative">
       <StoreSettingsSection sanityImages={images} />
