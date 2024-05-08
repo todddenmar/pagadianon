@@ -22,6 +22,8 @@ function StoreProductVariantCard({ variant }: { variant: VariantType }) {
   const [currentStoreProducts] = useAppStore((state) => [
     state.currentStoreProducts,
   ]);
+  const [isOpenDrawer, setIsOpenDrawer] = useState(false);
+
   if (!currentStoreProducts) return <LoadingComponent />;
   const productData = currentStoreProducts?.find(
     (item: ProductType) => item.id === variant.productID
@@ -32,7 +34,6 @@ function StoreProductVariantCard({ variant }: { variant: VariantType }) {
     (item) => item.value === productData.category
   )?.icon;
 
-  const [isOpenDrawer, setIsOpenDrawer] = useState(false);
   return (
     <div>
       <div
