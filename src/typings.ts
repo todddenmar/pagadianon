@@ -21,6 +21,7 @@ export type StoreType = {
   updatedAt?: any;
   users?: any[];
   tags: string;
+  logoURL?: string;
 };
 
 export type CollectionType = {
@@ -46,14 +47,28 @@ export type DaysSchedType = {
   [key: string]: DaySchedule | boolean | null;
 };
 
+export type VariantType = {
+  id: string;
+  name: string;
+  description?: string;
+  productID: string;
+  isAlwaysAvailable: true;
+  stocks: number;
+  price: string;
+  compareAtPrice?: string;
+  createdAt: any;
+  updatedAt?: any;
+  images?: string[];
+};
+
 export type ProductType = {
   id: string;
   name: string;
   description?: string;
   slug: string;
-  price: number | string;
-  compareAtPrice?: number | string;
+  variants?: VariantType[];
   category: string;
   tags?: string;
-  images?: string[];
+  createdAt: any;
+  updatedAt?: any;
 };

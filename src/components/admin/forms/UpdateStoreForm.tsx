@@ -29,10 +29,7 @@ import {
 import { dbUpdateSettings, dbUpdateStore } from '@/helpers/firebaseHelpers';
 import { kSaasTypes } from '@/constants';
 import { LoaderCircleIcon } from 'lucide-react';
-import {
-  checkSlugExists,
-  checkSlugExistsOnOtherStore,
-} from '@/helpers/appHelpers';
+import { checkSlugExistsOnOtherStore } from '@/helpers/appHelpers';
 import { StoreType } from '@/typings';
 
 function UpdateStoreForm({

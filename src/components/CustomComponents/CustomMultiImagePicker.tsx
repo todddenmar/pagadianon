@@ -63,7 +63,7 @@ function CustomMultiImagePicker({
                   }
                 }}
                 className={cn(
-                  'rounded-md overflow-hidden cursor-pointer hover:border-white border',
+                  'rounded-md overflow-hidden cursor-pointer hover:md:border-white border',
                   {
                     'border-white': isSelected,
                   }

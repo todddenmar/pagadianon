@@ -10,14 +10,14 @@ export async function getStoreSanityData({
   return data;
 }
 
-export async function getSanityRootData({
+export async function getSanityAdminData({
   slug,
   client,
 }: {
   slug: string;
   client: any;
 }) {
-  const query = `*[_type == "root"]{...,"slug":${slug}}`;
+  const query = `*[_type == "admin"]{...,"slug":${slug}}`;
   const data = await client.fetch(query);
   return data;
 }

@@ -32,15 +32,21 @@ import {
 import { StoreType } from '@/typings';
 import UpdateStoreForm from '../forms/UpdateStoreForm';
 import { Badge } from '@/components/ui/badge';
+import UpdateStoreLogoForm from '../forms/UpdateStoreLogoForm';
 
 function StoresTable() {
   const [currentStores] = useAppStore((state) => [state.currentStores]);
   const [selectedStore, setSelectedStore] = useState<StoreType | null>(null);
   const [isEditingStore, setIsEditingStore] = useState(false);
+  const [isEditingStoreLogo, setIsEditingStoreLogo] = useState(false);
 
   const onEditStore = (data: StoreType) => {
     setSelectedStore(data);
     setIsEditingStore(true);
+  };
+  const onEditStoreLogo = (data: StoreType) => {
+    setSelectedStore(data);
+    setIsEditingStoreLogo(true);
   };
   return (
     <Card>
@@ -86,6 +92,9 @@ function StoresTable() {
                       <DropdownMenuItem onClick={() => onEditStore(item)}>
                         Edit
                       </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => onEditStoreLogo(item)}>
+                        Select Logo
+                      </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </TableCell>
@@ -104,6 +113,20 @@ function StoresTable() {
             <UpdateStoreForm
               store={selectedStore}
               setClose={() => setIsEditingStore(false)}
+            />
+          </DialogContent>
+        )}
+      </Dialog>
+      <Dialog open={isEditingStoreLogo} onOpenChange={setIsEditingStoreLogo}>
+        {selectedStore && (
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Edit Store: {`${selectedStore.name}`}</DialogTitle>
+              <DialogDescription>Please fill in the blank.</DialogDescription>
+            </DialogHeader>
+            <UpdateStoreLogoForm
+              store={selectedStore}
+              setClose={() => setIsEditingStoreLogo(false)}
             />
           </DialogContent>
         )}

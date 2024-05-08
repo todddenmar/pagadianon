@@ -1,5 +1,5 @@
 import { db } from '@/firebase';
-import { ProductType, StoreType, UserType } from '@/typings';
+import { ProductType, StoreType, UserType, VariantType } from '@/typings';
 import { error } from 'console';
 import {
   doc,
@@ -207,23 +207,58 @@ export const dbAddStoreProduct = async ({
     return { status: 'error', error };
   }
 };
-
-export const dbUpdateProductImages = async ({
+export const dbUpdateStoreProduct = async ({
   storeID,
   productID,
   data,
 }: {
   storeID: string;
   productID: string;
-  data: string[] | null | undefined;
+  data: ProductType;
 }) => {
-  const userRef = doc(db, 'stores', storeID, 'products', productID);
+  const userRef = doc(
+    db,
+    'stores',
+    String(storeID),
+    'products',
+    String(productID)
+  );
   try {
     await updateDoc(userRef, {
-      images: data,
+      category: data.category,
+      name: data.name,
+      description: data.description,
+      slug: data.slug,
+      tags: data.tags,
     });
     return { status: 'success' };
   } catch (error) {
     return { status: 'error', error };
   }
 };
+export const dbUpdateStoreVariants = async ({
+  storeID,
+  productID,
+  data,
+}: {
+  storeID: string;
+  productID: string;
+  data: VariantType[];
+}) => {
+  const userRef = doc(
+    db,
+    'stores',
+    String(storeID),
+    'products',
+    String(productID)
+  );
+  try {
+    await updateDoc(userRef, {
+      variants: data,
+    });
+    return { status: 'success' };
+  } catch (error) {
+    return { status: 'error', error };
+  }
+};
+

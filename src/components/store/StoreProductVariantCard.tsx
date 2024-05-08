@@ -1,5 +1,5 @@
 import { kStoreProductCategories } from '@/constants';
-import { ProductType } from '@/typings';
+import { ProductType, VariantType } from '@/typings';
 import Image from 'next/image';
 import React, { useState } from 'react';
 import CustomPesoIcon from '../CustomComponents/CustomPesoIcon';
@@ -14,14 +14,24 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from '@/components/ui/carousel';
+import { useAppStore } from '@/lib/store';
+import LoadingComponent from '../admin/LoadingComponent.';
+import { Badge } from '../ui/badge';
 
-function StoreProductCard({ data }: { data: ProductType }) {
-  const firstImage = data.images ? data.images[0] : null;
-  const secondImage = data.images ? data.images[1] : null;
-
+function StoreProductVariantCard({ variant }: { variant: VariantType }) {
+  const [currentStoreProducts] = useAppStore((state) => [
+    state.currentStoreProducts,
+  ]);
+  if (!currentStoreProducts) return <LoadingComponent />;
+  const productData = currentStoreProducts?.find(
+    (item: ProductType) => item.id === variant.productID
+  );
+  const firstImage = variant.images ? variant.images[0] : null;
+  const secondImage = variant.images ? variant.images[1] : null;
   const categoryIcon = kStoreProductCategories.find(
-    (item) => item.value === data.category
+    (item) => item.value === productData.category
   )?.icon;
+
   const [isOpenDrawer, setIsOpenDrawer] = useState(false);
   return (
     <div>
@@ -29,11 +39,14 @@ function StoreProductCard({ data }: { data: ProductType }) {
         className="group w-full cursor-pointer"
         onClick={() => setIsOpenDrawer(true)}
       >
-        <div className="w-full aspect-square flex flex-col relative items-center justify-center bg-neutral-900 rounded-md overflow-hidden">
+        <div className="w-full aspect-square flex flex-col relative items-center justify-center bg-neutral-900 rounded-md overflow-hidden p-3">
+          <div className="absolute bottom-0 right-2 z-10">
+            <Badge>{variant.name}</Badge>
+          </div>
           {firstImage ? (
             <Image
               src={firstImage}
-              alt={data.name}
+              alt={variant.name}
               width={200}
               height={200}
               className="object-cover h-full w-full group-hover:scale-105 transition-all"
@@ -43,19 +56,19 @@ function StoreProductCard({ data }: { data: ProductType }) {
           )}
         </div>
         <div className="mt-2">
-          <div>{data.name}</div>
+          <div>{productData.name}</div>
           <p className="text-sm text-neutral-500 line-clamp-1">
-            {data.description}
+            {variant.description}
           </p>
           <div className="flex space-x-2 items-end justify-start">
             <div className="text-2xl font-semibold">
               <CustomPesoIcon />
-              {data.price}
+              {variant.price}
             </div>
-            {data.compareAtPrice && (
+            {variant.compareAtPrice && (
               <div className="text-destructive line-through">
                 <CustomPesoIcon />
-                {data.compareAtPrice}
+                {variant.compareAtPrice}
               </div>
             )}
           </div>
@@ -65,19 +78,21 @@ function StoreProductCard({ data }: { data: ProductType }) {
         <DrawerContent>
           <div className="md:max-w-lg md:mx-auto p-5 pb-10">
             <div className="my-2 text-center">
-              <div className="font-semibold">{data.name}</div>
-              <div className="text-neutral-500 text-sm">{data.description}</div>
+              <div className="font-semibold">{productData.name}</div>
+              <div className="text-neutral-500 text-sm">
+                {variant.description}
+              </div>
             </div>
             {secondImage ? (
               <Carousel className="mx-auto max-w-[300px]">
                 <CarouselContent>
-                  {data.images?.map((item, idx) => {
+                  {variant.images?.map((item, idx) => {
                     return (
                       <CarouselItem key={`prod-image-${idx}`}>
                         <div className=" aspect-square flex flex-col relative items-center justify-center bg-neutral-900 rounded-md overflow-hidden">
                           <Image
                             src={item}
-                            alt={`${data.name} ${idx}`}
+                            alt={`${variant.name} ${idx}`}
                             width={200}
                             height={200}
                             className="object-cover h-full w-full group-hover:scale-105 transition-all"
@@ -95,7 +110,7 @@ function StoreProductCard({ data }: { data: ProductType }) {
                 {firstImage ? (
                   <Image
                     src={firstImage}
-                    alt={data.name}
+                    alt={variant.name}
                     width={200}
                     height={200}
                     className="object-cover h-full w-full group-hover:scale-105 transition-all"
@@ -109,12 +124,12 @@ function StoreProductCard({ data }: { data: ProductType }) {
             <div className="flex space-x-2 items-end justify-center py-5">
               <div className="text-2xl font-semibold">
                 <CustomPesoIcon />
-                {data.price}
+                {variant.price}
               </div>
-              {data.compareAtPrice && (
+              {variant.compareAtPrice && (
                 <div className="text-destructive line-through">
                   <CustomPesoIcon />
-                  {data.compareAtPrice}
+                  {variant.compareAtPrice}
                 </div>
               )}
             </div>
@@ -157,4 +172,4 @@ export function ProductQuantitySelector() {
     </div>
   );
 }
-export default StoreProductCard;
+export default StoreProductVariantCard;

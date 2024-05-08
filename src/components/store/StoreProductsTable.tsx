@@ -29,11 +29,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import CustomMultiImagePicker from '../CustomComponents/CustomMultiImagePicker';
-import { Button } from '../ui/button';
-import { dbUpdateProductImages } from '@/helpers/firebaseHelpers';
-import { toast } from 'sonner';
-import moment from 'moment';
+import { Badge } from '../ui/badge';
+import CreateProductVariantForm from './forms/CreateProductVariantFrom';
+import UpdateStoreProductForm from './forms/UpdateStoreProductForm';
 
 function StoreProductsTable() {
   const [currentStoreProducts, setCurrentStoreProducts, currentStoreData] =
@@ -42,7 +40,8 @@ function StoreProductsTable() {
       state.setCurrentStoreProducts,
       state.currentStoreData,
     ]);
-  const [isOpenImageModal, setIsOpenImageModal] = useState(false);
+  const [isOpenVariantsModal, setIsOpenVariantsModal] = useState(false);
+  const [isEditingProductModal, setIsEditingProductModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<null | ProductType>(
     null
@@ -52,29 +51,6 @@ function StoreProductsTable() {
   >(null);
   if (!currentStoreProducts) return <LoadingComponent />;
 
-  const onSaveImages = async () => {
-    setIsLoading(true);
-    if (!selectedProduct) return;
-    const res = await dbUpdateProductImages({
-      storeID: currentStoreData.id,
-      productID: selectedProduct.id,
-      data: selectedImages,
-    });
-    if (res.status === 'error') {
-      console.log(res.error);
-      return;
-    }
-    const updateStoreProduct = { ...selectedProduct, images: selectedImages };
-    const updatedProducts = currentStoreProducts.map((item) =>
-      item.id === selectedProduct.id ? updateStoreProduct : item
-    );
-    setCurrentStoreProducts(updatedProducts);
-    setIsLoading(false);
-    toast.success('Product Images updated successfully', {
-      description: moment(new Date()).format('LLL'),
-    });
-    setIsOpenImageModal(false);
-  };
   return (
     <Card className="p-3">
       <Table>
@@ -83,19 +59,34 @@ function StoreProductsTable() {
           <TableRow>
             <TableHead className="w-[100px]">No.</TableHead>
             <TableHead>Name</TableHead>
-            <TableHead>Price</TableHead>
-            <TableHead>Compare At Price</TableHead>
+            <TableHead>Category</TableHead>
+            <TableHead>Tags</TableHead>
+            <TableHead>Variants</TableHead>
+            <TableHead>Created At</TableHead>
             <TableHead className="text-right"></TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {currentStoreProducts?.map((item: ProductType, idx: number) => {
+            const tags = item.tags?.split(',');
             return (
               <TableRow key={`product-item-${idx}`}>
                 <TableCell className="font-medium">{idx + 1}</TableCell>
-                <TableCell>{item.name}</TableCell>
-                <TableCell>{item.price}</TableCell>
-                <TableCell>{item.compareAtPrice}</TableCell>
+                <TableCell className="text-nowrap">{item.name}</TableCell>
+                <TableCell className="capitalize">{item.category}</TableCell>
+                <TableCell className="inline-flex flex-wrap gap-1">
+                  {tags?.map((tag, tagIdx) => (
+                    <Badge key={`${idx}-tag-${tagIdx}`} className="text-nowrap">
+                      {tag}
+                    </Badge>
+                  ))}
+                </TableCell>
+                <TableCell className="capitalize">
+                  {item.variants?.length || 'none'}
+                </TableCell>
+                <TableCell className="capitalize text-nowrap">
+                  {item.createdAt}
+                </TableCell>
                 <TableCell className="text-right">
                   <DropdownMenu>
                     <DropdownMenuTrigger>
@@ -106,12 +97,19 @@ function StoreProductsTable() {
                       <DropdownMenuSeparator />
                       <DropdownMenuItem
                         onClick={() => {
-                          setIsOpenImageModal(true);
+                          setIsEditingProductModal(true);
                           setSelectedProduct(item);
-                          setSelectedImages(item.images);
                         }}
                       >
-                        Images
+                        Edit Product
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => {
+                          setIsOpenVariantsModal(true);
+                          setSelectedProduct(item);
+                        }}
+                      >
+                        Variants
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
@@ -121,28 +119,40 @@ function StoreProductsTable() {
           })}
         </TableBody>
       </Table>
-      <Dialog open={isOpenImageModal} onOpenChange={setIsOpenImageModal}>
+      <Dialog
+        open={isEditingProductModal}
+        onOpenChange={setIsEditingProductModal}
+      >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Select images for this product</DialogTitle>
+            <DialogTitle>Edit Product</DialogTitle>
+            <DialogDescription>Fill the required fields.</DialogDescription>
+          </DialogHeader>
+          {selectedProduct && (
+            <UpdateStoreProductForm
+              product={selectedProduct}
+              setClose={() => {
+                setIsEditingProductModal(false);
+              }}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
+      <Dialog open={isOpenVariantsModal} onOpenChange={setIsOpenVariantsModal}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Product Variants</DialogTitle>
             <DialogDescription>
-              These images are uploaded by the admin.
+              Variants are the different types of a selected product.
             </DialogDescription>
           </DialogHeader>
-          <CustomMultiImagePicker
-            value={selectedImages}
-            onChange={(val) => setSelectedImages(val)}
-          />
-          {isLoading ? (
-            <div className="w-full h-[50px] flex flex-col items-center justify-center pt-5">
-              <span>
-                <LoaderCircleIcon className="animate-spin" />
-              </span>
-            </div>
-          ) : (
-            <div className="w-full grid grid-cols-2 gap-5 pt-5">
-              <Button onClick={onSaveImages}>Save Images</Button>
-            </div>
+          {selectedProduct && (
+            <CreateProductVariantForm
+              product={selectedProduct}
+              setClose={() => {
+                setIsOpenVariantsModal(false);
+              }}
+            />
           )}
         </DialogContent>
       </Dialog>

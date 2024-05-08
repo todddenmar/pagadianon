@@ -9,8 +9,8 @@ import { PanelBottomOpenIcon } from 'lucide-react';
 import { Button } from '../ui/button';
 import StoreInfo from './StoreInfo';
 import { useAppStore } from '@/lib/store';
-import { ProductType } from '@/typings';
-import StoreProductCard from './StoreProductCard';
+import { ProductType, VariantType } from '@/typings';
+import StoreProductVariantCard from './StoreProductVariantCard';
 
 function StoreSection() {
   const [tabValue, setTabValue] = useState('store');
@@ -25,7 +25,7 @@ function StoreSection() {
   };
   return (
     <div className="md:mt-5">
-      <div className="md:hidden p-3 sticky top-0 dark:bg-neutral-950 border-b w-full flex justify-between items-center">
+      <div className="md:hidden p-3 sticky top-0  dark:bg-neutral-950 border-b w-full flex justify-between items-center">
         <div className="capitalize font-semibold text-lg">{tabValue}</div>
         <Button
           onClick={() => setIsOpenMobileDrawer(true)}
@@ -36,7 +36,7 @@ function StoreSection() {
         </Button>
       </div>
       <ContainerLayout>
-        <div className=" md:border rounded-lg">
+        <div className=" md:border rounded-lg bg-neutral-50 dark:bg-neutral-950">
           <div className="md:flex min-h-[600px] ">
             <div className="w-[250px] p-3 hidden md:block">
               <StoreSidebar
@@ -59,14 +59,20 @@ function StoreSection() {
                   const products = currentStoreProducts?.filter(
                     (prod: ProductType) => prod.category === item.value
                   );
+                  let variants: VariantType[] = [];
+                  products?.forEach((prod) => {
+                    prod.variants?.forEach((variant: VariantType) => {
+                      variants.push(variant);
+                    });
+                  });
                   return (
                     <TabsContent key={`tab-content-${idx}`} value={item.value}>
                       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-5">
-                        {products.map((prod) => {
+                        {variants.map((variant) => {
                           return (
-                            <StoreProductCard
-                              key={`prod-card-${prod.id}`}
-                              data={prod}
+                            <StoreProductVariantCard
+                              key={`prod-card-${variant.id}`}
+                              variant={variant}
                             />
                           );
                         })}

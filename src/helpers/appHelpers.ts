@@ -28,3 +28,20 @@ export const checkSlugExistsOnOtherStore = ({
     return false;
   }
 };
+
+export const checkSlugExistsOnOtherList = ({
+  slug,
+  id,
+  list,
+}: {
+  slug: string;
+  id: string;
+  list: any[];
+}) => {
+  const res = list?.filter((item) => item.slug === slug && item.id != id);
+  if (res.length > 0) {
+    return res.length;
+  } else {
+    return false;
+  }
+};

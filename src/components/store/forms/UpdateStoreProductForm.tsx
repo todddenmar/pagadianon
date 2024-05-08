@@ -25,17 +25,23 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import {
-  dbAddNewStore,
   dbAddStoreProduct,
-  dbUpdateSettings,
+  dbUpdateStoreProduct,
 } from '@/helpers/firebaseHelpers';
-import { kSaasTypes, kStoreProductCategories } from '@/constants';
+import { kStoreProductCategories } from '@/constants';
 import { LoaderCircleIcon } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { ProductType } from '@/typings';
 import { toast } from 'sonner';
+import { checkSlugExistsOnOtherList } from '@/helpers/appHelpers';
 
-function CreateStoreProductForm({ setClose }: { setClose: () => void }) {
+function UpdateStoreProductForm({
+  product,
+  setClose,
+}: {
+  product: ProductType;
+  setClose: () => void;
+}) {
   const [isLoading, setIsLoading] = useState(false);
   const [currentStoreData, currentStoreProducts, setCurrentStoreProducts] =
     useAppStore((state) => [
@@ -43,17 +49,6 @@ function CreateStoreProductForm({ setClose }: { setClose: () => void }) {
       state.currentStoreProducts,
       state.setCurrentStoreProducts,
     ]);
-
-  const checkProductSlugExists = (slug: string) => {
-    const res = currentStoreProducts?.find(
-      (item: ProductType) => item.slug === slug
-    );
-    if (res) {
-      return res.length;
-    } else {
-      return false;
-    }
-  };
 
   const formSchema = z.object({
     category: z.string({
@@ -72,20 +67,28 @@ function CreateStoreProductForm({ setClose }: { setClose: () => void }) {
         message: 'Slug must be at least 2 characters.',
       })
       .max(50)
-      .refine((val) => checkProductSlugExists(val) === false, {
-        message: 'Slug already exists',
-      }),
+      .refine(
+        (val) =>
+          checkSlugExistsOnOtherList({
+            slug: val,
+            id: product.id,
+            list: currentStoreProducts,
+          }) === false,
+        {
+          message: 'Slug already exists',
+        }
+      ),
     tags: z.string().optional(),
   });
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      category: '',
-      name: '',
-      description: '',
-      slug: '',
-      tags: '',
+      category: product.category,
+      name: product.name,
+      description: product.description,
+      slug: product.slug,
+      tags: product.tags,
     },
   });
 
@@ -95,17 +98,17 @@ function CreateStoreProductForm({ setClose }: { setClose: () => void }) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     const dateTime = moment(new Date()).format('LLL');
-    const id = uuidv4();
     const newData = {
-      id,
+      ...product,
       ...values,
       createdAt: dateTime,
     };
-    const updatedProducts = currentStoreProducts
-      ? [...currentStoreProducts, newData]
-      : [newData];
-    const res = await dbAddStoreProduct({
+    const updatedProducts = currentStoreProducts.map((item) =>
+      item.id === product.id ? newData : item
+    );
+    const res = await dbUpdateStoreProduct({
       storeID: currentStoreData.id,
+      productID: product.id,
       data: newData,
     });
     if (res.status != 'success') {
@@ -113,7 +116,7 @@ function CreateStoreProductForm({ setClose }: { setClose: () => void }) {
       return;
     }
     setCurrentStoreProducts(updatedProducts);
-    toast.success('Added a new product successfully', {
+    toast.success('Updated product successfully', {
       description: moment(new Date()).format('LLL'),
     });
     setIsLoading(false);
@@ -122,7 +125,11 @@ function CreateStoreProductForm({ setClose }: { setClose: () => void }) {
   function onGenerateSlug(e: any) {
     e.preventDefault();
     const generatedSlug = _.kebabCase(form.getValues('name'));
-    const sameSlugTotal = checkProductSlugExists(generatedSlug);
+    const sameSlugTotal = checkSlugExistsOnOtherList({
+      slug: generatedSlug,
+      id: product.id,
+      list: currentStoreProducts,
+    });
     if (sameSlugTotal) {
       form.setValue('slug', `${generatedSlug}-${sameSlugTotal + 1}`);
       return;
@@ -244,7 +251,7 @@ function CreateStoreProductForm({ setClose }: { setClose: () => void }) {
             >
               Cancel
             </Button>
-            <Button type="submit">Submit</Button>
+            <Button type="submit">Update</Button>
           </div>
         )}
       </form>
@@ -252,4 +259,4 @@ function CreateStoreProductForm({ setClose }: { setClose: () => void }) {
   );
 }
 
-export default CreateStoreProductForm;
+export default UpdateStoreProductForm;
