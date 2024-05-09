@@ -5,7 +5,11 @@ function CollectionTagsSlider({ tags }: { tags: string[] }) {
   return (
     <div className="inline-flex flex-wrap gap-2 py-5">
       {tags?.map((tag: string, idx: number) => {
-        return <Badge key={`collection-badge-${idx}`}>{tag}</Badge>;
+        return (
+          <Badge key={`collection-badge-${idx}`} variant={'default'}>
+            {tag}
+          </Badge>
+        );
       })}
     </div>
   );

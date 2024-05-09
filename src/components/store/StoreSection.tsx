@@ -25,11 +25,14 @@ function StoreSection() {
   };
   return (
     <div className="md:mt-5">
-      <div className="md:hidden p-3 sticky top-0  dark:bg-neutral-950 border-b w-full flex justify-between items-center">
-        <div className="capitalize font-semibold text-lg">{tabValue}</div>
+      <div className="md:hidden p-1 sticky top-[60px] z-10 bg-neutral-900 dark:bg-neutral-50 border-b w-full flex justify-between items-center">
+        <div className="font-bold text-xl uppercase px-3 text-white dark:text-neutral-900">
+          {tabValue}
+        </div>
         <Button
+          variant={'secondary'}
           onClick={() => setIsOpenMobileDrawer(true)}
-          className="flex space-x-1 items-center"
+          className="flex space-x-1 items-center "
         >
           <PanelBottomOpenIcon className="h-[20px]" />
           <span>Discover</span>
