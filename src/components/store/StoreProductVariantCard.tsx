@@ -29,7 +29,6 @@ function StoreProductVariantCard({ variant }: { variant: VariantType }) {
   const [isOpenDrawer, setIsOpenDrawer] = useState(false);
   const [quantity, setQuantity] = useState<number>(1);
 
-  if (!currentStoreProducts) return <LoadingComponent />;
   const productData = currentStoreProducts?.find(
     (item: ProductType) => item.id === variant.productID
   );
@@ -38,6 +37,8 @@ function StoreProductVariantCard({ variant }: { variant: VariantType }) {
   const categoryIcon = kStoreProductCategories.find(
     (item) => item.value === productData.category
   )?.icon;
+  if (!currentStoreProducts) return <LoadingComponent />;
+
   useEffect(() => {
     setQuantity(1);
   }, [isOpenDrawer]);
