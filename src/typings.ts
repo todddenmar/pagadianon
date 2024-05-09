@@ -73,3 +73,14 @@ export type ProductType = {
   createdAt: any;
   updatedAt?: any;
 };
+
+export type CartItemType = {
+  variantID: string;
+  imageURL: string;
+  name: string;
+  variantName: string;
+  price: number;
+  totalAmount: number;
+  quantity: number;
+  createdAt: string;
+};

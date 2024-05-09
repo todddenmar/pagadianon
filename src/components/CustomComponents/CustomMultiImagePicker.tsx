@@ -16,31 +16,8 @@ function CustomMultiImagePicker({
   return (
     <div>
       {!images ? (
-        <div className="grid grid-cols-4 gap-2">
-          <div className="h-[150px] aspect-square flex flex-col items-center justify-center animate-pulse">
-            <ImageIcon />
-          </div>
-          <div className="h-[150px] aspect-square flex flex-col items-center justify-center animate-pulse">
-            <ImageIcon />
-          </div>
-          <div className="h-[150px] aspect-square flex flex-col items-center justify-center animate-pulse">
-            <ImageIcon />
-          </div>
-          <div className="h-[150px] aspect-square flex flex-col items-center justify-center animate-pulse">
-            <ImageIcon />
-          </div>
-          <div className="h-[150px] aspect-square flex flex-col items-center justify-center animate-pulse">
-            <ImageIcon />
-          </div>
-          <div className="h-[150px] aspect-square flex flex-col items-center justify-center animate-pulse">
-            <ImageIcon />
-          </div>
-          <div className="h-[150px] aspect-square flex flex-col items-center justify-center animate-pulse">
-            <ImageIcon />
-          </div>
-          <div className="h-[150px] aspect-square flex flex-col items-center justify-center animate-pulse">
-            <ImageIcon />
-          </div>
+        <div className="h-[100px] w-full flex flex-col items-center justify-center">
+          No Images
         </div>
       ) : (
         <div className="grid grid-cols-4 gap-2">

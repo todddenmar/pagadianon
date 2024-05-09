@@ -1,5 +1,6 @@
 import { urlFor } from '@/lib/client';
-import { ProductType, StoreType } from '@/typings';
+import { CartItemType, ProductType, StoreType } from '@/typings';
+import _ from 'lodash';
 
 export const checkSlugExists = ({
   slug,
@@ -79,4 +80,46 @@ export const getAllUniqueTagsFromItems = (
     });
   });
   return tags;
+};
+
+export const compareEqualStrings = (a: string, b: string) => {
+  const firstString = _.kebabCase(a.trim());
+  const secondString = _.kebabCase(b.trim());
+  return firstString === secondString;
+};
+export const compareIncludesStrings = (a: string, b: string) => {
+  const firstString = _.kebabCase(a.trim());
+  const secondString = _.kebabCase(b.trim());
+  return firstString.includes(secondString);
+};
+
+export const pluralizeNumber = ({
+  plural,
+  singular,
+  number,
+}: {
+  plural: string;
+  singular: string;
+  number: number;
+}) => {
+  if (number === 0) {
+    return number;
+  }
+  if (number === 1) {
+    return `${number} ${singular}`;
+  }
+  if (number > 1) {
+    return `${number} ${plural}`;
+  }
+  if (number < 0) {
+    return number;
+  }
+};
+
+export const getCartTotal = ({ cart }: { cart: CartItemType[] }) => {
+  let total = 0;
+  cart.forEach((item) => {
+    total = total + item.totalAmount;
+  });
+  return total;
 };

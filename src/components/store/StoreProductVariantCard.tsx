@@ -1,7 +1,7 @@
 import { kStoreProductCategories } from '@/constants';
 import { ProductType, VariantType } from '@/typings';
 import Image from 'next/image';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import CustomPesoIcon from '../CustomComponents/CustomPesoIcon';
 import { Drawer, DrawerContent } from '@/components/ui/drawer';
 import { Button } from '../ui/button';
@@ -17,12 +17,17 @@ import {
 import { useAppStore } from '@/lib/store';
 import LoadingComponent from '../admin/LoadingComponent.';
 import { Badge } from '../ui/badge';
+import moment from 'moment';
 
 function StoreProductVariantCard({ variant }: { variant: VariantType }) {
-  const [currentStoreProducts] = useAppStore((state) => [
-    state.currentStoreProducts,
-  ]);
+  const [currentStoreProducts, currentUserCart, setCurrentUserCart] =
+    useAppStore((state) => [
+      state.currentStoreProducts,
+      state.currentUserCart,
+      state.setCurrentUserCart,
+    ]);
   const [isOpenDrawer, setIsOpenDrawer] = useState(false);
+  const [quantity, setQuantity] = useState<number>(1);
 
   if (!currentStoreProducts) return <LoadingComponent />;
   const productData = currentStoreProducts?.find(
@@ -33,6 +38,42 @@ function StoreProductVariantCard({ variant }: { variant: VariantType }) {
   const categoryIcon = kStoreProductCategories.find(
     (item) => item.value === productData.category
   )?.icon;
+  useEffect(() => {
+    setQuantity(1);
+  }, [isOpenDrawer]);
+
+  const onAddToCart = () => {
+    const dateToday = new Date();
+    const newData = {
+      variantID: variant.id,
+      imageURL: firstImage,
+      name: productData.name,
+      variantName: variant.name,
+      price: parseInt(variant.price),
+      totalAmount: parseInt(variant.price) * quantity,
+      quantity: quantity,
+      createdAt: moment(dateToday).format('LLL'),
+    };
+
+    if (currentUserCart.find((item) => item.variantID === variant.id)) {
+      const increaseCartItem = currentUserCart.map((cartItem) =>
+        cartItem.variantID === newData.variantID
+          ? {
+              ...cartItem,
+              quantity: parseInt(cartItem.quantity) + quantity,
+              totalAmount:
+                cartItem.totalAmount + parseInt(variant.price) * quantity,
+            }
+          : cartItem
+      );
+      setCurrentUserCart(increaseCartItem);
+      setIsOpenDrawer(false);
+      return;
+    }
+    const updatedCart = [...currentUserCart, newData];
+    setCurrentUserCart(updatedCart);
+    setIsOpenDrawer(false);
+  };
 
   return (
     <div>
@@ -40,8 +81,8 @@ function StoreProductVariantCard({ variant }: { variant: VariantType }) {
         className="group w-full cursor-pointer"
         onClick={() => setIsOpenDrawer(true)}
       >
-        <div className="w-full aspect-square flex flex-col relative items-center justify-center bg-neutral-900 rounded-md overflow-hidden p-3">
-          <div className="absolute bottom-0 right-2 z-10">
+        <div className="w-full aspect-square flex flex-col relative items-center justify-center bg-neutral-100 dark:bg-neutral-900 rounded-md overflow-hidden p-3">
+          <div className="absolute bottom-2 right-2 z-10">
             {variant.name.toLowerCase() != 'default' && (
               <Badge>{variant.name}</Badge>
             )}
@@ -52,7 +93,7 @@ function StoreProductVariantCard({ variant }: { variant: VariantType }) {
               alt={variant.name}
               width={200}
               height={200}
-              className="object-cover h-full w-full group-hover:scale-105 transition-all"
+              className="object-cover h-full w-full group-hover:scale-105 rounded-md transition-all"
             />
           ) : (
             categoryIcon
@@ -137,8 +178,11 @@ function StoreProductVariantCard({ variant }: { variant: VariantType }) {
               )}
             </div>
             <div className="flex items-center gap-5">
-              <ProductQuantitySelector />
-              <Button>Add To Cart</Button>
+              <ProductQuantitySelector
+                value={quantity}
+                onChange={(val) => setQuantity(val)}
+              />
+              <Button onClick={onAddToCart}>Add To Cart</Button>
             </div>
           </div>
         </DrawerContent>
@@ -147,18 +191,24 @@ function StoreProductVariantCard({ variant }: { variant: VariantType }) {
   );
 }
 
-export function ProductQuantitySelector() {
-  const [quantity, setQuantity] = useState<number>(1);
+export function ProductQuantitySelector({
+  value,
+  onChange,
+}: {
+  value: number;
+  onChange: (val: number) => void;
+}) {
   return (
     <div className="grid grid-cols-3 gap-2">
       <Button
-        disabled={quantity === 1}
+        disabled={value === 1}
         variant={'ghost'}
         onClick={() => {
-          if (quantity === 1) {
+          if (value === 1) {
             return;
           }
-          setQuantity((prev) => prev - 1);
+          const newNumber = value - 1;
+          onChange(newNumber);
         }}
       >
         <MinusIcon />
@@ -166,10 +216,16 @@ export function ProductQuantitySelector() {
       <Input
         type="number"
         className="text-center"
-        value={quantity}
-        onChange={(val) => setQuantity(parseInt(val.target.value))}
+        value={value}
+        onChange={(val) => onChange(parseInt(val.target.value))}
       />
-      <Button variant={'ghost'} onClick={() => setQuantity((prev) => prev + 1)}>
+      <Button
+        variant={'ghost'}
+        onClick={() => {
+          const newNumber = value + 1;
+          onChange(newNumber);
+        }}
+      >
         <PlusIcon />
       </Button>
     </div>

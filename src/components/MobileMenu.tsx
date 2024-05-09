@@ -12,9 +12,11 @@ import { useAppStore } from '@/lib/store';
 import { CollectionType, StoreType } from '@/typings';
 import { kSaasCategories } from '@/constants';
 import { useAuth } from '@clerk/nextjs';
+import { useState } from 'react';
 
 function MobileMenu() {
   const { userId, orgId, has } = useAuth();
+  const [isOpenMobileMenu, setIsOpenMobileMenu] = useState(false);
   const [currentUserData, currentSettings] = useAppStore((state) => [
     state.currentUserData,
     state.currentSettings,
@@ -30,7 +32,7 @@ function MobileMenu() {
     description: string;
   }[] = kSaasCategories;
   return (
-    <Sheet>
+    <Sheet open={isOpenMobileMenu} onOpenChange={setIsOpenMobileMenu}>
       <SheetTrigger className="border p-1.5 rounded-md">
         <MenuIcon />
       </SheetTrigger>
@@ -38,7 +40,11 @@ function MobileMenu() {
         <div className="w-full">
           <ul className="grid">
             <li>
-              <Link href={'/'} className="block w-full ">
+              <Link
+                href={'/'}
+                className="block w-full "
+                onClick={() => setIsOpenMobileMenu(false)}
+              >
                 Home
               </Link>
             </li>
@@ -49,18 +55,18 @@ function MobileMenu() {
                 Our Services
               </AccordionTrigger>
               <AccordionContent>
-                <ul className="grid gap-2 grid-cols-1">
+                <ul className="grid gap-2 grid-cols-1 px-2">
                   {currentSettings?.collections?.map(
                     (item: CollectionType, idx: number) => {
                       return (
-                        <li key={`store-type-${idx}`}>
-                          <Link
-                            href={`/collections/${item.slug}`}
-                            className="py-2"
-                          >
-                            {item.name}
-                          </Link>
-                        </li>
+                        <Link
+                          key={`store-type-${idx}`}
+                          href={`/collections/${item.slug}`}
+                          className="py-2"
+                          onClick={() => setIsOpenMobileMenu(false)}
+                        >
+                          {item.name}
+                        </Link>
                       );
                     }
                   )}
@@ -75,9 +81,14 @@ function MobileMenu() {
                 Software Services
               </AccordionTrigger>
               <AccordionContent>
-                <ul className="grid gap-2 grid-cols-1">
+                <ul className="grid gap-2 grid-cols-1 px-2">
                   {components.map((component) => (
-                    <Link href={component.path} key={component.title}>
+                    <Link
+                      href={component.path}
+                      key={component.title}
+                      className="py-2"
+                      onClick={() => setIsOpenMobileMenu(false)}
+                    >
                       {component.title}
                     </Link>
                   ))}
@@ -93,7 +104,7 @@ function MobileMenu() {
                   My Apps
                 </AccordionTrigger>
                 <AccordionContent>
-                  <ul className="grid gap-2 grid-cols-1">
+                  <ul className="grid gap-2 grid-cols-1 px-2">
                     {currentUserData?.stores.map(
                       (storeID: string, idx: number) => {
                         const store = currentSettings?.stores.find(
@@ -103,6 +114,8 @@ function MobileMenu() {
                           <Link
                             href={`/store/${store?.slug}`}
                             key={`stores-${idx}`}
+                            className="py-2"
+                            onClick={() => setIsOpenMobileMenu(false)}
                           >
                             {store?.name}
                           </Link>
@@ -116,7 +129,11 @@ function MobileMenu() {
           )}
 
           {userId && orgId && hasAdminPermission && (
-            <Link href="/admin" className="my-4 block w-full">
+            <Link
+              href="/admin"
+              className="my-4 block w-full"
+              onClick={() => setIsOpenMobileMenu(false)}
+            >
               Dashboard
             </Link>
           )}

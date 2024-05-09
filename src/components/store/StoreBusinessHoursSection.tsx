@@ -15,7 +15,7 @@ function StoreBusinessHoursSection() {
     <div>
       <h4 className="font-semibold text-lg md:text-2xl">Business Hours</h4>
       {schedules ? (
-        <div className="grid gap-5 mt-5">
+        <div className="grid gap-2 mt-3 font-semibold">
           {kDaysArrayData?.map((item, idx) => {
             if (schedules[item]) {
               const { opensAt, closesAt } = schedules[item];
@@ -23,9 +23,10 @@ function StoreBusinessHoursSection() {
                 <div
                   key={`sched-item-${idx}`}
                   className={cn(
-                    'grid sm:flex gap-3 justify-between border hover:dark:bg-neutral-900 rounded-md hover:bg-neutral-200 p-3 dark:bg-neutral-950 transition-all',
+                    'grid sm:flex gap-3 justify-between border bg-neutral-200 hover:dark:bg-neutral-900 rounded-md hover:bg-neutral-200 p-3 dark:bg-neutral-950 transition-all',
                     {
-                      'text-yellow-500 border-yellow-500': idx === dayNumber,
+                      'text-white bg-neutral-900 dark:bg-neutral-200 dark:text-neutral-900 hover:bg-neutral-700 hover:dark:bg-neutral-100':
+                        idx === dayNumber,
                     }
                   )}
                 >
@@ -46,7 +47,7 @@ function StoreBusinessHoursSection() {
                 <div
                   key={`sched-item-${idx}`}
                   className={cn(
-                    'grid sm:flex gap-3 justify-between border rounded-md p-3 text-neutral-500 hover:dark:bg-neutral-900 hover:bg-neutral-200 dark:bg-neutral-950',
+                    'grid sm:flex gap-3 justify-between border rounded-md p-3 bg-neutral-200 dark:text-neutral-500 hover:dark:bg-neutral-900 hover:bg-neutral-200 dark:bg-neutral-950',
                     {
                       'text-yellow-500 border-yellow-500': idx === dayNumber,
                     }

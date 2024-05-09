@@ -24,22 +24,22 @@ function StoreSection() {
     setIsOpenMobileDrawer(false);
   };
   return (
-    <div className="md:mt-5">
-      <div className="md:hidden p-1 sticky top-[60px] z-10 bg-neutral-900 dark:bg-neutral-50 border-b w-full flex justify-between items-center">
-        <div className="font-bold text-xl uppercase px-3 text-white dark:text-neutral-900">
+    <div className="md:mt-5 ">
+      <div className="md:hidden px-5 py-2 sticky top-[60px] z-10 bg-neutral-900 dark:bg-neutral-900 border-b w-full flex justify-between items-center">
+        <div className="font-bold text-xl uppercase text-white ">
           {tabValue}
         </div>
         <Button
-          variant={'secondary'}
+          variant={'default'}
           onClick={() => setIsOpenMobileDrawer(true)}
-          className="flex space-x-1 items-center "
+          className="flex space-x-1 items-center bg-white text-neutral-900"
         >
           <PanelBottomOpenIcon className="h-[20px]" />
           <span>Discover</span>
         </Button>
       </div>
       <ContainerLayout>
-        <div className=" md:border rounded-lg bg-neutral-50 dark:bg-neutral-950">
+        <div className=" md:border rounded-lg bg-neutral-50 dark:bg-neutral-950 shadow-lg">
           <div className="md:flex min-h-[600px] ">
             <div className="w-[250px] p-3 hidden md:block">
               <StoreSidebar
@@ -94,6 +94,7 @@ function StoreSection() {
             value={tabValue}
             onChange={(val) => onMenuTabChange(val)}
           />
+          <div className="h-[100px]"></div>
         </DrawerContent>
       </Drawer>
     </div>

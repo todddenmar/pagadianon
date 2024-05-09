@@ -23,6 +23,9 @@ interface AppState {
   currentUserStores: any[];
   setCurrentUserStores: (currentUserStores: any[]) => void;
 
+  currentUserCart: any[];
+  setCurrentUserCart: (currentUserCart: any[]) => void;
+
   currentStoreProducts: any[];
   setCurrentStoreProducts: (currentStoreProducts: any[]) => void;
 
@@ -63,6 +66,9 @@ export const useAppStore = create<AppState>((set) => ({
   currentUserStores: [],
   setCurrentUserStores: (data: any[]) =>
     set(() => ({ currentUserStores: data })),
+
+  currentUserCart: [],
+  setCurrentUserCart: (data: any[]) => set(() => ({ currentUserCart: data })),
 
   currentStoreProducts: [],
   setCurrentStoreProducts: (data: any[]) =>

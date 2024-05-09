@@ -41,7 +41,7 @@ function StoreBanner({
       <ContainerLayout>
         <div className="h-auto md:h-[300px] py-5 flex flex-col justify-center text-center md:text-start">
           <div className="flex flex-col items-center md:flex-row gap-5">
-            <div className="flex flex-col items-center justify-center relative h-[100px] border rounded-md overflow-hidden aspect-square p-2">
+            <div className="flex flex-col items-center justify-center relative h-[100px] border rounded-md overflow-hidden aspect-square">
               {logoURL ? (
                 <Image
                   src={logoURL}
@@ -55,8 +55,8 @@ function StoreBanner({
               )}
             </div>
             <div>
-              <h1 className="text-4xl md:text-6xl font-bold">{title}</h1>
-              <p className="mt-2 md:mt-5">{description}</p>
+              <h1 className="text-4xl md:text-5xl font-bold">{title}</h1>
+              <p className="mt-2 md:mt-3 md:text-lg">{description}</p>
             </div>
           </div>
           <div className="py-2 md:py-5">
@@ -103,7 +103,7 @@ function StoreBanner({
                     height={50}
                     className="object-contain"
                   />
-                  {facebookUsername}
+                  <span className="hidden sm:block">{facebookUsername}</span>
                 </a>
               )}
               {instagramUsername && (
@@ -119,7 +119,7 @@ function StoreBanner({
                     height={50}
                     className="object-contain"
                   />
-                  {instagramUsername}
+                  <span className="hidden sm:block">{instagramUsername}</span>
                 </a>
               )}
             </div>
