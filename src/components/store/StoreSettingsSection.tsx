@@ -26,6 +26,7 @@ import {
 import { PlusIcon } from 'lucide-react';
 import { Button } from '../ui/button';
 import CreateStoreProductForm from './forms/CreateStoreProductForm';
+import { Separator } from '../ui/separator';
 
 function StoreSettingsSection() {
   const [currentStoreData] = useAppStore((state) => [state.currentStoreData]);
@@ -57,7 +58,7 @@ function StoreSettingsSection() {
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
-      <Card className="p-3 mt-3">
+      <Card className="p-5 mt-3">
         <div className="flex justify-between space-x-5">
           <div>
             <h4 className="text-2xl font-semibold">Settings</h4>
@@ -72,7 +73,8 @@ function StoreSettingsSection() {
             <PlusIcon className="h-[16px]" /> Add Product
           </Button>
         </div>
-        <div className="mt-5">
+        <Separator className="my-5" />
+        <div>
           <StoreSettingsTabs />
         </div>
       </Card>

@@ -68,7 +68,7 @@ function StoreBusinessHoursListCard() {
     <div>
       <Card>
         <CardHeader>
-          <div className="flex gap-5 justify-between">
+          <div className="grid grid-cols-1 sm:flex gap-5 justify-between">
             <div className="grid gap-3">
               <CardTitle>Business Hours</CardTitle>
               <CardDescription>

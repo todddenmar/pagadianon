@@ -28,37 +28,21 @@ function CartContent({ setClose }: { setClose: () => void }) {
   return (
     <div className="">
       <div className="flex flex-col h-[600px] md:h-screen justify-between flex-1 p-5">
-        <div>
+        <div className="flex items-center justify-between md:mt-5">
           <div className="text-2xl font-bold">Cart</div>
-          <div>
-            <div className="flex justify-between items-center">
-              <div>
-                {currentUserCart.length === 0
-                  ? 'Your cart is empty'
-                  : pluralizeNumber({
-                      plural: 'Items',
-                      singular: 'Item',
-                      number: currentUserCart.length,
-                    })}
-              </div>
-              <div>
-                {currentUserCart.length > 0 && (
-                  <Button
-                    onClick={() => setIsClearingCart(true)}
-                    variant={'destructive'}
-                    className="flex items-center space-x-2"
-                  >
-                    <TrashIcon className="h-5" />
-                    <span>Clear Cart</span>
-                  </Button>
-                )}
-              </div>
-            </div>
+          <div className="text-neutral-300 text-sm">
+            {currentUserCart.length === 0
+              ? 'Your cart is empty'
+              : pluralizeNumber({
+                  plural: 'Items',
+                  singular: 'Item',
+                  number: currentUserCart.length,
+                })}
           </div>
         </div>
         {currentUserCart.length > 0 && (
           <div className="mt-5 w-full flex-1">
-            <ScrollArea className="h-full w-full rounded-md border p-2">
+            <ScrollArea className="h-full w-full p-2">
               <CartList />
             </ScrollArea>
           </div>
@@ -75,8 +59,13 @@ function CartContent({ setClose }: { setClose: () => void }) {
 
         {currentUserCart.length > 0 && (
           <div className="mt-5 grid grid-cols-2 gap-2">
-            <Button variant={'destructive'} onClick={setClose}>
-              Cancel
+            <Button
+              onClick={() => setIsClearingCart(true)}
+              variant={'destructive'}
+              className="flex items-center space-x-2"
+            >
+              <TrashIcon className="h-5" />
+              <span>Clear Cart</span>
             </Button>
             <Button>Checkout</Button>
           </div>

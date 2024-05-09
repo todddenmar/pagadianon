@@ -9,7 +9,7 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { useAppStore } from '@/lib/store';
-import { CollectionType, StoreType } from '@/typings';
+import { CollectionType } from '@/typings';
 import { kSaasCategories } from '@/constants';
 import { useAuth } from '@clerk/nextjs';
 import { useState } from 'react';
@@ -17,10 +17,7 @@ import { useState } from 'react';
 function MobileMenu() {
   const { userId, orgId, has } = useAuth();
   const [isOpenMobileMenu, setIsOpenMobileMenu] = useState(false);
-  const [currentUserData, currentSettings] = useAppStore((state) => [
-    state.currentUserData,
-    state.currentSettings,
-  ]);
+  const [currentSettings] = useAppStore((state) => [state.currentSettings]);
   let hasAdminPermission = false;
   if (userId && orgId) {
     hasAdminPermission = has({ permission: 'org:admin:access' });
@@ -96,37 +93,6 @@ function MobileMenu() {
               </AccordionContent>
             </AccordionItem>
           </Accordion>
-
-          {currentUserData?.stores.length > 0 && (
-            <Accordion type="single" collapsible>
-              <AccordionItem value="item-1">
-                <AccordionTrigger className="no-underline">
-                  My Apps
-                </AccordionTrigger>
-                <AccordionContent>
-                  <ul className="grid gap-2 grid-cols-1 px-2">
-                    {currentUserData?.stores.map(
-                      (storeID: string, idx: number) => {
-                        const store = currentSettings?.stores.find(
-                          (item: StoreType) => item.id === storeID
-                        );
-                        return (
-                          <Link
-                            href={`/store/${store?.slug}`}
-                            key={`stores-${idx}`}
-                            className="py-2"
-                            onClick={() => setIsOpenMobileMenu(false)}
-                          >
-                            {store?.name}
-                          </Link>
-                        );
-                      }
-                    )}
-                  </ul>
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
-          )}
 
           {userId && orgId && hasAdminPermission && (
             <Link

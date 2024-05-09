@@ -1,5 +1,5 @@
 import { useAppStore } from '@/lib/store';
-import { ImageIcon, MinusIcon, PlusIcon, XIcon } from 'lucide-react';
+import { ImageIcon, MinusIcon, PlusIcon, TrashIcon, XIcon } from 'lucide-react';
 import Image from 'next/image';
 import React from 'react';
 import { Input } from '../ui/input';
@@ -36,6 +36,13 @@ function CartList() {
     );
     setCurrentUserCart(updatedCart);
   };
+
+  const onRemoveItem = (variantID: string) => {
+    const updatedCart = currentUserCart.filter(
+      (item) => item.variantID != variantID
+    );
+    setCurrentUserCart(updatedCart);
+  };
   return (
     <div className=" grid grid-cols-1 gap-2">
       {currentUserCart.map((cartItem, idx) => {
@@ -65,7 +72,9 @@ function CartList() {
                   <button
                     className=" dark:bg-neutral-950 rounded-md"
                     onClick={() =>
-                      qty === 1 ? null : onDecreaseQuantity(cartItem)
+                      qty === 1
+                        ? onRemoveItem(cartItem.variantID)
+                        : onDecreaseQuantity(cartItem)
                     }
                   >
                     <MinusIcon className="h-5" />
@@ -78,12 +87,18 @@ function CartList() {
                     <PlusIcon className="h-5" />
                   </button>
                 </div>
-                <div className="flex items-center gap-1 dark:text-neutral-500">
+                <div className="flex items-center dark:text-neutral-500">
                   <XIcon className="h-3" />
                   <div className="flex items-center ">
                     <CustomPesoIcon />
                     {cartItem.price}
                   </div>
+                  <button
+                    onClick={() => onRemoveItem(cartItem.variantID)}
+                    className="p-1"
+                  >
+                    <TrashIcon className="h-4 text-destructive" />
+                  </button>
                 </div>
               </div>
             </div>

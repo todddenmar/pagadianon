@@ -18,6 +18,7 @@ import { kSaasCategories, kStoreTypes } from '@/constants';
 import { useAppStore } from '@/lib/store';
 import { CollectionType, StoreType } from '@/typings';
 
+
 const components: {
   slug: string;
   title: string;
@@ -88,27 +89,7 @@ export function CustomNavMenu() {
             </NavigationMenuLink>
           </Link>
         </NavigationMenuItem> */}
-        {currentUserData?.stores.length > 0 && (
-          <NavigationMenuItem>
-            <NavigationMenuTrigger>My Apps</NavigationMenuTrigger>
-            <NavigationMenuContent>
-              <ul className="grid w-fit gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
-                {currentUserData?.stores.map((storeID: string, idx: number) => {
-                  const store = currentSettings?.stores.find(
-                    (item: StoreType) => item.id === storeID
-                  );
-                  return (
-                    <Link href={`/store/${store?.slug}`} key={`stores-${idx}`}>
-                      <ListItem title={store?.name}>
-                        {store?.description}
-                      </ListItem>
-                    </Link>
-                  );
-                })}
-              </ul>
-            </NavigationMenuContent>
-          </NavigationMenuItem>
-        )}
+
         {userId && orgId && hasAdminPermission && (
           <NavigationMenuItem>
             <Link href="/admin" legacyBehavior passHref>
