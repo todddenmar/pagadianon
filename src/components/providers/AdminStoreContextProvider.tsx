@@ -2,21 +2,21 @@
 import { createContext } from 'react';
 
 type AdminStoreContextType = {
-  images: string[];
+  data: any[];
 };
 export const AdminStoreContext = createContext<AdminStoreContextType>({
-  images: [],
+  data: [],
 });
 
 function AdminStoreContextProvider({
+  data,
   children,
-  images,
 }: {
+  data: any[];
   children: any;
-  images: string[];
 }) {
   return (
-    <AdminStoreContext.Provider value={{ images }}>
+    <AdminStoreContext.Provider value={{ data }}>
       {children}
     </AdminStoreContext.Provider>
   );

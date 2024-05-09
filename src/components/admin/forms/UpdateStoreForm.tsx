@@ -47,6 +47,9 @@ function UpdateStoreForm({
       state.setCurrentSettings,
     ]
   );
+  const settingsStoreData = currentSettings?.stores.find(
+    (item: StoreType) => item.id === store.id
+  );
   const formSchema = z.object({
     saasTypeSlug: z.string({
       required_error: 'Please select a Saas Type.',
@@ -102,6 +105,7 @@ function UpdateStoreForm({
     const dateTime = moment(new Date()).format('LLL');
     const newData = {
       ...store,
+      ...settingsStoreData,
       name: values.name,
       slug: values.slug,
       description: values.description,

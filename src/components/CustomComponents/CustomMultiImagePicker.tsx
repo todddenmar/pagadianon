@@ -5,18 +5,17 @@ import Image from 'next/image';
 import React, { useState } from 'react';
 
 function CustomMultiImagePicker({
+  images,
   value,
   onChange,
 }: {
+  images: string[];
   value: string[] | null | undefined;
   onChange: (val: string[]) => void;
 }) {
-  const [currentStoreSanityImages] = useAppStore((state) => [
-    state.currentStoreSanityImages,
-  ]);
   return (
     <div>
-      {!currentStoreSanityImages ? (
+      {!images ? (
         <div className="grid grid-cols-4 gap-2">
           <div className="h-[150px] aspect-square flex flex-col items-center justify-center animate-pulse">
             <ImageIcon />
@@ -45,7 +44,7 @@ function CustomMultiImagePicker({
         </div>
       ) : (
         <div className="grid grid-cols-4 gap-2">
-          {currentStoreSanityImages?.map((item, idx) => {
+          {images?.map((item, idx) => {
             const isSelected = value?.includes(item);
             const currentValues = value || [];
             return (

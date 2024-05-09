@@ -22,9 +22,7 @@ function CustomImagePicker({
   setImageURL: (url: string) => void;
 }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [currentStoreSanityImages] = useAppStore((state) => [
-    state.currentStoreSanityImages,
-  ]);
+  const [currentStoreData] = useAppStore((state) => [state.currentStoreData]);
   return (
     <div className="py-3">
       <div
@@ -49,7 +47,7 @@ function CustomImagePicker({
             <DialogTitle>{title}</DialogTitle>
             <DialogDescription>{description}</DialogDescription>
           </DialogHeader>
-          {!currentStoreSanityImages ? (
+          {!currentStoreData?.images ? (
             <div className="grid grid-cols-4 gap-2">
               <div className="h-[150px] aspect-square flex flex-col items-center justify-center animate-pulse">
                 <ImageIcon />
@@ -78,7 +76,7 @@ function CustomImagePicker({
             </div>
           ) : (
             <div className="grid grid-cols-4 gap-2">
-              {currentStoreSanityImages?.map((item, idx) => {
+              {currentStoreData?.images?.map((item: string, idx: number) => {
                 return (
                   <Image
                     src={item}

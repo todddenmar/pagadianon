@@ -42,7 +42,9 @@ function StoreProductVariantCard({ variant }: { variant: VariantType }) {
       >
         <div className="w-full aspect-square flex flex-col relative items-center justify-center bg-neutral-900 rounded-md overflow-hidden p-3">
           <div className="absolute bottom-0 right-2 z-10">
-            <Badge>{variant.name}</Badge>
+            {variant.name.toLowerCase() != 'default' && (
+              <Badge>{variant.name}</Badge>
+            )}
           </div>
           {firstImage ? (
             <Image
@@ -62,7 +64,7 @@ function StoreProductVariantCard({ variant }: { variant: VariantType }) {
             {variant.description}
           </p>
           <div className="flex space-x-2 items-end justify-start">
-            <div className="text-2xl font-semibold">
+            <div className="text-xl font-semibold">
               <CustomPesoIcon />
               {variant.price}
             </div>

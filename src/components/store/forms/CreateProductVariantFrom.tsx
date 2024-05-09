@@ -236,6 +236,7 @@ function CreateProductVariantForm({
               </div>
               <ScrollArea className="h-[200px] w-full rounded-md border p-4">
                 <CustomMultiImagePicker
+                  images={currentStoreData?.images}
                   value={selectedImages}
                   onChange={(val) => setSelectedImages(val)}
                 />

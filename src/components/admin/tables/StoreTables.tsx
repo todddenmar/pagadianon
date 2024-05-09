@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import {
   Table,
   TableBody,
@@ -20,26 +20,35 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { MoreHorizontalIcon } from 'lucide-react';
+import { CheckIcon, LoaderIcon, MoreHorizontalIcon, XIcon } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog';
 import { StoreType } from '@/typings';
 import UpdateStoreForm from '../forms/UpdateStoreForm';
 import { Badge } from '@/components/ui/badge';
 import UpdateStoreLogoForm from '../forms/UpdateStoreLogoForm';
+import { AdminStoreContext } from '@/components/providers/AdminStoreContextProvider';
+import { getImageURLsFromSanityStoreBySlug } from '@/helpers/appHelpers';
+import { dbUpdateProductImages } from '@/helpers/firebaseHelpers';
+import { toast } from 'sonner';
+import moment from 'moment';
+import { cn } from '@/lib/utils';
 
 function StoresTable() {
-  const [currentStores] = useAppStore((state) => [state.currentStores]);
+  const [currentStores, setCurrentStores] = useAppStore((state) => [
+    state.currentStores,
+    state.setCurrentStores,
+  ]);
   const [selectedStore, setSelectedStore] = useState<StoreType | null>(null);
   const [isEditingStore, setIsEditingStore] = useState(false);
   const [isEditingStoreLogo, setIsEditingStoreLogo] = useState(false);
-
+  const sanityStores = useContext(AdminStoreContext);
+  const [isSynching, setIsSynching] = useState(false);
   const onEditStore = (data: StoreType) => {
     setSelectedStore(data);
     setIsEditingStore(true);
@@ -47,6 +56,43 @@ function StoresTable() {
   const onEditStoreLogo = (data: StoreType) => {
     setSelectedStore(data);
     setIsEditingStoreLogo(true);
+  };
+  const checkIfImagesSynced = (store: StoreType) => {
+    const images = getImageURLsFromSanityStoreBySlug({
+      sanityStores: sanityStores,
+      slug: store.slug,
+    });
+    let isNotEqual = true;
+    images.forEach((item) => {
+      if (!store.images?.includes(item)) {
+        isNotEqual = false;
+      }
+    });
+    return isNotEqual;
+  };
+  const onSyncImages = async (store: StoreType) => {
+    setIsSynching(true);
+    const images = getImageURLsFromSanityStoreBySlug({
+      sanityStores: sanityStores,
+      slug: store.slug,
+    });
+    const res = await dbUpdateProductImages({
+      storeID: store.id,
+      images: images,
+    });
+    if (res.status === 'error') {
+      console.log(res.error);
+      return;
+    }
+    const updatedStore = { ...store, images: images };
+    const updatedStores = currentStores?.map((item) =>
+      item.id === store.id ? updatedStore : item
+    );
+    setCurrentStores(updatedStores);
+    toast.success('Stores images synced successfully', {
+      description: moment(new Date()).format('LLL'),
+    });
+    setIsSynching(false);
   };
   return (
     <Card>
@@ -61,6 +107,7 @@ function StoresTable() {
             <TableHead>Slug</TableHead>
             <TableHead>Tags</TableHead>
             <TableHead>SaaS Type</TableHead>
+            <TableHead>Sanity Images</TableHead>
             <TableHead className="text-right"></TableHead>
           </TableRow>
         </TableHeader>
@@ -81,6 +128,28 @@ function StoresTable() {
                   ))}
                 </TableCell>
                 <TableCell>{saas?.title}</TableCell>
+                <TableCell>
+                  {checkIfImagesSynced(item) ? (
+                    <div className="flex space-x-2 items-center">
+                      <span>Synced</span>
+                      <CheckIcon className="h-5 text-green-500" />
+                    </div>
+                  ) : isSynching ? (
+                    <div
+                      className={cn(
+                        'flex animate-pulse space-x-2 items-center'
+                      )}
+                    >
+                      <span>Synching Images</span>
+                      <LoaderIcon className="h-5 animate-spin" />
+                    </div>
+                  ) : (
+                    <div className={cn('flex space-x-2 items-center')}>
+                      <span>Not Synced</span>
+                      <XIcon className="h-5 text-destructive" />
+                    </div>
+                  )}
+                </TableCell>
                 <TableCell className="text-right">
                   <DropdownMenu>
                     <DropdownMenuTrigger>
@@ -95,6 +164,14 @@ function StoresTable() {
                       <DropdownMenuItem onClick={() => onEditStoreLogo(item)}>
                         Select Logo
                       </DropdownMenuItem>
+                      {!checkIfImagesSynced(item) && (
+                        <DropdownMenuItem
+                          onClick={() => onSyncImages(item)}
+                          className="flex items-center gap-1"
+                        >
+                          Sync Images
+                        </DropdownMenuItem>
+                      )}
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </TableCell>

@@ -1,11 +1,5 @@
-export async function getStoreSanityData({
-  slug,
-  client,
-}: {
-  slug: string;
-  client: any;
-}) {
-  const query = `*[_type == "store"]{...,"slug":${slug}}`;
+export async function getStoresSanityData({ client }: { client: any }) {
+  const query = `*[_type == "store"]`;
   const data = await client.fetch(query);
   return data;
 }
@@ -21,4 +15,3 @@ export async function getSanityAdminData({
   const data = await client.fetch(query);
   return data;
 }
-

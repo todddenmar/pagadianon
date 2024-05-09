@@ -236,6 +236,7 @@ export const dbUpdateStoreProduct = async ({
     return { status: 'error', error };
   }
 };
+
 export const dbUpdateStoreVariants = async ({
   storeID,
   productID,
@@ -262,3 +263,21 @@ export const dbUpdateStoreVariants = async ({
   }
 };
 
+
+export const dbUpdateProductImages = async ({
+  storeID,
+  images,
+}: {
+  storeID: string;
+  images: string[];
+}) => {
+  const userRef = doc(db, 'stores', String(storeID));
+  try {
+    await updateDoc(userRef, {
+      images: images,
+    });
+    return { status: 'success' };
+  } catch (error) {
+    return { status: 'error', error };
+  }
+};

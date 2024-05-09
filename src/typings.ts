@@ -22,6 +22,7 @@ export type StoreType = {
   users?: any[];
   tags: string;
   logoURL?: string;
+  images?: string[];
 };
 
 export type CollectionType = {

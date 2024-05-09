@@ -1,6 +1,7 @@
 import { AdminStoreContext } from '@/components/providers/AdminStoreContextProvider';
 import { Button } from '@/components/ui/button';
 import { dbUpdateSettings } from '@/helpers/firebaseHelpers';
+import { urlFor } from '@/lib/client';
 import { useAppStore } from '@/lib/store';
 import { cn } from '@/lib/utils';
 import { StoreType } from '@/typings';
@@ -20,7 +21,16 @@ function UpdateStoreLogoForm({
     state.setCurrentSettings,
   ]);
   const [isLoading, setIsLoading] = useState(false);
-  const { images } = useContext(AdminStoreContext);
+  const sanityStores = useContext(AdminStoreContext);
+  const sanityStore = sanityStores.data.find(
+    (item) => item.slug.current === store.slug
+  );
+  let images: string[] | null = [];
+  sanityStore.images?.forEach((item: any) => {
+    const src = urlFor(item).url();
+    images.push(src);
+  });
+
   const settingStore = currentSettings?.stores.find(
     (item: StoreType) => item.id === store.id
   );
