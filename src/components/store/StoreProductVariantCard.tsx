@@ -28,7 +28,9 @@ function StoreProductVariantCard({ variant }: { variant: VariantType }) {
     ]);
   const [isOpenDrawer, setIsOpenDrawer] = useState(false);
   const [quantity, setQuantity] = useState<number>(1);
-
+  useEffect(() => {
+    setQuantity(1);
+  }, [isOpenDrawer]);
   const productData = currentStoreProducts?.find(
     (item: ProductType) => item.id === variant.productID
   );
@@ -37,11 +39,10 @@ function StoreProductVariantCard({ variant }: { variant: VariantType }) {
   const categoryIcon = kStoreProductCategories.find(
     (item) => item.value === productData.category
   )?.icon;
+  
   if (!currentStoreProducts) return <LoadingComponent />;
 
-  useEffect(() => {
-    setQuantity(1);
-  }, [isOpenDrawer]);
+
 
   const onAddToCart = () => {
     const dateToday = new Date();
