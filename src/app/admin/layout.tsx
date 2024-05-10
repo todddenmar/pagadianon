@@ -34,6 +34,19 @@ function AdminLayout({ children }: any) {
     state.setCurrentStores,
     state.setCurrentUsers,
   ]);
+  useEffect(() => {
+    async function getAdminData(): Promise<void> {
+      const stores = await dbGetStores();
+      const users = await dbGetUsers();
+      if (stores.status !== 'error') {
+        setCurrentStores(stores.data || []);
+      }
+      if (users.status !== 'error') {
+        setCurrentUsers(users.data || []);
+      }
+    }
+    getAdminData();
+  }, []);
   const { userId, orgId, has } = useAuth();
   if (!userId) {
     return (
@@ -56,19 +69,7 @@ function AdminLayout({ children }: any) {
     );
   }
 
-  useEffect(() => {
-    async function getAdminData(): Promise<void> {
-      const stores = await dbGetStores();
-      const users = await dbGetUsers();
-      if (stores.status !== 'error') {
-        setCurrentStores(stores.data || []);
-      }
-      if (users.status !== 'error') {
-        setCurrentUsers(users.data || []);
-      }
-    }
-    getAdminData();
-  }, []);
+
 
   return (
     <div className="flex flex-col items-center justify-center w-full p-2 md:p-5">
