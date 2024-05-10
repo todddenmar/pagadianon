@@ -64,8 +64,8 @@ function StoreSidebar({
   const latitude = coordinates?.split(',')[0].replaceAll(' ', '');
   const longitude = coordinates?.split(',')[1].replaceAll(' ', '');
   return (
-    <div className="py-4 flex flex-col justify-between h-full">
-      <div className="flex flex-col">
+    <div className="flex flex-col justify-between h-full">
+      <div className="flex flex-col space-y-3">
         <div>
           <StoreSidebarTitle text="Products " />
           <ul className="grid grid-cols-1 gap-1">
@@ -74,7 +74,7 @@ function StoreSidebar({
                 isActive={value === 'all'}
                 onClick={() => onChange('all')}
                 text={'all'}
-                icon={<LayoutListIcon className="h-[16px]" />}
+                icon={<LayoutListIcon className="h-[16px] w-[16px]" />}
               />
             </li>
             {uniqueStoreCategories.map((item, idx) => {
@@ -99,7 +99,7 @@ function StoreSidebar({
                 isActive={value === 'store'}
                 onClick={() => onChange('store')}
                 text={'Store Front'}
-                icon={<StoreIcon className="w-[16px]" />}
+                icon={<StoreIcon className="h-[16px] w-[16px]" />}
               />
             </li>
 
@@ -108,17 +108,22 @@ function StoreSidebar({
                 <StoreSidebarLinkItem
                   target="_blank"
                   href={`https://www.google.com/maps/dir/?api=1&travelmode=driving&layer=traffic&destination=${latitude},${longitude}`}
-                  icon={<NavigationIcon className="h-5" />}
+                  icon={<NavigationIcon className="h-[16px] w-[16px]" />}
                   text="Get Direction"
                 />
               </li>
             )}
+          </ul>
+        </div>
+        <div>
+          <StoreSidebarTitle text="Socials" />
+          <ul className="grid grid-cols-1 gap-1">
             {facebookUsername && (
               <li>
                 <StoreSidebarLinkItem
                   target="_blank"
                   href={`https://www.facebook.com/${facebookUsername}`}
-                  icon={<CustomFacebookIcon className="h-[16px]" />}
+                  icon={<CustomFacebookIcon className="h-[16px] w-[16px]" />}
                   text="Facebook"
                 />
               </li>
@@ -128,7 +133,7 @@ function StoreSidebar({
                 <StoreSidebarLinkItem
                   target="_blank"
                   href={`https://www.instagram.com/${instagramUsername}`}
-                  icon={<CustomInstagramIcon className="h-[16px]" />}
+                  icon={<CustomInstagramIcon className="h-[16px] w-[16px]" />}
                   text="Instagram"
                 />
               </li>
@@ -137,17 +142,17 @@ function StoreSidebar({
         </div>
       </div>
       {isAdmin && (
-        <div>
+        <div className="py-5">
           <StoreSidebarTitle text="Admin" />
           <ul>
             <Link
               href={`/store/${params.slug}/settings`}
               className={cn(
-                'px-4 rounded-md py-2 w-full text-left text-sm dark:hover:bg-neutral-900 transition-all  hover:bg-neutral-100 capitalize flex space-x-2'
+                'px-4 rounded-md items-center py-2 w-full text-left text-sm dark:hover:bg-neutral-900 transition-all  hover:bg-neutral-100 capitalize flex space-x-2'
               )}
             >
               <span>
-                <SettingsIcon className="h-[16px]" />
+                <SettingsIcon className="h-[16px] w-[16px]" />
               </span>
               <span>Settings</span>
             </Link>
@@ -177,7 +182,7 @@ function StoreSidebarLinkItem({
       target={target}
       href={href}
       className={cn(
-        'px-4 pl-3 rounded-md py-2 w-full items-center text-left text-sm dark:hover:bg-neutral-900 transition-all  hover:bg-neutral-100 capitalize flex space-x-1'
+        'px-4 pl-3 rounded-md py-2 w-full items-center text-left text-sm dark:hover:bg-neutral-900 transition-all  hover:bg-neutral-100 capitalize flex space-x-2'
       )}
     >
       {icon}

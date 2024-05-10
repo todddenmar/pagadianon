@@ -17,6 +17,8 @@ import { useAppStore } from '@/lib/store';
 import { Button } from '@/components/ui/button';
 import { dbGetStores, dbGetUsers } from '@/helpers/firebaseHelpers';
 import AdminPublishSettingsButton from '@/components/admin/AdminPublishSettingsButton';
+import { useAuth } from '@clerk/nextjs';
+import Link from 'next/link';
 
 function AdminLayout({ children }: any) {
   const pathname = usePathname();
@@ -32,12 +34,30 @@ function AdminLayout({ children }: any) {
     state.setCurrentStores,
     state.setCurrentUsers,
   ]);
-
- 
+  const { userId, orgId, has } = useAuth();
+  if (!userId) {
+    return (
+      <div className="flex justify-center flex-col items-center h-[400px] gap-5">
+        <div>No Access</div>
+        <Link href="/" className="px-4 py-2 rounded-md bg-red-500">
+          Go Back
+        </Link>
+      </div>
+    );
+  }
+  if (!orgId && !has({ permission: 'org:admin:access' })) {
+    return (
+      <div className="flex justify-center flex-col items-center h-[400px] gap-5">
+        <div>No Access</div>
+        <Link href="/" className="px-4 py-2 rounded-md bg-red-500">
+          Go Back
+        </Link>
+      </div>
+    );
+  }
 
   useEffect(() => {
     async function getAdminData(): Promise<void> {
-      console.log('Get Admin Data');
       const stores = await dbGetStores();
       const users = await dbGetUsers();
       if (stores.status !== 'error') {

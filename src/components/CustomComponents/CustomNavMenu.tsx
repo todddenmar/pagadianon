@@ -11,13 +11,10 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
-  navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu';
-import { useAuth } from '@clerk/nextjs';
-import { kSaasCategories, kStoreTypes } from '@/constants';
+import { kSaasCategories } from '@/constants';
 import { useAppStore } from '@/lib/store';
-import { CollectionType, StoreType } from '@/typings';
-
+import { CollectionType } from '@/typings';
 
 const components: {
   slug: string;
@@ -27,20 +24,16 @@ const components: {
 }[] = kSaasCategories;
 
 export function CustomNavMenu() {
-  const { userId, orgId, has } = useAuth();
   const [currentUserData, currentSettings] = useAppStore((state) => [
     state.currentUserData,
     state.currentSettings,
   ]);
-  let hasAdminPermission = false;
-  if (userId && orgId) {
-    hasAdminPermission = has({ permission: 'org:admin:access' });
-  }
+
   return (
     <NavigationMenu>
       <NavigationMenuList>
         <NavigationMenuItem>
-          <NavigationMenuTrigger>Getting started</NavigationMenuTrigger>
+          <NavigationMenuTrigger>Collections</NavigationMenuTrigger>
           <NavigationMenuContent>
             <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
               <li className="row-span-3">
@@ -89,16 +82,6 @@ export function CustomNavMenu() {
             </NavigationMenuLink>
           </Link>
         </NavigationMenuItem> */}
-
-        {userId && orgId && hasAdminPermission && (
-          <NavigationMenuItem>
-            <Link href="/admin" legacyBehavior passHref>
-              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                Dashboard
-              </NavigationMenuLink>
-            </Link>
-          </NavigationMenuItem>
-        )}
       </NavigationMenuList>
     </NavigationMenu>
   );

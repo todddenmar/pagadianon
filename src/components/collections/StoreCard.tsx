@@ -47,7 +47,7 @@ function StoreCard({ store }: { store: StoreType }) {
         </div>
       </div>
       <Link href={`/store/${store.slug}`}>
-        <div className="flex w-[40px] h-full border-l bg-neutral-900 text-white flex-col justify-center items-center hover:dark:bg-neutral-200 dark:bg-neutral-300 dark:text-neutral-900 font-bold ">
+        <div className="flex w-[40px] h-full border-l transition-all  flex-col justify-center items-center hover:bg-highlight_hover bg-highlight text-neutral-900 font-bold ">
           <span className="[writing-mode:vertical-lr] rotate-180 text-center flex text-sm">
             View Store
           </span>

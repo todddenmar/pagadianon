@@ -59,14 +59,14 @@ function StoreBanner({
               <div className="flex justify-center gap-4">
                 {currentStoreData?.settings?.email && (
                   <CustomEmailLink email={currentStoreData?.settings?.email}>
-                    <MailIcon className="h-5" /> Email Us
+                    <MailIcon className="h-[16px]" /> Email Us
                   </CustomEmailLink>
                 )}
                 {currentStoreData?.settings?.mobileNumber && (
                   <CustomMobileLink
                     mobileNumber={currentStoreData?.settings?.mobileNumber}
                   >
-                    <SmartphoneIcon className="h-5" />
+                    <SmartphoneIcon className="h-[16px]" />
                     Call Us
                   </CustomMobileLink>
                 )}

@@ -108,7 +108,6 @@ function StoreSection() {
             value={tabValue}
             onChange={(val) => onMenuTabChange(val)}
           />
-          <div className="h-[100px]"></div>
         </DrawerContent>
       </Drawer>
     </div>

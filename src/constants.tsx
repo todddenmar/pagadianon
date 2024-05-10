@@ -4,6 +4,7 @@ import {
   CombineIcon,
   HandHelpingIcon,
   LayoutDashboardIcon,
+  MusicIcon,
   ShirtIcon,
   StoreIcon,
   UserCircleIcon,
