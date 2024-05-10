@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ContainerLayout from '../layouts/ContainerLayout';
 import StoreSidebar from './StoreSidebar';
 import { Drawer, DrawerContent } from '@/components/ui/drawer';
@@ -11,9 +11,12 @@ import StoreInfo from './StoreInfo';
 import { useAppStore } from '@/lib/store';
 import { ProductType, VariantType } from '@/typings';
 import StoreProductVariantCard from './StoreProductVariantCard';
+import CustomTagsSlider from '../CustomComponents/CustomTagsSlider';
+import { getAllUniqueTagsFromItems } from '@/helpers/appHelpers';
+import StoreProductsList from './StoreProductsList';
 
 function StoreSection() {
-  const [tabValue, setTabValue] = useState('store');
+  const [tabValue, setTabValue] = useState('all');
   const [isOpenMobileDrawer, setIsOpenMobileDrawer] = useState(false);
   const [currentStoreProducts, currentStoreData] = useAppStore((state) => [
     state.currentStoreProducts,
@@ -23,10 +26,18 @@ function StoreSection() {
     setTabValue(tabVal);
     setIsOpenMobileDrawer(false);
   };
+
+  let variants: VariantType[] = [];
+  currentStoreProducts?.forEach((prod) => {
+    prod.variants?.forEach((variant: VariantType) => {
+      variants.push(variant);
+    });
+  });
+  const allTags = getAllUniqueTagsFromItems(currentStoreProducts);
   return (
     <div className="md:mt-5 ">
-      <div className="md:hidden px-5 py-2 sticky top-[60px] z-10 bg-neutral-900 dark:bg-neutral-900 border-b w-full flex justify-between items-center">
-        <div className="font-bold text-xl uppercase text-white ">
+      <div className="md:hidden px-5 py-2 sticky top-[60px] z-10 bg-neutral-900 dark:bg-neutral-800 border-y w-full flex justify-between items-center">
+        <div className="font-bold text-base uppercase text-white  ">
           {tabValue}
         </div>
         <Button
@@ -34,7 +45,7 @@ function StoreSection() {
           onClick={() => setIsOpenMobileDrawer(true)}
           className="flex space-x-1 items-center bg-white text-neutral-900"
         >
-          <PanelBottomOpenIcon className="h-[20px]" />
+          <PanelBottomOpenIcon className="h-[20px] " />
           <span>Discover</span>
         </Button>
       </div>
@@ -55,8 +66,12 @@ function StoreSection() {
                 value={tabValue}
                 className="w-full"
               >
-                <TabsContent value="store">
-                  <StoreInfo />
+                <TabsContent value="all">
+                  <StoreProductsList
+                    variants={variants}
+                    tags={allTags}
+                    products={currentStoreProducts}
+                  />
                 </TabsContent>
                 {kStoreProductCategories.map((item, idx) => {
                   const products = currentStoreProducts?.filter(
@@ -68,21 +83,20 @@ function StoreSection() {
                       variants.push(variant);
                     });
                   });
+                  const tags = getAllUniqueTagsFromItems(products);
                   return (
                     <TabsContent key={`tab-content-${idx}`} value={item.value}>
-                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-5">
-                        {variants.map((variant) => {
-                          return (
-                            <StoreProductVariantCard
-                              key={`prod-card-${variant.id}`}
-                              variant={variant}
-                            />
-                          );
-                        })}
-                      </div>
+                      <StoreProductsList
+                        variants={variants}
+                        tags={tags}
+                        products={products}
+                      />
                     </TabsContent>
                   );
                 })}
+                <TabsContent value="store">
+                  <StoreInfo />
+                </TabsContent>
               </Tabs>
             </div>
           </div>

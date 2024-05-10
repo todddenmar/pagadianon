@@ -27,12 +27,7 @@ function StoreBanner({
     state.currentSettings,
   ]);
   if (!currentStoreData) return <LoadingComponent />;
-  const address = currentStoreData?.settings?.address || 'Pagadian City';
-  const coordinates = currentStoreData?.settings?.coordinates;
-  const facebookUsername = currentStoreData?.settings?.facebookUsername;
-  const instagramUsername = currentStoreData?.settings?.instagramUsername;
-  const latitude = coordinates?.split(',')[0].replaceAll(' ', '');
-  const longitude = coordinates?.split(',')[1].replaceAll(' ', '');
+
   const logoURL = currentSettings.stores.find(
     (item: StoreType) => item.id === currentStoreData.id
   ).logoURL;
@@ -76,52 +71,6 @@ function StoreBanner({
                   </CustomMobileLink>
                 )}
               </div>
-              {coordinates && (
-                <a
-                  target="_blank"
-                  href={`https://www.google.com/maps/dir/?api=1&travelmode=driving&layer=traffic&destination=${latitude},${longitude}`}
-                  className="flex justify-center gap-2 items-center hover:dark:text-neutral-300 w-full sm:w-fit pl-2 pr-3 py-2 rounded-md font-bold capitalize"
-                >
-                  <div className="flex gap-2 items-center">
-                    <MapIcon className="h-5" />
-                    <span className="flex-1"> Get Direction</span>
-                  </div>
-                </a>
-              )}
-            </div>
-            <div className="flex justify-center gap-5 text-sm mt-2 md:mt-5 w-full md:w-fit">
-              {facebookUsername && (
-                <a
-                  target="_blank"
-                  href={`https://www.facebook.com/${facebookUsername}`}
-                  className="flex gap-2 items-center hover:text-red-500 cursor-pointer"
-                >
-                  <Image
-                    src={'/icons/facebook-icon.svg'}
-                    alt="facebook icon"
-                    width={50}
-                    height={50}
-                    className="object-contain"
-                  />
-                  <span className="hidden sm:block">{facebookUsername}</span>
-                </a>
-              )}
-              {instagramUsername && (
-                <a
-                  target="_blank"
-                  href={`https://www.instagram.com/${instagramUsername}`}
-                  className="flex gap-2 items-center hover:text-red-500 cursor-pointer"
-                >
-                  <Image
-                    src={'/icons/instagram-icon.svg'}
-                    alt="instagram icon"
-                    width={50}
-                    height={50}
-                    className="object-contain"
-                  />
-                  <span className="hidden sm:block">{instagramUsername}</span>
-                </a>
-              )}
             </div>
           </div>
         </div>

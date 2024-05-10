@@ -1,7 +1,7 @@
 import React from 'react';
 import { Badge } from '../ui/badge';
 
-function CollectionTagsSlider({
+function CustomTagsSlider({
   tags,
   value,
   onChange,
@@ -11,7 +11,7 @@ function CollectionTagsSlider({
   onChange: (val: string) => void;
 }) {
   return (
-    <div className="inline-flex flex-wrap gap-2 py-5 capitalize">
+    <div className="inline-flex flex-wrap gap-2 capitalize">
       <Badge
         className="cursor-pointer"
         onClick={() => onChange('all')}
@@ -37,4 +37,4 @@ function CollectionTagsSlider({
   );
 }
 
-export default CollectionTagsSlider;
+export default CustomTagsSlider;

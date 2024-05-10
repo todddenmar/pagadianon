@@ -3,11 +3,23 @@ import { kStoreProductCategories } from '@/constants';
 import { useAppStore } from '@/lib/store';
 import { cn } from '@/lib/utils';
 import { StoreType } from '@/typings';
-import { SettingsIcon, StoreIcon } from 'lucide-react';
+import {
+  CarIcon,
+  FacebookIcon,
+  LayoutListIcon,
+  MapIcon,
+  NavigationIcon,
+  PinIcon,
+  SettingsIcon,
+  StoreIcon,
+} from 'lucide-react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import React from 'react';
 import LoadingComponent from '../admin/LoadingComponent.';
+import Image from 'next/image';
+import CustomFacebookIcon from '../icons/CustomFacebookIcon';
+import CustomInstagramIcon from '../icons/CustomInstagramIcon';
 
 function StoreSidebar({
   value,
@@ -17,13 +29,17 @@ function StoreSidebar({
   onChange: (val: string) => void;
 }) {
   const params = useParams<{ slug: string }>();
-  const [currentUserData, currentSettings, currentStoreProducts] = useAppStore(
-    (state) => [
-      state.currentUserData,
-      state.currentSettings,
-      state.currentStoreProducts,
-    ]
-  );
+  const [
+    currentStoreData,
+    currentUserData,
+    currentSettings,
+    currentStoreProducts,
+  ] = useAppStore((state) => [
+    state.currentStoreData,
+    state.currentUserData,
+    state.currentSettings,
+    state.currentStoreProducts,
+  ]);
   if (!currentSettings) {
     return <LoadingComponent />;
   }
@@ -40,26 +56,27 @@ function StoreSidebar({
     }
   });
   const isAdmin = currentUserData?.stores.includes(storeData.id);
+  const facebookUsername = currentStoreData?.settings?.facebookUsername;
+  const instagramUsername = currentStoreData?.settings?.instagramUsername;
+  const address = currentStoreData?.settings?.address || 'Pagadian City';
+  const coordinates = currentStoreData?.settings?.coordinates;
 
+  const latitude = coordinates?.split(',')[0].replaceAll(' ', '');
+  const longitude = coordinates?.split(',')[1].replaceAll(' ', '');
   return (
     <div className="py-4 flex flex-col justify-between h-full">
       <div className="flex flex-col">
         <div>
-          <StoreSidebarTitle text="Discover" />
+          <StoreSidebarTitle text="Products " />
           <ul className="grid grid-cols-1 gap-1">
             <li>
               <StoreSidebarItem
-                isActive={value === 'store'}
-                onClick={() => onChange('store')}
-                text={'store'}
-                icon={<StoreIcon className="w-[16px]" />}
+                isActive={value === 'all'}
+                onClick={() => onChange('all')}
+                text={'all'}
+                icon={<LayoutListIcon className="h-[16px]" />}
               />
             </li>
-          </ul>
-        </div>
-        <div>
-          <StoreSidebarTitle text="Product Categories" />
-          <ul className="grid grid-cols-1 gap-1">
             {uniqueStoreCategories.map((item, idx) => {
               return (
                 <li key={`category-item-${idx}`}>
@@ -74,10 +91,54 @@ function StoreSidebar({
             })}
           </ul>
         </div>
+        <div>
+          <StoreSidebarTitle text="Store" />
+          <ul className="grid grid-cols-1 gap-1">
+            <li>
+              <StoreSidebarItem
+                isActive={value === 'store'}
+                onClick={() => onChange('store')}
+                text={'Store Front'}
+                icon={<StoreIcon className="w-[16px]" />}
+              />
+            </li>
+
+            {coordinates && (
+              <li>
+                <StoreSidebarLinkItem
+                  target="_blank"
+                  href={`https://www.google.com/maps/dir/?api=1&travelmode=driving&layer=traffic&destination=${latitude},${longitude}`}
+                  icon={<NavigationIcon className="h-5" />}
+                  text="Get Direction"
+                />
+              </li>
+            )}
+            {facebookUsername && (
+              <li>
+                <StoreSidebarLinkItem
+                  target="_blank"
+                  href={`https://www.facebook.com/${facebookUsername}`}
+                  icon={<CustomFacebookIcon className="h-[16px]" />}
+                  text="Facebook"
+                />
+              </li>
+            )}
+            {instagramUsername && (
+              <li>
+                <StoreSidebarLinkItem
+                  target="_blank"
+                  href={`https://www.instagram.com/${instagramUsername}`}
+                  icon={<CustomInstagramIcon className="h-[16px]" />}
+                  text="Instagram"
+                />
+              </li>
+            )}
+          </ul>
+        </div>
       </div>
       {isAdmin && (
         <div>
-          <div className="text-lg font-semibold px-4 py-2">Admin</div>
+          <StoreSidebarTitle text="Admin" />
           <ul>
             <Link
               href={`/store/${params.slug}/settings`}
@@ -100,7 +161,30 @@ function StoreSidebar({
 function StoreSidebarTitle({ text }: { text: string }) {
   return <div className="text-base font-semibold px-4 py-2">{text}</div>;
 }
-
+function StoreSidebarLinkItem({
+  text,
+  href,
+  icon,
+  target,
+}: {
+  text: string;
+  href: string;
+  icon?: any;
+  target?: string;
+}) {
+  return (
+    <a
+      target={target}
+      href={href}
+      className={cn(
+        'px-4 pl-3 rounded-md py-2 w-full items-center text-left text-sm dark:hover:bg-neutral-900 transition-all  hover:bg-neutral-100 capitalize flex space-x-1'
+      )}
+    >
+      {icon}
+      <span>{text}</span>
+    </a>
+  );
+}
 function StoreSidebarItem({
   onClick,
   text,

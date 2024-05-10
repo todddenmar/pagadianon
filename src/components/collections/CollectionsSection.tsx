@@ -5,7 +5,7 @@ import { useParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import LoadingComponent from '../admin/LoadingComponent.';
 import ContainerLayout from '../layouts/ContainerLayout';
-import CollectionTagsSlider from './CollectionTagsSlider';
+import CustomTagsSlider from '../CustomComponents/CustomTagsSlider';
 import {
   compareEqualStrings,
   compareIncludesStrings,
@@ -85,11 +85,13 @@ function CollectionsSection() {
               />
             </div>
           </div>
-          <CollectionTagsSlider
-            tags={tags}
-            value={tagSelected}
-            onChange={(val: string) => setTagSelected(val)}
-          />
+          <div className="py-5">
+            <CustomTagsSlider
+              tags={tags}
+              value={tagSelected}
+              onChange={(val: string) => setTagSelected(val)}
+            />
+          </div>
         </div>
         <div className="p-2 md:p-5 rounded-xl border min-h-[600px]">
           <div className="grid grid-cols-1 gap-2 md:gap-5 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 ">
