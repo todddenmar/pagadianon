@@ -15,7 +15,11 @@ import {
 } from '@/components/ui/dialog';
 import { useAppStore } from '@/lib/store';
 import { Button } from '@/components/ui/button';
-import { dbGetStores, dbGetUsers } from '@/helpers/firebaseHelpers';
+import {
+  dbGetDeliveryServices,
+  dbGetStores,
+  dbGetUsers,
+} from '@/helpers/firebaseHelpers';
 import AdminPublishSettingsButton from '@/components/admin/AdminPublishSettingsButton';
 import { useAuth } from '@clerk/nextjs';
 import Link from 'next/link';
@@ -27,19 +31,25 @@ function AdminLayout({ children }: any) {
     isCreatingModalOpen,
     setIsCreatingModalOpen,
     setCurrentStores,
+    setCurrentDeliveryServices,
     setCurrentUsers,
   ] = useAppStore((state) => [
     state.isCreatingModalOpen,
     state.setIsCreatingModalOpen,
     state.setCurrentStores,
+    state.setCurrentDeliveryServices,
     state.setCurrentUsers,
   ]);
   useEffect(() => {
     async function getAdminData(): Promise<void> {
       const stores = await dbGetStores();
+      const delivery_services = await dbGetDeliveryServices();
       const users = await dbGetUsers();
       if (stores.status !== 'error') {
         setCurrentStores(stores.data || []);
+      }
+      if (delivery_services.status !== 'error') {
+        setCurrentDeliveryServices(delivery_services.data || []);
       }
       if (users.status !== 'error') {
         setCurrentUsers(users.data || []);
@@ -68,8 +78,6 @@ function AdminLayout({ children }: any) {
       </div>
     );
   }
-
-
 
   return (
     <div className="flex flex-col items-center justify-center w-full p-2 md:p-5">

@@ -1,4 +1,4 @@
-import { StoreType, UserType } from '@/typings';
+import { DeliveryServiceType, StoreType, UserType } from '@/typings';
 import { create } from 'zustand';
 
 interface AppState {
@@ -10,6 +10,12 @@ interface AppState {
 
   isStoreUsersModalOpen: boolean;
   setIsStoreUsersModalOpen: (open: boolean) => void;
+
+  isSheetCartOpen: boolean;
+  setIsSheetCartOpen: (open: boolean) => void;
+
+  isDrawerCartOpen: boolean;
+  setIsDrawerCartOpen: (open: boolean) => void;
 
   currentSettings: any;
   setCurrentSettings: (currentSettings: any) => void;
@@ -34,13 +40,18 @@ interface AppState {
 
   currentStores: any[];
   setCurrentStores: (currentStores: any[]) => void;
-  addStore: (Store: any) => void;
-  updateStore: (Store: any) => void;
+  addStore: (data: any) => void;
+  updateStore: (data: any) => void;
+
+  currentDeliveryServices: any[];
+  setCurrentDeliveryServices: (currentDeliveryServices: any[]) => void;
+  addDeliveryService: (data: any) => void;
+  updateDeliveryService: (data: any) => void;
 
   currentUsers: any[];
   setCurrentUsers: (currentUsers: any[]) => void;
-  addUser: (user: any) => void;
-  updateUser: (user: any) => void;
+  addUser: (data: any) => void;
+  updateUser: (data: any) => void;
 }
 
 export const useAppStore = create<AppState>((set) => ({
@@ -53,6 +64,12 @@ export const useAppStore = create<AppState>((set) => ({
   isStoreUsersModalOpen: false,
   setIsStoreUsersModalOpen: (data) =>
     set(() => ({ isStoreUsersModalOpen: data })),
+
+  isSheetCartOpen: false,
+  setIsSheetCartOpen: (data) => set(() => ({ isSheetCartOpen: data })),
+
+  isDrawerCartOpen: false,
+  setIsDrawerCartOpen: (data) => set(() => ({ isDrawerCartOpen: data })),
 
   currentSettings: null,
   setCurrentSettings: (data: any) => set(() => ({ currentSettings: data })),
@@ -87,6 +104,22 @@ export const useAppStore = create<AppState>((set) => ({
     })),
 
   updateStore: (data: StoreType) =>
+    set((state) => ({
+      currentStores: state.currentStores.map((item) =>
+        item.id === data.id ? data : item
+      ),
+    })),
+
+  currentDeliveryServices: [],
+  setCurrentDeliveryServices: (data: any[]) =>
+    set(() => ({ currentDeliveryServices: data })),
+
+  addDeliveryService: (data: DeliveryServiceType) =>
+    set((state) => ({
+      currentDeliveryServices: [...state.currentDeliveryServices, data],
+    })),
+
+  updateDeliveryService: (data: DeliveryServiceType) =>
     set((state) => ({
       currentStores: state.currentStores.map((item) =>
         item.id === data.id ? data : item

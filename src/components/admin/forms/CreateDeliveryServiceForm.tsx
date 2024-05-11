@@ -18,36 +18,29 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { dbAddNewStore, dbUpdateSettings } from '@/helpers/firebaseHelpers';
+  dbAddDeliveryService,
+  dbUpdateSettings,
+} from '@/helpers/firebaseHelpers';
 import { kSaasTypes } from '@/constants';
 import { LoaderCircleIcon } from 'lucide-react';
 import { checkSlugExists } from '@/helpers/appHelpers';
 import { v4 as uuidv4 } from 'uuid';
 import { Textarea } from '@/components/ui/textarea';
 
-function CreateStoreForm() {
+function CreateDeliveryServiceForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [
     setIsCreatingModalOpen,
-    addStore,
+    addDeliveryService,
     currentSettings,
     setCurrentSettings,
   ] = useAppStore((state) => [
     state.setIsCreatingModalOpen,
-    state.addStore,
+    state.addDeliveryService,
     state.currentSettings,
     state.setCurrentSettings,
   ]);
   const formSchema = z.object({
-    saasTypeSlug: z.string({
-      required_error: 'Please select a Saas Type.',
-    }),
     name: z
       .string()
       .min(2, {
@@ -65,7 +58,7 @@ function CreateStoreForm() {
         (val) =>
           checkSlugExists({
             slug: val,
-            list: currentSettings?.stores,
+            list: currentSettings?.delivery_services,
           }) == false,
         {
           message: 'Slug already exists',
@@ -86,7 +79,6 @@ function CreateStoreForm() {
       description: '',
       slug: '',
       tags: '',
-      saasTypeSlug: undefined,
     },
   });
 
@@ -102,13 +94,16 @@ function CreateStoreForm() {
       ...values,
       createdAt: dateTime,
     };
-    const res = await dbAddNewStore(newData);
+    const res = await dbAddDeliveryService({ data: newData });
     if (res.status === 'success') {
-      addStore(newData);
-      const updatedStores = currentSettings?.stores
-        ? [...currentSettings?.stores, newData]
+      addDeliveryService(newData);
+      const updatedDeliveryServices = currentSettings?.delivery_services
+        ? [...currentSettings?.delivery_services, newData]
         : [newData];
-      const updatedSettings = { ...currentSettings, stores: updatedStores };
+      const updatedSettings = {
+        ...currentSettings,
+        delivery_services: updatedDeliveryServices,
+      };
       const resUpdate = await dbUpdateSettings(updatedSettings);
       if (resUpdate.status === 'success') {
         setCurrentSettings(updatedSettings);
@@ -117,7 +112,7 @@ function CreateStoreForm() {
         return;
       }
     } else {
-      console.log('there was an error adding Store to database');
+      console.log('there was an error adding delivery_service to database');
       return;
     }
     setIsCreatingModalOpen(false);
@@ -128,7 +123,7 @@ function CreateStoreForm() {
     const generatedSlug = _.kebabCase(form.getValues('name'));
     const sameSlugTotal = checkSlugExists({
       slug: generatedSlug,
-      list: currentSettings?.stores,
+      list: currentSettings?.delivery_services,
     });
     if (sameSlugTotal) {
       form.setValue('slug', `${generatedSlug}-${sameSlugTotal + 1}`);
@@ -140,38 +135,6 @@ function CreateStoreForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
-        <FormField
-          control={form.control}
-          name="saasTypeSlug"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>SaaS Type</FormLabel>
-              <FormControl>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="SaaS Type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {kSaasTypes.map((item, idx) => {
-                      return (
-                        <SelectItem
-                          key={`select-saas-item-${idx}`}
-                          value={item.slug}
-                        >
-                          {item.title}
-                        </SelectItem>
-                      );
-                    })}
-                  </SelectContent>
-                </Select>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
         <FormField
           control={form.control}
           name="name"
@@ -257,4 +220,4 @@ function CreateStoreForm() {
   );
 }
 
-export default CreateStoreForm;
+export default CreateDeliveryServiceForm;

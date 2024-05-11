@@ -43,7 +43,7 @@ export const checkSlugExistsOnOtherList = ({
   list: any[];
 }) => {
   const res = list?.filter((item) => item.slug === slug && item.id != id);
-  if (res.length > 0) {
+  if (res?.length > 0) {
     return res.length;
   } else {
     return false;
@@ -122,4 +122,34 @@ export const getCartTotal = ({ cart }: { cart: CartItemType[] }) => {
     total = total + item.totalAmount;
   });
   return total;
+};
+
+export const getStoresByCart = ({
+  cart,
+  stores,
+}: {
+  cart: CartItemType[];
+  stores: StoreType[];
+}) => {
+  let storesOrdered: any[] = [];
+  cart.forEach((cartItem) => {
+    const store = stores.find(
+      (storeItem: StoreType) => storeItem.id === cartItem.storeID
+    );
+    if (!storesOrdered.find((x) => x.storeID === cartItem.storeID)) {
+      if (store)
+        storesOrdered.push({
+          storeID: store.id,
+          storeName: store.name,
+          storeSlug: store.slug,
+        });
+    }
+  });
+  const storesCarts = storesOrdered?.map((item: any) => {
+    const cartItems = cart.filter(
+      (cartItem: CartItemType) => cartItem.storeID === item.storeID
+    );
+    return { ...item, cart: cartItems };
+  });
+  return storesCarts;
 };

@@ -1,5 +1,12 @@
 import { db } from '@/firebase';
-import { ProductType, StoreType, UserType, VariantType } from '@/typings';
+import {
+  DeliveryServiceType,
+  OrderType,
+  ProductType,
+  StoreType,
+  UserType,
+  VariantType,
+} from '@/typings';
 import { error } from 'console';
 import {
   doc,
@@ -121,6 +128,19 @@ export const dbGetStores = async () => {
       storesArray.push(doc.data());
     });
     return { status: 'success', data: storesArray };
+  } catch (error) {
+    return { status: 'error' };
+  }
+};
+
+export const dbGetDeliveryServices = async () => {
+  try {
+    const querySnapshot = await getDocs(collection(db, 'delivery_services'));
+    let deliveryServicesArray: any[] = [];
+    querySnapshot.forEach((doc) => {
+      deliveryServicesArray.push(doc.data());
+    });
+    return { status: 'success', data: deliveryServicesArray };
   } catch (error) {
     return { status: 'error' };
   }
@@ -263,7 +283,6 @@ export const dbUpdateStoreVariants = async ({
   }
 };
 
-
 export const dbUpdateProductImages = async ({
   storeID,
   images,
@@ -276,6 +295,66 @@ export const dbUpdateProductImages = async ({
     await updateDoc(userRef, {
       images: images,
     });
+    return { status: 'success' };
+  } catch (error) {
+    return { status: 'error', error };
+  }
+};
+
+export const dbUpdatePublish = async ({
+  storeID,
+  isPublished,
+}: {
+  storeID: string;
+  isPublished: boolean;
+}) => {
+  const userRef = doc(db, 'stores', String(storeID));
+  try {
+    await updateDoc(userRef, {
+      isPublished: isPublished,
+    });
+    return { status: 'success' };
+  } catch (error) {
+    return { status: 'error', error };
+  }
+};
+
+export const dbCreateOrder = async ({ data }: { data: OrderType }) => {
+  try {
+    await setDoc(doc(db, 'orders', String(data.id)), data);
+    return { status: 'success' };
+  } catch (error) {
+    return { status: 'error', error };
+  }
+};
+
+export const dbGetOrderData = async (id: string) => {
+  const docRef = doc(db, 'orders', id);
+  const docSnap = await getDoc(docRef);
+  if (docSnap.exists()) {
+    return { status: 'success', data: docSnap.data() };
+  } else {
+    return { status: 'error', error: 'settings not found' };
+  }
+};
+
+export const dbAddDeliveryService = async ({
+  data,
+}: {
+  data: DeliveryServiceType;
+}) => {
+  try {
+    await setDoc(doc(db, 'delivery_services', String(data.id)), data);
+    return { status: 'success' };
+  } catch (error) {
+    return { status: 'error', error };
+  }
+};
+
+export const dbUpdateDeliveryService = async (data: DeliveryServiceType) => {
+  const userRef = doc(db, 'delivery_services', String(data.id));
+  try {
+    await updateDoc(userRef, data);
     return { status: 'success' };
   } catch (error) {
     return { status: 'error', error };

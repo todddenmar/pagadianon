@@ -17,37 +17,34 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { dbAddNewStore, dbUpdateSettings } from '@/helpers/firebaseHelpers';
-import { kSaasTypes } from '@/constants';
-import { LoaderCircleIcon } from 'lucide-react';
-import { checkSlugExists } from '@/helpers/appHelpers';
-import { v4 as uuidv4 } from 'uuid';
 import { Textarea } from '@/components/ui/textarea';
 
-function CreateStoreForm() {
+import {
+  dbUpdateDeliveryService,
+  dbUpdateSettings,
+} from '@/helpers/firebaseHelpers';
+import { LoaderCircleIcon } from 'lucide-react';
+import { checkSlugExistsOnOtherList } from '@/helpers/appHelpers';
+import { DeliveryServiceType } from '@/typings';
+
+function UpdateDeliveryServiceForm({
+  deliveryService,
+  setClose,
+}: {
+  deliveryService: DeliveryServiceType;
+  setClose: () => void;
+}) {
   const [isLoading, setIsLoading] = useState(false);
-  const [
-    setIsCreatingModalOpen,
-    addStore,
-    currentSettings,
-    setCurrentSettings,
-  ] = useAppStore((state) => [
-    state.setIsCreatingModalOpen,
-    state.addStore,
-    state.currentSettings,
-    state.setCurrentSettings,
-  ]);
+  const [updateDeliveryService, currentSettings, setCurrentSettings] =
+    useAppStore((state) => [
+      state.updateDeliveryService,
+      state.currentSettings,
+      state.setCurrentSettings,
+    ]);
+  const settingsDeliveryServiceData = currentSettings?.delivery_services.find(
+    (item: DeliveryServiceType) => item.id === deliveryService.id
+  );
   const formSchema = z.object({
-    saasTypeSlug: z.string({
-      required_error: 'Please select a Saas Type.',
-    }),
     name: z
       .string()
       .min(2, {
@@ -63,9 +60,10 @@ function CreateStoreForm() {
       .max(50)
       .refine(
         (val) =>
-          checkSlugExists({
+          checkSlugExistsOnOtherList({
             slug: val,
-            list: currentSettings?.stores,
+            id: deliveryService.id,
+            list: currentSettings?.deliveryServices,
           }) == false,
         {
           message: 'Slug already exists',
@@ -74,7 +72,7 @@ function CreateStoreForm() {
     tags: z
       .string()
       .min(2, {
-        message: 'Tags must be at least 2 characters.',
+        message: 'Name must be at least 2 characters.',
       })
       .max(50),
   });
@@ -82,11 +80,10 @@ function CreateStoreForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: '',
-      description: '',
-      slug: '',
-      tags: '',
-      saasTypeSlug: undefined,
+      name: deliveryService.name,
+      description: deliveryService.description || '',
+      slug: deliveryService.slug,
+      tags: deliveryService.tags,
     },
   });
 
@@ -96,19 +93,26 @@ function CreateStoreForm() {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     const dateTime = moment(new Date()).format('LLL');
-    const id = uuidv4();
     const newData = {
-      id,
-      ...values,
-      createdAt: dateTime,
+      ...deliveryService,
+      ...settingsDeliveryServiceData,
+      name: values.name,
+      slug: values.slug,
+      description: values.description,
+      tags: values.tags,
+      updatedAt: dateTime,
     };
-    const res = await dbAddNewStore(newData);
+    const res = await dbUpdateDeliveryService(newData);
     if (res.status === 'success') {
-      addStore(newData);
-      const updatedStores = currentSettings?.stores
-        ? [...currentSettings?.stores, newData]
-        : [newData];
-      const updatedSettings = { ...currentSettings, stores: updatedStores };
+      updateDeliveryService(newData);
+      const updatedDeliveryServices = currentSettings?.delivery_services.map(
+        (item: DeliveryServiceType) => (item.id === newData.id ? newData : item)
+      );
+      const updatedSettings = {
+        ...currentSettings,
+        delivery_services: updatedDeliveryServices,
+        isPublished: true,
+      };
       const resUpdate = await dbUpdateSettings(updatedSettings);
       if (resUpdate.status === 'success') {
         setCurrentSettings(updatedSettings);
@@ -117,18 +121,19 @@ function CreateStoreForm() {
         return;
       }
     } else {
-      console.log('there was an error adding Store to database');
+      console.log(res.error);
       return;
     }
-    setIsCreatingModalOpen(false);
     setIsLoading(false);
+    setClose();
   }
   function onGenerateSlug(e: any) {
     e.preventDefault();
     const generatedSlug = _.kebabCase(form.getValues('name'));
-    const sameSlugTotal = checkSlugExists({
+    const sameSlugTotal = checkSlugExistsOnOtherList({
       slug: generatedSlug,
-      list: currentSettings?.stores,
+      id: deliveryService.id,
+      list: currentSettings?.delivery_services,
     });
     if (sameSlugTotal) {
       form.setValue('slug', `${generatedSlug}-${sameSlugTotal + 1}`);
@@ -136,42 +141,9 @@ function CreateStoreForm() {
     }
     form.setValue('slug', generatedSlug);
   }
-
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
-        <FormField
-          control={form.control}
-          name="saasTypeSlug"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>SaaS Type</FormLabel>
-              <FormControl>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="SaaS Type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {kSaasTypes.map((item, idx) => {
-                      return (
-                        <SelectItem
-                          key={`select-saas-item-${idx}`}
-                          value={item.slug}
-                        >
-                          {item.title}
-                        </SelectItem>
-                      );
-                    })}
-                  </SelectContent>
-                </Select>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
         <FormField
           control={form.control}
           name="name"
@@ -181,7 +153,6 @@ function CreateStoreForm() {
               <FormControl>
                 <Input placeholder="Enter name here" {...field} />
               </FormControl>
-
               <FormMessage />
             </FormItem>
           )}
@@ -231,7 +202,6 @@ function CreateStoreForm() {
             </FormItem>
           )}
         />
-
         {isLoading ? (
           <div className="w-full h-[50px] flex flex-col items-center justify-center pt-5">
             <span>
@@ -243,7 +213,7 @@ function CreateStoreForm() {
             <Button
               onClick={(e) => {
                 e.preventDefault();
-                setIsCreatingModalOpen(false);
+                setClose();
               }}
               variant={'destructive'}
             >
@@ -257,4 +227,4 @@ function CreateStoreForm() {
   );
 }
 
-export default CreateStoreForm;
+export default UpdateDeliveryServiceForm;

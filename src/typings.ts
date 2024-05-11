@@ -23,6 +23,7 @@ export type StoreType = {
   tags: string;
   logoURL?: string;
   images?: string[];
+  isPublished?: boolean;
 };
 
 export type CollectionType = {
@@ -83,4 +84,40 @@ export type CartItemType = {
   totalAmount: number;
   quantity: number;
   createdAt: string;
+  storeID: string;
+};
+
+export type OrderType = {
+  id: string;
+  customer: any;
+  cart: CartItemType[];
+  createdAt: string;
+  status: any;
+  paymentMethod: string;
+  fulfillmentMethod: string;
+  deliveryService?: {
+    id: string;
+    isConfirmed: boolean;
+  } | null;
+};
+
+export type CustomerType = {
+  firstName: string;
+  lastName: string;
+  mobileNumber: string;
+  address: string;
+};
+
+export type DeliveryServiceType = {
+  id: string;
+  slug: string;
+  name: string;
+  description?: string | null;
+  createdAt: any;
+  updatedAt?: any;
+  riders?: any[];
+  tags: string;
+  logoURL?: string;
+  images?: string[];
+  isPublished?: boolean;
 };

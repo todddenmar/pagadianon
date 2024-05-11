@@ -7,12 +7,14 @@ import {
   MusicIcon,
   ShirtIcon,
   StoreIcon,
+  TruckIcon,
   UserCircleIcon,
   UtensilsIcon,
 } from 'lucide-react';
 import CreateStoreForm from './components/admin/forms/CreateStoreForm';
 import CreateStoreUserForm from './components/admin/forms/CreateStoreUserForm';
 import CreateStoreCollectionForm from './components/admin/forms/CreateStoreCollectionForm';
+import CreateDeliveryServiceForm from './components/admin/forms/CreateDeliveryServiceForm';
 
 export const kRoleType = {
   MANAGER: 'manager',
@@ -34,7 +36,7 @@ export const kAdminPageData = {
       buttonText: 'Add Store',
       title: 'Create New Store',
       description: 'Stores are the businesses we give services',
-      isSettings: false,
+      isSettings: true,
       form: <CreateStoreForm />,
     },
   },
@@ -48,6 +50,18 @@ export const kAdminPageData = {
       description: 'A collection of stores',
       isSettings: false,
       form: <CreateStoreCollectionForm />,
+    },
+  },
+  DELIVERY_SERVICES: {
+    path: '/admin/delivery-services',
+    title: 'Delivery Services',
+    icon: <TruckIcon />,
+    createDialog: {
+      buttonText: 'Add Delivery Service',
+      title: 'Create New Delivery Service',
+      description: 'Delivery Service partners who can accept orders',
+      isSettings: true,
+      form: <CreateDeliveryServiceForm />,
     },
   },
   USERS: {
@@ -68,6 +82,7 @@ export const kAdminPageDataItems = [
   kAdminPageData.DASHBOARD,
   kAdminPageData.STORES,
   kAdminPageData.COLLECTIONS,
+  kAdminPageData.DELIVERY_SERVICES,
   kAdminPageData.USERS,
 ];
 export const kSaasCategory = {
@@ -145,4 +160,48 @@ export const kDaysArrayData = [
   'Thursday',
   'Friday',
   'Saturday',
+];
+
+export const kPaymentMethod = {
+  GCASH: 'gcash',
+  COD: 'cash on delivery/pick-up',
+  BANK: 'bank transfer',
+};
+
+export const kPaymentMethods = [
+  kPaymentMethod.GCASH,
+  kPaymentMethod.COD,
+  kPaymentMethod.BANK,
+];
+
+export const kOrderProgress = {
+  PENDING: 'pending',
+  CONFIRMED: 'confirmed',
+  PICKED_UP: 'picked up',
+  TO_DELIVER: 'to deliver',
+  DELIVERED: 'delivered',
+  READY: 'ready for pick-up',
+};
+export const kOrderDeliveryProgressTypes = [
+  kOrderProgress.PENDING,
+  kOrderProgress.CONFIRMED,
+  kOrderProgress.PICKED_UP,
+  kOrderProgress.TO_DELIVER,
+  kOrderProgress.DELIVERED,
+];
+
+export const kOrderPickUpProgressTpyes = [
+  kOrderProgress.PENDING,
+  kOrderProgress.CONFIRMED,
+  kOrderProgress.READY,
+];
+
+export const kFulfillmentMethod = {
+  PICK_UP: 'pick up',
+  DELIVERY: 'delivery',
+};
+
+export const kFulfillmentMethods = [
+  kFulfillmentMethod.PICK_UP,
+  kFulfillmentMethod.DELIVERY,
 ];

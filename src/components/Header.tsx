@@ -1,36 +1,16 @@
 'use client';
-import {
-  SignInButton,
-  SignedIn,
-  SignedOut,
-  UserButton,
-  useAuth,
-} from '@clerk/nextjs';
+import { SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
 import Link from 'next/link';
-import React, { useState } from 'react';
+import React from 'react';
 import ContainerLayout from './layouts/ContainerLayout';
 import { ThemeToggler } from './ThemeToggler';
 import { CustomNavMenu } from './CustomComponents/CustomNavMenu';
 import MobileMenu from './MobileMenu';
-import { useAppStore } from '@/lib/store';
-import { ShoppingCartIcon } from 'lucide-react';
-import CartContent from './cart/CartContent';
-import { Sheet, SheetContent } from '@/components/ui/sheet';
-import { Drawer, DrawerContent } from '@/components/ui/drawer';
 
 import AppButtonDropdown from './AppButtonDropdown';
+import CartButton from './cart/CartButton';
 
 function Header() {
-  const [currentUserCart] = useAppStore((state) => [state.currentUserCart]);
-  const [isOpenCartSheet, setIsOpenCartSheet] = useState(false);
-  const [isOpenCartDrawer, setIsOpenCartDrawer] = useState(false);
-  const { userId, orgId, has } = useAuth();
-  console.log({
-    userId,
-    orgId,
-    hasAccess: orgId ? has({ permission: 'org:admin:access' }) : false,
-  });
-
   return (
     <div className="h-[60px] flex flex-col justify-center shadow-sm px-2 md:px-5 sticky top-0 z-50 dark:bg-neutral-950 bg-white">
       <ContainerLayout>
@@ -78,41 +58,7 @@ function Header() {
           </div>
           <div className="flex items-center gap-5">
             <div className="flex items-center space-x-2">
-              <button
-                onClick={() => setIsOpenCartSheet(true)}
-                className="relative hidden md:block  dark:bg-neutral"
-              >
-                {currentUserCart.length > 0 && (
-                  <span className="h-[15px] w-[15px] rounded-full absolute -top-[10px] text-white right-[2px] bg-red-500 text-xs flex flex-col items-center justify-center">
-                    {currentUserCart.length}
-                  </span>
-                )}
-                <ShoppingCartIcon className="h-5" />
-              </button>
-              <button
-                onClick={() => setIsOpenCartDrawer(true)}
-                className="relative block md:hidden  dark:bg-neutral"
-              >
-                {currentUserCart.length > 0 && (
-                  <span className="h-[15px] w-[15px] rounded-full absolute -top-[10px] text-white right-[2px] bg-red-500 text-xs flex flex-col items-center justify-center">
-                    {currentUserCart.length}
-                  </span>
-                )}
-                <ShoppingCartIcon className="h-5" />
-              </button>
-              <Sheet open={isOpenCartSheet} onOpenChange={setIsOpenCartSheet}>
-                <SheetContent className="p-0">
-                  <CartContent setClose={() => setIsOpenCartSheet(false)} />
-                </SheetContent>
-              </Sheet>
-              <Drawer
-                open={isOpenCartDrawer}
-                onOpenChange={setIsOpenCartDrawer}
-              >
-                <DrawerContent>
-                  <CartContent setClose={() => setIsOpenCartDrawer(false)} />
-                </DrawerContent>
-              </Drawer>
+              <CartButton />
 
               <ThemeToggler />
               <SignedOut>

@@ -14,12 +14,14 @@ import {
 import CartList from './CartList';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import CustomPesoIcon from '../CustomComponents/CustomPesoIcon';
+import CheckoutSection from '../checkout/CheckoutSection';
 function CartContent({ setClose }: { setClose: () => void }) {
   const [currentUserCart, setCurrentUserCart] = useAppStore((state) => [
     state.currentUserCart,
     state.setCurrentUserCart,
   ]);
   const [isClearingCart, setIsClearingCart] = useState(false);
+  const [isOpenCheckout, setIsOpenCheckout] = useState(false);
   const onClearCart = () => {
     setCurrentUserCart([]);
     setIsClearingCart(false);
@@ -42,7 +44,7 @@ function CartContent({ setClose }: { setClose: () => void }) {
         </div>
         {currentUserCart.length > 0 && (
           <div className="mt-5 w-full flex-1">
-            <ScrollArea className="h-full w-full p-2">
+            <ScrollArea className="h-[400px] md:h-[600px] w-full p-2">
               <CartList />
             </ScrollArea>
           </div>
@@ -67,10 +69,21 @@ function CartContent({ setClose }: { setClose: () => void }) {
               <TrashIcon className="h-5" />
               <span>Clear Cart</span>
             </Button>
-            <Button>Checkout</Button>
+            <Button onClick={() => setIsOpenCheckout(true)}>Checkout</Button>
           </div>
         )}
       </div>
+      <Dialog open={isOpenCheckout} onOpenChange={setIsOpenCheckout}>
+        <DialogContent className="max-w-4xl">
+          <DialogHeader>
+            <DialogTitle>Checkout</DialogTitle>
+            <DialogDescription>
+              Please fill up the required fields.
+            </DialogDescription>
+          </DialogHeader>
+          <CheckoutSection setClose={() => setIsOpenCheckout(false)} />
+        </DialogContent>
+      </Dialog>
       <Dialog open={isClearingCart} onOpenChange={setIsClearingCart}>
         <DialogContent>
           <DialogHeader>

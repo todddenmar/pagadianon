@@ -18,14 +18,24 @@ import { useAppStore } from '@/lib/store';
 import LoadingComponent from '../admin/LoadingComponent.';
 import { Badge } from '../ui/badge';
 import moment from 'moment';
+import { toast } from 'sonner';
 
 function StoreProductVariantCard({ variant }: { variant: VariantType }) {
-  const [currentStoreProducts, currentUserCart, setCurrentUserCart] =
-    useAppStore((state) => [
-      state.currentStoreProducts,
-      state.currentUserCart,
-      state.setCurrentUserCart,
-    ]);
+  const [
+    currentStoreData,
+    currentStoreProducts,
+    currentUserCart,
+    setCurrentUserCart,
+    setIsSheetCartOpen,
+    setIsDrawerCartOpen,
+  ] = useAppStore((state) => [
+    state.currentStoreData,
+    state.currentStoreProducts,
+    state.currentUserCart,
+    state.setCurrentUserCart,
+    state.setIsSheetCartOpen,
+    state.setIsDrawerCartOpen,
+  ]);
   const [isOpenDrawer, setIsOpenDrawer] = useState(false);
   const [quantity, setQuantity] = useState<number>(1);
   useEffect(() => {
@@ -42,12 +52,8 @@ function StoreProductVariantCard({ variant }: { variant: VariantType }) {
   const categoryIcon = kStoreProductCategories.find(
     (item) => item.value === productData.category
   )?.icon;
-  
 
-
-
-
-  const onAddToCart = () => {
+  const onAddToCart = ({ isMobile }: { isMobile: boolean }) => {
     const dateToday = new Date();
     const newData = {
       variantID: variant.id,
@@ -58,6 +64,7 @@ function StoreProductVariantCard({ variant }: { variant: VariantType }) {
       totalAmount: parseInt(variant.price) * quantity,
       quantity: quantity,
       createdAt: moment(dateToday).format('LLL'),
+      storeID: currentStoreData.id,
     };
 
     if (currentUserCart.find((item) => item.variantID === variant.id)) {
@@ -73,11 +80,29 @@ function StoreProductVariantCard({ variant }: { variant: VariantType }) {
       );
       setCurrentUserCart(increaseCartItem);
       setIsOpenDrawer(false);
+      toast.success('Added to cart successfully', {
+        description: moment(new Date()).format('LLL'),
+        position: 'bottom-left',
+        action: {
+          label: 'Open Cart',
+          onClick: () =>
+            isMobile ? setIsDrawerCartOpen(true) : setIsSheetCartOpen(true),
+        },
+      });
       return;
     }
     const updatedCart = [...currentUserCart, newData];
     setCurrentUserCart(updatedCart);
     setIsOpenDrawer(false);
+    toast.success('Added to cart successfully', {
+      description: moment(new Date()).format('LLL'),
+      position: 'bottom-left',
+      action: {
+        label: 'Open Cart',
+        onClick: () =>
+          isMobile ? setIsDrawerCartOpen(true) : setIsSheetCartOpen(true),
+      },
+    });
   };
 
   return (
@@ -187,7 +212,19 @@ function StoreProductVariantCard({ variant }: { variant: VariantType }) {
                 value={quantity}
                 onChange={(val) => setQuantity(val)}
               />
-              <Button onClick={onAddToCart}>Add To Cart</Button>
+
+              <Button
+                className="hidden md:block "
+                onClick={() => onAddToCart({ isMobile: false })}
+              >
+                Add To Cart
+              </Button>
+              <Button
+                className="block md:hidden "
+                onClick={() => onAddToCart({ isMobile: true })}
+              >
+                Add To Cart
+              </Button>
             </div>
           </div>
         </DrawerContent>

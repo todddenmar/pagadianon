@@ -34,21 +34,31 @@ import { Badge } from '@/components/ui/badge';
 import UpdateStoreLogoForm from '../forms/UpdateStoreLogoForm';
 import { AdminStoreContext } from '@/components/providers/AdminStoreContextProvider';
 import { getImageURLsFromSanityStoreBySlug } from '@/helpers/appHelpers';
-import { dbUpdateProductImages } from '@/helpers/firebaseHelpers';
+import {
+  dbUpdateProductImages,
+} from '@/helpers/firebaseHelpers';
 import { toast } from 'sonner';
 import moment from 'moment';
 import { cn } from '@/lib/utils';
+import LoadingComponent from '../LoadingComponent.';
 
 function StoresTable() {
-  const [currentStores, setCurrentStores] = useAppStore((state) => [
-    state.currentStores,
-    state.setCurrentStores,
-  ]);
+  const [currentStores, currentSettings, setCurrentSettings, setCurrentStores] =
+    useAppStore((state) => [
+      state.currentStores,
+      state.currentSettings,
+      state.setCurrentSettings,
+      state.setCurrentStores,
+    ]);
+
   const [selectedStore, setSelectedStore] = useState<StoreType | null>(null);
   const [isEditingStore, setIsEditingStore] = useState(false);
   const [isEditingStoreLogo, setIsEditingStoreLogo] = useState(false);
   const sanityStores = useContext(AdminStoreContext);
   const [isSynching, setIsSynching] = useState(false);
+
+  if (!currentSettings) return <LoadingComponent />;
+  if (!currentStores) return <LoadingComponent />;
   const onEditStore = (data: StoreType) => {
     setSelectedStore(data);
     setIsEditingStore(true);
@@ -63,8 +73,11 @@ function StoresTable() {
       slug: store.slug,
     });
     let isNotEqual = true;
+    const selectedStoreData = currentStores.find(
+      (item) => item.id === store.id
+    );
     images.forEach((item) => {
-      if (!store.images?.includes(item)) {
+      if (!selectedStoreData?.images?.includes(item)) {
         isNotEqual = false;
       }
     });
@@ -94,6 +107,27 @@ function StoresTable() {
     });
     setIsSynching(false);
   };
+
+  const onUpdatePublish = async (store: StoreType, isPublished: boolean) => {
+    const updatedSettingsStores = currentSettings?.stores.map(
+      (item: StoreType) =>
+        item.id === store.id ? { ...item, isPublished: isPublished } : item
+    );
+    const updatedSettings = {
+      ...currentSettings,
+      stores: updatedSettingsStores,
+      isPublished: false,
+    };
+    setCurrentSettings(updatedSettings);
+    toast.success(
+      isPublished
+        ? 'Store published successfully'
+        : 'Store unpublished successfully',
+      {
+        description: 'Publish settings to save updates',
+      }
+    );
+  };
   return (
     <Card>
       <Table>
@@ -108,11 +142,12 @@ function StoresTable() {
             <TableHead>Tags</TableHead>
             <TableHead>SaaS Type</TableHead>
             <TableHead>Sanity Images</TableHead>
+            <TableHead className="text-center">Is Published</TableHead>
             <TableHead className="text-right"></TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {currentStores?.map((item, idx) => {
+          {currentSettings.stores?.map((item: StoreType, idx: number) => {
             const saas = kSaasTypes.find(
               (item2) => item2.slug === item.saasTypeSlug
             );
@@ -146,7 +181,18 @@ function StoresTable() {
                   ) : (
                     <div className={cn('flex space-x-2 items-center')}>
                       <span>Not Synced</span>
-                      <XIcon className="h-5 text-destructive" />
+                      <XIcon className="h-5 text-red-500" />
+                    </div>
+                  )}
+                </TableCell>
+                <TableCell className="flex justify-center">
+                  {item.isPublished ? (
+                    <div className="flex space-x-2 items-center">
+                      <CheckIcon className="h-5 text-green-500" />
+                    </div>
+                  ) : (
+                    <div className={cn('flex space-x-2 items-center')}>
+                      <XIcon className="h-5 text-red-500" />
                     </div>
                   )}
                 </TableCell>
@@ -164,6 +210,19 @@ function StoresTable() {
                       <DropdownMenuItem onClick={() => onEditStoreLogo(item)}>
                         Select Logo
                       </DropdownMenuItem>
+                      {item.isPublished ? (
+                        <DropdownMenuItem
+                          onClick={() => onUpdatePublish(item, false)}
+                        >
+                          Unpublish
+                        </DropdownMenuItem>
+                      ) : (
+                        <DropdownMenuItem
+                          onClick={() => onUpdatePublish(item, true)}
+                        >
+                          Publish
+                        </DropdownMenuItem>
+                      )}
                       {!checkIfImagesSynced(item) && (
                         <DropdownMenuItem
                           onClick={() => onSyncImages(item)}
