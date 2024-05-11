@@ -1,4 +1,5 @@
 import CustomPageHeader from '@/components/CustomPageHeader';
+import LoadingComponent from '@/components/admin/LoadingComponent.';
 import ContainerLayout from '@/components/layouts/ContainerLayout';
 import OrderProgress from '@/components/order/OrderProgress';
 import OrderSection from '@/components/order/OrderSection';
@@ -34,6 +35,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 async function OrderPage({ params }: Props) {
   const orderData = await fetchOrderData({ params });
+  if (!orderData) return <LoadingComponent />;
   return (
     <div>
       <ContainerLayout>
