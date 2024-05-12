@@ -26,7 +26,7 @@ function TrackOrderButton() {
         </DialogTrigger>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Track Order Here</DialogTitle>
+            <DialogTitle>Enter order ID here</DialogTitle>
           </DialogHeader>
           <div className="flex space-x-2 items-center">
             <Input
