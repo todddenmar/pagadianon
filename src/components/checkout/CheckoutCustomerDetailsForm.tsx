@@ -30,11 +30,12 @@ import {
 import moment from 'moment';
 import { useAppStore } from '@/lib/store';
 import { v4 as uuidv4 } from 'uuid';
-import { dbCreateOrder } from '@/helpers/firebaseHelpers';
+import { dbAddOrderOnStore, dbCreateOrder } from '@/helpers/firebaseHelpers';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { LoaderCircleIcon } from 'lucide-react';
-import { DeliveryServiceType } from '@/typings';
+import { DeliveryServiceType, OrderType } from '@/typings';
+import { getStoresByCart } from '@/helpers/appHelpers';
 
 function CheckoutCustomerDetailsForm({ setClose }: { setClose: () => void }) {
   const [
@@ -104,6 +105,31 @@ function CheckoutCustomerDetailsForm({ setClose }: { setClose: () => void }) {
     },
   });
 
+  const updateStoresOrder = async ({
+    orderID,
+    customer,
+  }: {
+    orderID: string;
+    customer: any;
+  }) => {
+    const storesInvolved = getStoresByCart({
+      cart: currentUserCart,
+      stores: currentSettings.stores,
+    });
+    storesInvolved.forEach(async (item: any) => {
+      const res = await dbAddOrderOnStore({
+        data: item,
+        customer,
+        orderID: orderID,
+      });
+      if (res.status === 'error') {
+        console.log(res.error);
+        return;
+      }
+      console.log('Added order on store');
+    });
+  };
+
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
@@ -129,10 +155,12 @@ function CheckoutCustomerDetailsForm({ setClose }: { setClose: () => void }) {
       },
     };
     const res = await dbCreateOrder({ data: newData });
+
     if (res.status === 'error') {
       console.log(res.error);
       return;
     }
+    await updateStoresOrder({ orderID: id, customer: newData.customer });
     toast.success('Order created successfully', {
       description: moment(new Date()).format('LLL'),
     });

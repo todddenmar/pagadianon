@@ -54,7 +54,7 @@ function AppButtonDropdown() {
     <div>
       <DropdownMenu open={isOpenDropDown} onOpenChange={setIsOpenDropDown}>
         <DropdownMenuTrigger asChild>
-          <button className="text-sm px-3 py-1 rounded-full bg-neutral-50 hover:bg-neutral-100 dark:bg-neutral-800 hover:dark:bg-neutral-700 transition-all">
+          <button className="text-sm px-3 py-1 rounded-full bg-highlight hover:bg-highlight_hover text-neutral-950 transition-all font-semibold">
             Account
           </button>
         </DropdownMenuTrigger>
@@ -66,17 +66,18 @@ function AppButtonDropdown() {
           <DropdownMenuItem onClick={() => setIsOpenMyApps(true)}>
             Stores
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setIsOpenDropDown(false)}>
-            <Link href="/orders" legacyBehavior passHref>
-              Orders
-            </Link>
-          </DropdownMenuItem>
-          {userId && orgId && hasAdminPermission && (
+          <Link href="/orders" legacyBehavior passHref>
             <DropdownMenuItem onClick={() => setIsOpenDropDown(false)}>
-              <Link href="/admin" legacyBehavior passHref>
-                Dashboard
-              </Link>
+              Orders
             </DropdownMenuItem>
+          </Link>
+
+          {userId && orgId && hasAdminPermission && (
+            <Link href="/admin" legacyBehavior passHref>
+              <DropdownMenuItem onClick={() => setIsOpenDropDown(false)}>
+                Dashboard
+              </DropdownMenuItem>
+            </Link>
           )}
         </DropdownMenuContent>
       </DropdownMenu>

@@ -1,3 +1,4 @@
+import { kOrderProgress } from '@/constants';
 import { db } from '@/firebase';
 import {
   DeliveryServiceType,
@@ -18,6 +19,7 @@ import {
   query,
   where,
 } from 'firebase/firestore';
+import moment from 'moment';
 
 export const dbAddNewStore = async (data: StoreType) => {
   try {
@@ -355,6 +357,42 @@ export const dbUpdateDeliveryService = async (data: DeliveryServiceType) => {
   const userRef = doc(db, 'delivery_services', String(data.id));
   try {
     await updateDoc(userRef, data);
+    return { status: 'success' };
+  } catch (error) {
+    return { status: 'error', error };
+  }
+};
+
+export const dbAddOrderOnStore = async ({
+  data,
+  customer,
+  orderID,
+}: {
+  data: any;
+  customer: any;
+  orderID: string;
+}) => {
+  const date = new Date();
+  const year = moment(date).format('YYYY');
+  const month = moment(date).format('MM');
+  try {
+    await setDoc(
+      doc(
+        db,
+        'stores',
+        String(data.storeID),
+        'orders',
+        String(year),
+        String(month),
+        String(orderID)
+      ),
+      {
+        orderID: orderID,
+        cart: data.cart,
+        customer,
+        status: kOrderProgress.PENDING,
+      }
+    );
     return { status: 'success' };
   } catch (error) {
     return { status: 'error', error };

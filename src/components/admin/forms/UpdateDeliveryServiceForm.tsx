@@ -26,6 +26,7 @@ import {
 import { LoaderCircleIcon } from 'lucide-react';
 import { checkSlugExistsOnOtherList } from '@/helpers/appHelpers';
 import { DeliveryServiceType } from '@/typings';
+import { toast } from 'sonner';
 
 function UpdateDeliveryServiceForm({
   deliveryService,
@@ -72,9 +73,21 @@ function UpdateDeliveryServiceForm({
     tags: z
       .string()
       .min(2, {
-        message: 'Name must be at least 2 characters.',
+        message: 'tags must be at least 2 characters.',
       })
       .max(50),
+    facebookUsername: z
+      .string()
+      .min(2, {
+        message: 'Username must be at least 2 characters.',
+      })
+      .max(50),
+    facebookMessengerURL: z
+      .string()
+      .min(2, {
+        message: 'URL must be at least 2 characters.',
+      })
+      .max(100),
   });
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
@@ -84,6 +97,8 @@ function UpdateDeliveryServiceForm({
       description: deliveryService.description || '',
       slug: deliveryService.slug,
       tags: deliveryService.tags,
+      facebookUsername: deliveryService.facebookUsername,
+      facebookMessengerURL: deliveryService.facebookMessengerURL,
     },
   });
 
@@ -100,6 +115,8 @@ function UpdateDeliveryServiceForm({
       slug: values.slug,
       description: values.description,
       tags: values.tags,
+      facebookUsername: values.facebookUsername,
+      facebookMessengerURL: values.facebookMessengerURL,
       updatedAt: dateTime,
     };
     const res = await dbUpdateDeliveryService(newData);
@@ -116,6 +133,9 @@ function UpdateDeliveryServiceForm({
       const resUpdate = await dbUpdateSettings(updatedSettings);
       if (resUpdate.status === 'success') {
         setCurrentSettings(updatedSettings);
+        toast.success('Delivery service updated successfully', {
+          description: moment(new Date()).format('LLL'),
+        });
       } else {
         console.log(resUpdate.error);
         return;
@@ -202,6 +222,32 @@ function UpdateDeliveryServiceForm({
             </FormItem>
           )}
         />
+        <FormField
+          control={form.control}
+          name="facebookUsername"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Facebook Username</FormLabel>
+              <FormControl>
+                <Input placeholder="Facebook username here" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="facebookMessengerURL"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Facebook Messenger URL</FormLabel>
+              <FormControl>
+                <Input placeholder="Facebook messenger URL here" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         {isLoading ? (
           <div className="w-full h-[50px] flex flex-col items-center justify-center pt-5">
             <span>
@@ -219,7 +265,7 @@ function UpdateDeliveryServiceForm({
             >
               Cancel
             </Button>
-            <Button type="submit">Submit</Button>
+            <Button type="submit">Update</Button>
           </div>
         )}
       </form>

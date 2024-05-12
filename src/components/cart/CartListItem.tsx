@@ -95,7 +95,7 @@ function CartListItem({
       </div>
       <div className="flex flex-col items-end">
         <div
-          className={cn('flex items-center md:text-xl font-semibold', {
+          className={cn('flex items-center md:text-lg ', {
             'px-2': isAllowingUpdate,
           })}
         >

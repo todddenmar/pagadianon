@@ -164,7 +164,7 @@ export const kDaysArrayData = [
 
 export const kPaymentMethod = {
   GCASH: 'gcash',
-  COD: 'cash on delivery/pick-up',
+  COD: 'cash on delivery',
   BANK: 'bank transfer',
 };
 

@@ -1,6 +1,6 @@
 import React from 'react';
 
-function OrderInfoItem({ label, value }: { label: string; value: string }) {
+function OrderInfoItem({ label, value }: { label: string; value?: any }) {
   return (
     <div className="text-sm flex space-x-2 justify-between capitalize">
       <label>{label}:</label>

@@ -26,6 +26,7 @@ import { LoaderCircleIcon } from 'lucide-react';
 import { checkSlugExists } from '@/helpers/appHelpers';
 import { v4 as uuidv4 } from 'uuid';
 import { Textarea } from '@/components/ui/textarea';
+import { toast } from 'sonner';
 
 function CreateDeliveryServiceForm() {
   const [isLoading, setIsLoading] = useState(false);
@@ -70,6 +71,18 @@ function CreateDeliveryServiceForm() {
         message: 'Tags must be at least 2 characters.',
       })
       .max(50),
+    facebookUsername: z
+      .string()
+      .min(2, {
+        message: 'Username must be at least 2 characters.',
+      })
+      .max(50),
+    facebookMessengerURL: z
+      .string()
+      .min(2, {
+        message: 'URL must be at least 2 characters.',
+      })
+      .max(100),
   });
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
@@ -79,6 +92,8 @@ function CreateDeliveryServiceForm() {
       description: '',
       slug: '',
       tags: '',
+      facebookUsername: '',
+      facebookMessengerURL: '',
     },
   });
 
@@ -107,6 +122,9 @@ function CreateDeliveryServiceForm() {
       const resUpdate = await dbUpdateSettings(updatedSettings);
       if (resUpdate.status === 'success') {
         setCurrentSettings(updatedSettings);
+        toast.success('Delivery service created successfully', {
+          description: moment(new Date()).format('LLL'),
+        });
       } else {
         console.log(resUpdate.error);
         return;
@@ -194,7 +212,32 @@ function CreateDeliveryServiceForm() {
             </FormItem>
           )}
         />
-
+        <FormField
+          control={form.control}
+          name="facebookUsername"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Facebook Username</FormLabel>
+              <FormControl>
+                <Input placeholder="Facebook username here" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="facebookMessengerURL"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Facebook Messenger URL</FormLabel>
+              <FormControl>
+                <Input placeholder="Facebook messenger URL here" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         {isLoading ? (
           <div className="w-full h-[50px] flex flex-col items-center justify-center pt-5">
             <span>

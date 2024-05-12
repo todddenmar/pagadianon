@@ -120,4 +120,6 @@ export type DeliveryServiceType = {
   logoURL?: string;
   images?: string[];
   isPublished?: boolean;
+  facebookUsername: string;
+  facebookMessengerURL: string;
 };

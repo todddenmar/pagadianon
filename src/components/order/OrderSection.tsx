@@ -22,11 +22,6 @@ function OrderSection({ orderData }: { orderData: OrderType }) {
   });
   return (
     <div>
-      <div className="text-sm text-neutral-400 flex items-center space-x-1">
-        <span>Order ID: {orderData.id}</span>
-        <CustomCopyButton label="Copy Order ID" text={orderData.id} />
-      </div>
-
       <Card className="p-5 mt-2 ">
         <div className="grid grid-cols-1 lg:flex gap-5 md:gap-10">
           <div className="space-y-3 lg:max-w-lg">
@@ -48,8 +43,8 @@ function OrderSection({ orderData }: { orderData: OrderType }) {
         <div>
           {orderData.cart?.length > 0 && (
             <div className="flex justify-between items-center mt-2 px-2">
-              <div>Total:</div>
-              <div className="md:text-xl font-semibold">
+              <div className="text-base">Total:</div>
+              <div className="text-2xl md:text-4xl font-semibold">
                 <CustomPesoIcon />
                 {getCartTotal({ cart: orderData.cart })}
               </div>
