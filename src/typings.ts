@@ -121,5 +121,5 @@ export type DeliveryServiceType = {
   images?: string[];
   isPublished?: boolean;
   facebookUsername: string;
-  facebookMessengerURL: string;
+  messengerUsername: string;
 };

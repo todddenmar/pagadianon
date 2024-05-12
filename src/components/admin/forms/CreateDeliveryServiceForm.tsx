@@ -77,10 +77,10 @@ function CreateDeliveryServiceForm() {
         message: 'Username must be at least 2 characters.',
       })
       .max(50),
-    facebookMessengerURL: z
+    messengerUsername: z
       .string()
       .min(2, {
-        message: 'URL must be at least 2 characters.',
+        message: 'Messenger Username must be at least 2 characters.',
       })
       .max(100),
   });
@@ -93,7 +93,7 @@ function CreateDeliveryServiceForm() {
       slug: '',
       tags: '',
       facebookUsername: '',
-      facebookMessengerURL: '',
+      messengerUsername: '',
     },
   });
 
@@ -227,12 +227,12 @@ function CreateDeliveryServiceForm() {
         />
         <FormField
           control={form.control}
-          name="facebookMessengerURL"
+          name="messengerUsername"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Facebook Messenger URL</FormLabel>
+              <FormLabel>Messenger URL</FormLabel>
               <FormControl>
-                <Input placeholder="Facebook messenger URL here" {...field} />
+                <Input placeholder="Messenger Username here" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

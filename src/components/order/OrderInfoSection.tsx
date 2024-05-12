@@ -44,7 +44,14 @@ function OrderInfoSection({ orderData }: { orderData: OrderType }) {
             <div>
               <OrderInfoItem
                 label="Delivery Service Company"
-                value={deliveryService.name}
+                value={
+                  <a
+                    target="_blank"
+                    href={`https://m.facebook.com/${deliveryService?.facebookUsername}`}
+                  >
+                    {deliveryService.name}
+                  </a>
+                }
               />
               <div className="text-center py-5 text-sm">
                 {orderData.deliveryService?.isConfirmed ? (
@@ -62,7 +69,7 @@ function OrderInfoSection({ orderData }: { orderData: OrderType }) {
         </div>
         <a
           target="_blank"
-          href={`https://m.me/105950327594371`}
+          href={`https://m.me/${deliveryService?.messengerUsername}`}
           className="p-3 text-sm cursor-pointer font-semibold transition-all flex items-center space-x-2 justify-center bg-highlight hover:bg-highlight_hover text-neutral-950"
         >
           <span>Send us your Order ID</span>

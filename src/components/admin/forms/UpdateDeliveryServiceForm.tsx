@@ -82,10 +82,10 @@ function UpdateDeliveryServiceForm({
         message: 'Username must be at least 2 characters.',
       })
       .max(50),
-    facebookMessengerURL: z
+    messengerUsername: z
       .string()
       .min(2, {
-        message: 'URL must be at least 2 characters.',
+        message: 'Messenger Username must be at least 2 characters.',
       })
       .max(100),
   });
@@ -98,7 +98,7 @@ function UpdateDeliveryServiceForm({
       slug: deliveryService.slug,
       tags: deliveryService.tags,
       facebookUsername: deliveryService.facebookUsername,
-      facebookMessengerURL: deliveryService.facebookMessengerURL,
+      messengerUsername: deliveryService.messengerUsername,
     },
   });
 
@@ -116,7 +116,7 @@ function UpdateDeliveryServiceForm({
       description: values.description,
       tags: values.tags,
       facebookUsername: values.facebookUsername,
-      facebookMessengerURL: values.facebookMessengerURL,
+      messengerUsername: values.messengerUsername,
       updatedAt: dateTime,
     };
     const res = await dbUpdateDeliveryService(newData);
@@ -237,12 +237,12 @@ function UpdateDeliveryServiceForm({
         />
         <FormField
           control={form.control}
-          name="facebookMessengerURL"
+          name="messengerUsername"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Facebook Messenger URL</FormLabel>
+              <FormLabel>Messenger Username</FormLabel>
               <FormControl>
-                <Input placeholder="Facebook messenger URL here" {...field} />
+                <Input placeholder="Messenger username here" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
