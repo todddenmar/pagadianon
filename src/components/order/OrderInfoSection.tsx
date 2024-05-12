@@ -62,8 +62,8 @@ function OrderInfoSection({ orderData }: { orderData: OrderType }) {
         </div>
         <a
           target="_blank"
-          href={deliveryService?.facebookMessengerURL}
-          className="p-3 cursor-pointer font-semibold transition-all flex items-center space-x-2 justify-center bg-highlight hover:bg-highlight_hover text-neutral-950"
+          href={`https://m.me/105950327594371`}
+          className="p-3 text-sm cursor-pointer font-semibold transition-all flex items-center space-x-2 justify-center bg-highlight hover:bg-highlight_hover text-neutral-950"
         >
           <span>Send us your Order ID</span>
           <MessageCircleIcon />
