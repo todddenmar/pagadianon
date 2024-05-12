@@ -24,14 +24,14 @@ function OrderContextProvider({
   children: any;
 }) {
   const { isLoaded, isSignedIn, user } = useUser();
-
-  if (!isLoaded || !isSignedIn) {
-    return null;
-  }
   const [orderData, setOrderData] = useState(data);
   const [currentUserEmail, setCurrentUserEmail] = useState(
     user?.primaryEmailAddress?.emailAddress
   );
+  if (!isLoaded || !isSignedIn) {
+    return null;
+  }
+
   return (
     <OrderContext.Provider
       value={{ orderData, setOrderData, currentUserEmail, setCurrentUserEmail }}
