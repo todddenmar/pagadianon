@@ -15,6 +15,8 @@ import {
 import { kSaasCategories } from '@/constants';
 import { useAppStore } from '@/lib/store';
 import { CollectionType } from '@/typings';
+import { Button } from '../ui/button';
+import TrackOrderButton from '../order/TrackOrderButton';
 
 const components: {
   slug: string;
@@ -74,6 +76,9 @@ export function CustomNavMenu() {
               ))}
             </ul>
           </NavigationMenuContent>
+        </NavigationMenuItem>
+        <NavigationMenuItem>
+          <TrackOrderButton />
         </NavigationMenuItem>
         {/* <NavigationMenuItem>
           <Link href="/docs" legacyBehavior passHref>

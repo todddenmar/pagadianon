@@ -45,12 +45,17 @@ function OrderInfoSection({ orderData }: { orderData: OrderType }) {
               <OrderInfoItem
                 label="Delivery Service Company"
                 value={
-                  <a
-                    target="_blank"
-                    href={`https://m.facebook.com/${deliveryService?.facebookUsername}`}
-                  >
-                    {deliveryService.name}
-                  </a>
+                  deliveryService?.facebookUsername ? (
+                    <a
+                      target="_blank"
+                      className="text-highlight"
+                      href={`https://m.facebook.com/${deliveryService?.facebookUsername}`}
+                    >
+                      {deliveryService.name}
+                    </a>
+                  ) : (
+                    deliveryService.name
+                  )
                 }
               />
               <div className="text-center py-5 text-sm">

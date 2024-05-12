@@ -9,6 +9,7 @@ import MobileMenu from './MobileMenu';
 
 import AppButtonDropdown from './AppButtonDropdown';
 import CartButton from './cart/CartButton';
+import TrackOrderButton from './order/TrackOrderButton';
 
 function Header() {
   return (
@@ -58,6 +59,9 @@ function Header() {
           </div>
           <div className="flex items-center gap-5">
             <div className="flex items-center space-x-2">
+              <div className="lg:hidden">
+                <TrackOrderButton />
+              </div>
               <CartButton />
 
               <ThemeToggler />
