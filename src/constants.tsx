@@ -205,3 +205,13 @@ export const kFulfillmentMethods = [
   kFulfillmentMethod.PICK_UP,
   kFulfillmentMethod.DELIVERY,
 ];
+
+export const kDeliveryServiceRoleType = {
+  MANAGER: 'manager',
+  RIDER: 'rider',
+};
+
+export const kDeliveryServiceRoleTypes = [
+  kDeliveryServiceRoleType.RIDER,
+  kDeliveryServiceRoleType.MANAGER,
+];

@@ -63,13 +63,18 @@ function CartContent({ setClose }: { setClose: () => void }) {
           <div className="mt-5 grid grid-cols-2 gap-2">
             <Button
               onClick={() => setIsClearingCart(true)}
-              variant={'destructive'}
+              variant={'secondary'}
               className="flex items-center space-x-2"
             >
               <TrashIcon className="h-5" />
               <span>Clear Cart</span>
             </Button>
-            <Button onClick={() => setIsOpenCheckout(true)}>Checkout</Button>
+            <Button
+              className="bg-highlight hover:bg-highlight_hover text-neutral-900"
+              onClick={() => setIsOpenCheckout(true)}
+            >
+              Checkout
+            </Button>
           </div>
         )}
       </div>
@@ -96,11 +101,14 @@ function CartContent({ setClose }: { setClose: () => void }) {
           <div className="grid grid-cols-2 gap-5">
             <Button
               onClick={() => setIsClearingCart(false)}
-              variant={'destructive'}
+              variant={'secondary'}
             >
               Cancel
             </Button>
-            <Button onClick={onClearCart} variant={'default'}>
+            <Button
+              className="bg-highlight hover:bg-highlight_hover text-neutral-900"
+              onClick={onClearCart}
+            >
               Confirm
             </Button>
           </div>

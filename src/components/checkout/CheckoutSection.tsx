@@ -6,12 +6,7 @@ import { useAppStore } from '@/lib/store';
 
 function CheckoutSection({ setClose }: { setClose: () => void }) {
   const [currentUserCart] = useAppStore((state) => [state.currentUserCart]);
-  useEffect(() => {
-    navigator.geolocation.getCurrentPosition(function (position) {
-      console.log('Latitude is :', position.coords.latitude);
-      console.log('Longitude is :', position.coords.longitude);
-    });
-  });
+
   return (
     <div>
       <ScrollArea className="h-[500px] w-full rounded-md border p-4 md:hidden">

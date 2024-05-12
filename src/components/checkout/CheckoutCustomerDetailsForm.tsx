@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { z } from 'zod';
 
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -33,9 +33,9 @@ import { v4 as uuidv4 } from 'uuid';
 import { dbAddOrderOnStore, dbCreateOrder } from '@/helpers/firebaseHelpers';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
-import { LoaderCircleIcon } from 'lucide-react';
+import { LoaderCircleIcon, NavigationIcon } from 'lucide-react';
 import { DeliveryServiceType, OrderType } from '@/typings';
-import { getStoresByCart } from '@/helpers/appHelpers';
+import { getStoreIDsByCart, getStoresByCart } from '@/helpers/appHelpers';
 
 function CheckoutCustomerDetailsForm({ setClose }: { setClose: () => void }) {
   const [
@@ -59,6 +59,22 @@ function CheckoutCustomerDetailsForm({ setClose }: { setClose: () => void }) {
     kFulfillmentMethod.PICK_UP
   );
   const [paymentMethod, setPaymentMethod] = useState(kPaymentMethod.COD);
+  const [coordinates, setCoordinates] = useState<{
+    latitude: number;
+    longitude: number;
+  } | null>(null);
+  console.log({ coordinates });
+  const getCoordinates = () => {
+    navigator.geolocation.getCurrentPosition(function (position) {
+      setCoordinates({
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+      });
+    });
+  };
+  useEffect(() => {
+    getCoordinates();
+  }, []);
 
   const paymentMethods =
     fulfillmentMethod === kFulfillmentMethod.PICK_UP
@@ -138,7 +154,7 @@ function CheckoutCustomerDetailsForm({ setClose }: { setClose: () => void }) {
     const { firstName, lastName, mobileNumber, address } = values;
     const newData = {
       id: id,
-      customer: { firstName, lastName, mobileNumber, address },
+      customer: { firstName, lastName, mobileNumber, address, coordinates },
       paymentMethod: paymentMethod,
       fulfillmentMethod: fulfillmentMethod,
       deliveryService:
@@ -153,6 +169,10 @@ function CheckoutCustomerDetailsForm({ setClose }: { setClose: () => void }) {
       status: {
         progress: kOrderProgress.PENDING,
       },
+      storesInvolved: getStoreIDsByCart({
+        cart: currentUserCart,
+        stores: currentSettings.stores,
+      }),
     };
     const res = await dbCreateOrder({ data: newData });
 
@@ -325,6 +345,16 @@ function CheckoutCustomerDetailsForm({ setClose }: { setClose: () => void }) {
             <FormMessage />
           </FormItem>
         )}
+
+        {coordinates && (
+          <a
+            target="_blank"
+            href={`https://www.google.com/maps/dir/?api=1&travelmode=driving&layer=traffic&destination=${coordinates.latitude},${coordinates.longitude}`}
+            className="p-3 rounded-md text-sm cursor-pointer font-semibold transition-all flex items-center space-x-2 justify-center bg-highlight hover:bg-highlight_hover text-neutral-950"
+          >
+            <span>Check Location</span> <NavigationIcon className="h-5" />
+          </a>
+        )}
         {isLoading ? (
           <div className="w-full h-[50px] flex flex-col items-center justify-center pt-5">
             <span>
@@ -338,13 +368,28 @@ function CheckoutCustomerDetailsForm({ setClose }: { setClose: () => void }) {
                 e.preventDefault();
                 setClose();
               }}
-              variant={'destructive'}
+              variant={'secondary'}
             >
               Cancel
             </Button>
-            <Button type="submit" className="w-full">
-              Place Order
-            </Button>
+            {coordinates ? (
+              <Button
+                type="submit"
+                className="bg-highlight hover:bg-highlight_hover transition-colors text-neutral-950 w-full"
+              >
+                Place Order
+              </Button>
+            ) : (
+              <Button
+                className="bg-highlight hover:bg-highlight_hover transition-colors text-neutral-950 w-full"
+                onClick={(e) => {
+                  e.preventDefault();
+                  getCoordinates();
+                }}
+              >
+                Allow Location
+              </Button>
+            )}
           </div>
         )}
       </form>

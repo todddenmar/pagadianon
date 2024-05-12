@@ -322,8 +322,14 @@ export const dbUpdatePublish = async ({
 };
 
 export const dbCreateOrder = async ({ data }: { data: OrderType }) => {
+  const date = new Date();
+  const year = moment(date).format('YYYY');
+  const month = moment(date).format('MM');
   try {
-    await setDoc(doc(db, 'orders', String(data.id)), data);
+    await setDoc(
+      doc(db, 'orders', String(year), String(month), String(data.id)),
+      data
+    );
     return { status: 'success' };
   } catch (error) {
     return { status: 'error', error };
@@ -331,7 +337,10 @@ export const dbCreateOrder = async ({ data }: { data: OrderType }) => {
 };
 
 export const dbGetOrderData = async (id: string) => {
-  const docRef = doc(db, 'orders', id);
+  const date = new Date();
+  const year = moment(date).format('YYYY');
+  const month = moment(date).format('MM');
+  const docRef = doc(db, 'orders', String(year), String(month), id);
   const docSnap = await getDoc(docRef);
   if (docSnap.exists()) {
     return { status: 'success', data: docSnap.data() };
@@ -393,6 +402,24 @@ export const dbAddOrderOnStore = async ({
         status: kOrderProgress.PENDING,
       }
     );
+    return { status: 'success' };
+  } catch (error) {
+    return { status: 'error', error };
+  }
+};
+
+export const dbUpdateStoreCartStatus = async ({
+  orderID,
+  storesInvolved,
+}: {
+  orderID: string;
+  storesInvolved: any[];
+}) => {
+  const userRef = doc(db, 'orders', String(orderID));
+  try {
+    await updateDoc(userRef, {
+      storesInvolved: storesInvolved,
+    });
     return { status: 'success' };
   } catch (error) {
     return { status: 'error', error };

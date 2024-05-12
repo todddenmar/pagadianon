@@ -73,7 +73,7 @@ function CartListItem({
           <div className="flex items-center gap-2 mt-2 text-sm">
             <div className="flex items-center gap-2 p-1  rounded-full dark:bg-neutral-900 bg-neutral-100">
               <button
-                className=" p-1 bg-neutral-200 dark:bg-neutral-800 rounded-full"
+                className=" p-1 bg-neutral-200 dark:bg-neutral-800 rounded-lg"
                 onClick={() =>
                   qty === 1
                     ? onRemoveItem(cartItem.variantID)
@@ -84,7 +84,7 @@ function CartListItem({
               </button>
               {qty}
               <button
-                className=" p-1 bg-neutral-200 dark:bg-neutral-800 rounded-full"
+                className=" p-1 bg-neutral-200 dark:bg-neutral-800 rounded-lg"
                 onClick={() => onIncreaseQuantity(cartItem)}
               >
                 <PlusIcon className="h-[16px]" />

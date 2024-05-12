@@ -1,5 +1,5 @@
-import { DeliveryServiceType, OrderType } from '@/typings';
-import React from 'react';
+import { DeliveryServiceType } from '@/typings';
+import React, { useContext } from 'react';
 import OrderSectionTitle from './OrderSectionTitle';
 import { Card } from '../ui/card';
 import OrderInfoItem from './OrderInfoItem';
@@ -7,9 +7,12 @@ import LoadingComponent from '../admin/LoadingComponent.';
 import { useAppStore } from '@/lib/store';
 import CustomCopyButton from '../CustomComponents/CustomCopyButton';
 import { MessageCircleIcon } from 'lucide-react';
+import { OrderContext } from '../providers/OrderContextProvider';
 
-function OrderInfoSection({ orderData }: { orderData: OrderType }) {
+function OrderInfoSection() {
   const currentSettings = useAppStore((state) => state.currentSettings);
+  const { orderData } = useContext(OrderContext);
+  if (!orderData) return <LoadingComponent />;
   if (!currentSettings) return <LoadingComponent />;
   const deliveryService = currentSettings.delivery_services.find(
     (item: DeliveryServiceType) => item.id === orderData.deliveryService?.id
@@ -78,7 +81,7 @@ function OrderInfoSection({ orderData }: { orderData: OrderType }) {
           className="p-3 text-sm cursor-pointer font-semibold transition-all flex items-center space-x-2 justify-center bg-highlight hover:bg-highlight_hover text-neutral-950"
         >
           <span>Send us your Order ID</span>
-          <MessageCircleIcon />
+          <MessageCircleIcon className="h-5" />
         </a>
       </Card>
     </div>

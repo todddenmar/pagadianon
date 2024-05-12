@@ -41,6 +41,7 @@ export type UserType = {
   email: string;
   roleType: string;
   stores?: string[];
+  deliveryServices?: string[];
   createdAt: any;
   updatedAt?: any;
 };
@@ -99,6 +100,10 @@ export type OrderType = {
     id: string;
     isConfirmed: boolean;
   } | null;
+  storesInvolved: {
+    storeID: string;
+    isConfirmed: boolean;
+  }[];
 };
 
 export type CustomerType = {
@@ -106,6 +111,10 @@ export type CustomerType = {
   lastName: string;
   mobileNumber: string;
   address: string;
+  coordinates: {
+    latitude: number;
+    longitude: number;
+  } | null;
 };
 
 export type DeliveryServiceType = {
@@ -115,7 +124,7 @@ export type DeliveryServiceType = {
   description?: string | null;
   createdAt: any;
   updatedAt?: any;
-  riders?: any[];
+  users?: any[];
   tags: string;
   logoURL?: string;
   images?: string[];

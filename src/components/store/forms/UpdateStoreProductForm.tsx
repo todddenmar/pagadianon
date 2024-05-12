@@ -247,11 +247,16 @@ function UpdateStoreProductForm({
                 e.preventDefault();
                 setClose();
               }}
-              variant={'destructive'}
+              variant={'secondary'}
             >
               Cancel
             </Button>
-            <Button type="submit">Update</Button>
+            <Button
+              className="bg-highlight hover:bg-highlight_hover"
+              type="submit"
+            >
+              Update
+            </Button>
           </div>
         )}
       </form>

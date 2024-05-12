@@ -182,11 +182,16 @@ function CreateStoreCollectionForm() {
                 e.preventDefault();
                 setIsCreatingModalOpen(false);
               }}
-              variant={'destructive'}
+              variant={'secondary'}
             >
               Cancel
             </Button>
-            <Button type="submit">Submit</Button>
+            <Button
+              className="bg-highlight hover:bg-highlight_hover"
+              type="submit"
+            >
+              Submit
+            </Button>
           </div>
         )}
       </form>

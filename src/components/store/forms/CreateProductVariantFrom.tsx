@@ -248,11 +248,14 @@ function CreateProductVariantForm({
                     e.preventDefault();
                     onReset();
                   }}
-                  variant={'destructive'}
+                  variant={'secondary'}
                 >
                   Reset
                 </Button>
-                <Button type="submit">
+                <Button
+                  className="bg-highlight hover:bg-highlight_hover"
+                  type="submit"
+                >
                   {toEditVariant ? 'Update Variant' : 'Add Variant'}
                 </Button>
               </div>
@@ -317,7 +320,7 @@ function CreateProductVariantForm({
                 e.preventDefault();
                 setClose();
               }}
-              variant={'destructive'}
+              variant={'secondary'}
             >
               Cancel
             </Button>

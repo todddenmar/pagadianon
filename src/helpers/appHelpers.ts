@@ -153,3 +153,26 @@ export const getStoresByCart = ({
   });
   return storesCarts;
 };
+
+export const getStoreIDsByCart = ({
+  cart,
+  stores,
+}: {
+  cart: CartItemType[];
+  stores: StoreType[];
+}) => {
+  let storesOrdered: any[] = [];
+  cart.forEach((cartItem) => {
+    const store = stores.find(
+      (storeItem: StoreType) => storeItem.id === cartItem.storeID
+    );
+    if (!storesOrdered.find((x) => x.storeID === cartItem.storeID)) {
+      if (store)
+        storesOrdered.push({
+          storeID: store.id,
+          isConfirmed: false,
+        });
+    }
+  });
+  return storesOrdered;
+};

@@ -31,11 +31,7 @@ function AppButtonDropdown() {
     state.currentSettings,
   ]);
   if (!currentUserData)
-    return (
-      <div className="text-sm">
-        <LoaderIcon className="h-[16px] animate-spin" />
-      </div>
-    );
+    return null;
   let hasAdminPermission = false;
   if (userId && orgId) {
     hasAdminPermission = has({ permission: 'org:admin:access' });

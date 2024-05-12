@@ -220,7 +220,12 @@ function StoreSettingsForm() {
             </div>
           ) : (
             <div className="w-full grid grid-cols-2 gap-5 pt-5">
-              <Button type="submit">Update</Button>
+              <Button
+                className="bg-highlight hover:bg-highlight_hover"
+                type="submit"
+              >
+                Update
+              </Button>
             </div>
           )}
         </form>

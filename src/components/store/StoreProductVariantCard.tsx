@@ -214,13 +214,13 @@ function StoreProductVariantCard({ variant }: { variant: VariantType }) {
               />
 
               <Button
-                className="hidden md:block "
+                className="hidden md:block bg-highlight hover:bg-highlight_hover text-neutral-950 transition-colors"
                 onClick={() => onAddToCart({ isMobile: false })}
               >
                 Add To Cart
               </Button>
               <Button
-                className="block md:hidden "
+                className="block md:hidden bg-highlight hover:bg-highlight_hover text-neutral-950 transition-colors"
                 onClick={() => onAddToCart({ isMobile: true })}
               >
                 Add To Cart

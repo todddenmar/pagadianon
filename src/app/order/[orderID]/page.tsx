@@ -3,8 +3,11 @@ import LoadingComponent from '@/components/admin/LoadingComponent.';
 import ContainerLayout from '@/components/layouts/ContainerLayout';
 import OrderProgress from '@/components/order/OrderProgress';
 import OrderSection from '@/components/order/OrderSection';
+import OrderContextProvider from '@/components/providers/OrderContextProvider';
 import { dbGetOrderData } from '@/helpers/firebaseHelpers';
 import { OrderType } from '@/typings';
+import { SignIn } from '@clerk/nextjs';
+import { auth, currentUser } from '@clerk/nextjs/server';
 import { Metadata } from 'next';
 import React from 'react';
 
@@ -35,27 +38,30 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 async function OrderPage({ params }: Props) {
   const orderData = await fetchOrderData({ params });
+  // Get the userId from auth() -- if null, the user is not signed in
   if (!orderData) return <LoadingComponent />;
   return (
-    <div>
-      <ContainerLayout>
-        <div className="grid grid-cols-1 md:grid-cols-2 items-start gap-5">
-          <CustomPageHeader
-            title={'Order Page'}
-            description="Customer order page"
-          />
-          <OrderProgress orderData={orderData} />
-        </div>
-
-        {orderData ? (
-          <div className="mt-5">
-            <OrderSection orderData={orderData} />
+    <OrderContextProvider data={orderData}>
+      <div className="my-5">
+        <ContainerLayout>
+          <div className="grid grid-cols-1 md:grid-cols-2 items-start gap-5">
+            <CustomPageHeader
+              title={'Order Page'}
+              description="Customer order page"
+            />
+            <OrderProgress />
           </div>
-        ) : (
-          <div>Order Not Found</div>
-        )}
-      </ContainerLayout>
-    </div>
+
+          {orderData ? (
+            <div className="mt-5">
+              <OrderSection />
+            </div>
+          ) : (
+            <div>Order Not Found</div>
+          )}
+        </ContainerLayout>
+      </div>
+    </OrderContextProvider>
   );
 }
 

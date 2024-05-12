@@ -92,7 +92,7 @@ function UpdateStoreLogoForm({
             onClick={(e) => {
               setClose();
             }}
-            variant={'destructive'}
+            variant={'secondary'}
           >
             Cancel
           </Button>

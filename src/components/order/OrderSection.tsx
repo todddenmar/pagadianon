@@ -1,42 +1,30 @@
 'use client';
-import { CartItemType, OrderType, StoreType } from '@/typings';
-import React from 'react';
+import React, { useContext } from 'react';
 import { Card } from '../ui/card';
-import CustomCopyButton from '../CustomComponents/CustomCopyButton';
 import OrderCustomerInfo from './OrderCustomerInfo';
-import { useAppStore } from '@/lib/store';
 import LoadingComponent from '../admin/LoadingComponent.';
 import CustomPesoIcon from '../CustomComponents/CustomPesoIcon';
-import { getCartTotal, getStoresByCart } from '@/helpers/appHelpers';
+import { getCartTotal } from '@/helpers/appHelpers';
 import { Separator } from '../ui/separator';
 import OrderSectionTitle from './OrderSectionTitle';
-import OrderStoreCartItem from './OrderStoreCartItem';
 import OrderInfoSection from './OrderInfoSection';
+import OrderStoreCartItems from './OrderStoreCartItems';
+import { OrderContext } from '../providers/OrderContextProvider';
 
-function OrderSection({ orderData }: { orderData: OrderType }) {
-  const [currentSettings] = useAppStore((state) => [state.currentSettings]);
-  if (!currentSettings) return <LoadingComponent />;
-  const storesCarts = getStoresByCart({
-    cart: orderData.cart,
-    stores: currentSettings.stores,
-  });
+function OrderSection() {
+  const { orderData } = useContext(OrderContext);
+  if (!orderData) return <LoadingComponent />;
   return (
     <div>
       <Card className="p-5 mt-2 ">
         <div className="grid grid-cols-1 lg:flex gap-5 md:gap-10">
           <div className="space-y-3 lg:max-w-lg">
-            <OrderCustomerInfo customer={orderData.customer} />
-            <OrderInfoSection orderData={orderData} />
+            <OrderCustomerInfo />
+            <OrderInfoSection />
           </div>
           <div className="flex-1 ">
-            <OrderSectionTitle text="Cart Items" />
-            <div className="gap-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 mt-2">
-              {storesCarts?.map((item: any, idx: number) => {
-                return (
-                  <OrderStoreCartItem key={`store-cart-${idx}`} item={item} />
-                );
-              })}
-            </div>
+            <OrderSectionTitle text="Cart Items by Store" />
+            <OrderStoreCartItems />
           </div>
         </div>
         <Separator className="my-3" />

@@ -18,7 +18,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useAppStore } from '@/lib/store';
-import { DeliveryServiceType } from '@/typings';
+import { DeliveryServiceType, UserType } from '@/typings';
 import { CheckIcon, MoreHorizontalIcon, XIcon } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
@@ -31,6 +31,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import UpdateDeliveryServiceForm from '../forms/UpdateDeliveryServiceForm';
+import AddDeliveryServiceUserForm from '../forms/AddDeliveryServiceUserForm';
 
 function DeliveryServicesTable() {
   const [currentSettings, setCurrentSettings] = useAppStore((state) => [
@@ -41,10 +42,16 @@ function DeliveryServicesTable() {
     useState<DeliveryServiceType | null>(null);
   const [isEditingDeliveryService, setIsEditingDeliveryService] =
     useState(false);
+  const [isAddingUser, setIsAddingUser] = useState(false);
+  useState(false);
   if (!currentSettings) return <LoadingComponent />;
   const onEditDeliveryService = (data: DeliveryServiceType) => {
     setSelectedDeliveryService(data);
     setIsEditingDeliveryService(true);
+  };
+  const onAddUser = (data: DeliveryServiceType) => {
+    setSelectedDeliveryService(data);
+    setIsAddingUser(true);
   };
   const onUpdatePublish = async (
     deliveryService: DeliveryServiceType,
@@ -119,6 +126,9 @@ function DeliveryServicesTable() {
                         >
                           Edit
                         </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => onAddUser(item)}>
+                          Add User
+                        </DropdownMenuItem>
                         {item.isPublished ? (
                           <DropdownMenuItem
                             onClick={() => onUpdatePublish(item, false)}
@@ -141,6 +151,22 @@ function DeliveryServicesTable() {
           )}
         </TableBody>
       </Table>
+      <Dialog open={isAddingUser} onOpenChange={setIsAddingUser}>
+        {selectedDeliveryService && (
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>
+                Adding user for: {`${selectedDeliveryService.name}`}
+              </DialogTitle>
+              <DialogDescription>Add users with role.</DialogDescription>
+            </DialogHeader>
+            <AddDeliveryServiceUserForm
+              deliveryService={selectedDeliveryService}
+              setClose={() => setIsAddingUser(false)}
+            />
+          </DialogContent>
+        )}
+      </Dialog>
       <Dialog
         open={isEditingDeliveryService}
         onOpenChange={setIsEditingDeliveryService}

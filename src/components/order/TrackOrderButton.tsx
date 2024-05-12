@@ -10,35 +10,56 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '../ui/input';
 import { PackageSearchIcon } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 function TrackOrderButton() {
   const [orderLink, setOrderLink] = useState('');
+  const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
+  const onSubmit = () => {
+    if (orderLink === '') {
+      return;
+    }
+    setIsOpen(false);
+    router.push(`/order/${orderLink}`);
+  };
   return (
     <div>
-      <Dialog>
-        <DialogTrigger asChild className="hidden lg:block">
-          <Button variant="ghost">Track Order</Button>
-        </DialogTrigger>
-        <DialogTrigger asChild className="block lg:hidden">
-          <Button variant="ghost">
-            <PackageSearchIcon className="h-[20px]" />
-          </Button>
-        </DialogTrigger>
+      <Button
+        onClick={() => setIsOpen(true)}
+        variant="ghost"
+        className="hidden lg:block"
+      >
+        Track Order
+      </Button>
+      <Button
+        onClick={() => setIsOpen(true)}
+        variant="ghost"
+        className="block lg:hidden"
+      >
+        <PackageSearchIcon className="h-[20px]" />
+      </Button>
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Enter order ID here</DialogTitle>
           </DialogHeader>
-          <div className="flex space-x-2 items-center">
+          <div className="">
             <Input
               value={orderLink}
               onChange={(val) => setOrderLink(val.target.value)}
             />
-            <a
-              className="p-2 bg-highlight hover:bg-highlight_hover rounded-md text-neutral-950"
-              href={`/order/${orderLink}`}
-            >
-              <PackageSearchIcon />
-            </a>
+            <div className="grid grid-cols-2 gap-5 mt-5">
+              <Button variant={'secondary'} onClick={() => setIsOpen(false)}>
+                Cancel
+              </Button>
+              <Button
+                className="bg-highlight hover:bg-highlight_hover text-sm font-semibold"
+                onClick={onSubmit}
+              >
+                <PackageSearchIcon className="h-5" /> Track Order
+              </Button>
+            </div>
           </div>
         </DialogContent>
       </Dialog>

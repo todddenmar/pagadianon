@@ -1,4 +1,5 @@
-import React from 'react';
+'use client';
+import React, { useContext } from 'react';
 import { Progress } from '@/components/ui/progress';
 import {
   kFulfillmentMethod,
@@ -7,11 +8,15 @@ import {
 } from '@/constants';
 import { cn } from '@/lib/utils';
 import { OrderType } from '@/typings';
-function OrderProgress({ orderData }: { orderData: OrderType }) {
+import { OrderContext } from '../providers/OrderContextProvider';
+import LoadingComponent from '../admin/LoadingComponent.';
+function OrderProgress() {
+  const { orderData } = useContext(OrderContext);
+  if (!orderData) return <LoadingComponent />;
   const progressText =
-    orderData.status.progress === undefined
+    orderData.status?.progress === undefined
       ? 'pending'
-      : orderData.status.progress;
+      : orderData.status?.progress;
   const fulfillmentMethod = orderData.fulfillmentMethod;
   const value =
     fulfillmentMethod === kFulfillmentMethod.PICK_UP
