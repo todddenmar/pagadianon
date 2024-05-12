@@ -35,9 +35,17 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { LoaderCircleIcon, NavigationIcon } from 'lucide-react';
 import { DeliveryServiceType, OrderType } from '@/typings';
-import { getStoreIDsByCart, getStoresByCart } from '@/helpers/appHelpers';
+import {
+  convertStringCoordinatesToObject,
+  getDirectionByCoordinates,
+  getStoreIDsByCart,
+  getStoresByCart,
+} from '@/helpers/appHelpers';
+import CustomerCheckoutCart from './CustomerCheckoutCart';
+import { ScrollArea } from '../ui/scroll-area';
 
 function CheckoutCustomerDetailsForm({ setClose }: { setClose: () => void }) {
+  const router = useRouter();
   const [
     currentUserCart,
     currentSettings,
@@ -63,7 +71,6 @@ function CheckoutCustomerDetailsForm({ setClose }: { setClose: () => void }) {
     latitude: number;
     longitude: number;
   } | null>(null);
-  console.log({ coordinates });
   const getCoordinates = () => {
     navigator.geolocation.getCurrentPosition(function (position) {
       setCoordinates({
@@ -73,9 +80,17 @@ function CheckoutCustomerDetailsForm({ setClose }: { setClose: () => void }) {
     });
   };
   useEffect(() => {
-    getCoordinates();
+    navigator.geolocation.getCurrentPosition(function (position) {
+      setCoordinates({
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+      });
+      form.setValue(
+        'coordinates',
+        `${position.coords.latitude}, ${position.coords.longitude}`
+      );
+    });
   }, []);
-
   const paymentMethods =
     fulfillmentMethod === kFulfillmentMethod.PICK_UP
       ? [kPaymentMethod.COD]
@@ -84,7 +99,6 @@ function CheckoutCustomerDetailsForm({ setClose }: { setClose: () => void }) {
     currentSettings?.delivery_services?.length > 0
       ? kFulfillmentMethods
       : [kFulfillmentMethod.PICK_UP];
-  const router = useRouter();
   const formSchema = z.object({
     firstName: z.string().min(2, {
       message: 'First name must be at least 2 characters.',
@@ -109,6 +123,12 @@ function CheckoutCustomerDetailsForm({ setClose }: { setClose: () => void }) {
         message: 'Address must be at least 2 characters.',
       })
       .max(100),
+    coordinates: z
+      .string()
+      .min(2, {
+        message: 'Coordinates must be at least 2 characters.',
+      })
+      .max(100),
   });
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
@@ -118,6 +138,7 @@ function CheckoutCustomerDetailsForm({ setClose }: { setClose: () => void }) {
       lastName: '',
       mobileNumber: '',
       address: '',
+      coordinates: '',
     },
   });
 
@@ -148,13 +169,20 @@ function CheckoutCustomerDetailsForm({ setClose }: { setClose: () => void }) {
 
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    setIsLoading(true);
+    // setIsLoading(true);
     const dateTime = moment(new Date()).format('LLL');
     const id = uuidv4();
     const { firstName, lastName, mobileNumber, address } = values;
+    const objCoordinates = convertStringCoordinatesToObject(values.coordinates);
     const newData = {
       id: id,
-      customer: { firstName, lastName, mobileNumber, address, coordinates },
+      customer: {
+        firstName,
+        lastName,
+        mobileNumber,
+        address,
+        coordinates: objCoordinates,
+      },
       paymentMethod: paymentMethod,
       fulfillmentMethod: fulfillmentMethod,
       deliveryService:
@@ -184,7 +212,9 @@ function CheckoutCustomerDetailsForm({ setClose }: { setClose: () => void }) {
     toast.success('Order created successfully', {
       description: moment(new Date()).format('LLL'),
     });
-    router.push(`/order/${id}`);
+    const year = moment(dateTime).format('YYYY');
+    const month = moment(dateTime).format('MM');
+    router.push(`/order/${id}?year=${year}&month=${month}`);
     setCurrentUserCart([]);
     setIsDrawerCartOpen(false);
     setIsSheetCartOpen(false);
@@ -192,208 +222,240 @@ function CheckoutCustomerDetailsForm({ setClose }: { setClose: () => void }) {
     setClose();
   }
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          <FormField
-            control={form.control}
-            name="firstName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>First Name</FormLabel>
-                <FormControl>
-                  <Input placeholder="Enter first name here" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="lastName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Last Name</FormLabel>
-                <FormControl>
-                  <Input placeholder="Enter last name here" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-        <FormField
-          control={form.control}
-          name="mobileNumber"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>(+63) Mobile Number </FormLabel>
-              <FormControl>
-                <Input
-                  maxLength={10}
-                  type="number"
-                  placeholder="Enter mobile number here"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="address"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Address </FormLabel>
-              <FormControl>
-                <Input placeholder="Enter address here" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormItem>
-          <FormLabel>Fulfillment Method</FormLabel>
-          <FormControl>
-            <Select
-              onValueChange={setFulfillmentMethod}
-              value={fulfillmentMethod}
-            >
-              <SelectTrigger className="w-full capitalize">
-                <SelectValue placeholder="Choose" />
-              </SelectTrigger>
-              <SelectContent>
-                {fulfillmentMethods.map((item: string, idx) => {
-                  return (
-                    <SelectItem
-                      className="capitalize"
-                      key={`select-fulfillment-item-${idx}`}
-                      value={item}
-                    >
-                      {item}
-                    </SelectItem>
-                  );
-                })}
-              </SelectContent>
-            </Select>
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-
-        {fulfillmentMethod === kFulfillmentMethod.DELIVERY && (
-          <FormItem>
-            <FormLabel>Payment Method</FormLabel>
-            <FormControl>
-              <Select
-                onValueChange={setPaymentMethod}
-                value={paymentMethod}
-                defaultValue={paymentMethod}
-              >
-                <SelectTrigger className="w-full capitalize">
-                  <SelectValue placeholder="Choose" />
-                </SelectTrigger>
-                <SelectContent>
-                  {paymentMethods.map((item: string, idx) => {
-                    return (
-                      <SelectItem
-                        className="capitalize"
-                        key={`select-payment-mode-item-${idx}`}
-                        value={item}
-                      >
-                        {item}
-                      </SelectItem>
-                    );
-                  })}
-                </SelectContent>
-              </Select>
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-
-        {fulfillmentMethod === kFulfillmentMethod.DELIVERY && (
-          <FormItem>
-            <FormLabel>Delivery Service Company</FormLabel>
-            <FormControl>
-              <Select
-                onValueChange={setSelectedDeliveryServiceID}
-                value={selectedDeliveryServiceID}
-                defaultValue={selectedDeliveryServiceID}
-              >
-                <SelectTrigger className="w-full capitalize">
-                  <SelectValue placeholder="Choose" />
-                </SelectTrigger>
-                <SelectContent>
-                  {currentSettings?.delivery_services.map(
-                    (item: DeliveryServiceType, idx: number) => {
-                      return (
-                        <SelectItem
-                          className="capitalize"
-                          key={`select-payment-mode-item-${idx}`}
-                          value={item.id}
-                        >
-                          {item.name}
-                        </SelectItem>
-                      );
-                    }
+    <div className="flex flex-col">
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+          <div className="h-[600px] grid-cols-1 grid md:grid-cols-2 overflow-auto gap-5 md:gap-10">
+            <CustomerCheckoutCart cart={currentUserCart} />
+            <ScrollArea className=" max-h-[600px]">
+              <div className="space-y-3 px-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <FormField
+                    control={form.control}
+                    name="firstName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>First Name</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Enter first name here"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="lastName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Last Name</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Enter last name here"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <FormField
+                  control={form.control}
+                  name="mobileNumber"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>(+63) Mobile Number </FormLabel>
+                      <FormControl>
+                        <Input
+                          maxLength={10}
+                          type="number"
+                          placeholder="Enter mobile number here"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
                   )}
-                </SelectContent>
-              </Select>
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
+                />
+                <FormField
+                  control={form.control}
+                  name="address"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Address </FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter address here" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-        {coordinates && (
-          <a
-            target="_blank"
-            href={`https://www.google.com/maps/dir/?api=1&travelmode=driving&layer=traffic&destination=${coordinates.latitude},${coordinates.longitude}`}
-            className="p-3 rounded-md text-sm cursor-pointer font-semibold transition-all flex items-center space-x-2 justify-center bg-highlight hover:bg-highlight_hover text-neutral-950"
-          >
-            <span>Check Location</span> <NavigationIcon className="h-5" />
-          </a>
-        )}
-        {isLoading ? (
-          <div className="w-full h-[50px] flex flex-col items-center justify-center pt-5">
-            <span>
-              <LoaderCircleIcon className="animate-spin" />
-            </span>
+                <FormItem>
+                  <FormLabel>Fulfillment Method</FormLabel>
+                  <FormControl>
+                    <Select
+                      onValueChange={setFulfillmentMethod}
+                      value={fulfillmentMethod}
+                    >
+                      <SelectTrigger className="w-full capitalize">
+                        <SelectValue placeholder="Choose" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {fulfillmentMethods.map((item: string, idx) => {
+                          return (
+                            <SelectItem
+                              className="capitalize"
+                              key={`select-fulfillment-item-${idx}`}
+                              value={item}
+                            >
+                              {item}
+                            </SelectItem>
+                          );
+                        })}
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+
+                {fulfillmentMethod === kFulfillmentMethod.DELIVERY && (
+                  <FormItem>
+                    <FormLabel>Payment Method</FormLabel>
+                    <FormControl>
+                      <Select
+                        onValueChange={setPaymentMethod}
+                        value={paymentMethod}
+                        defaultValue={paymentMethod}
+                      >
+                        <SelectTrigger className="w-full capitalize">
+                          <SelectValue placeholder="Choose" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {paymentMethods.map((item: string, idx) => {
+                            return (
+                              <SelectItem
+                                className="capitalize"
+                                key={`select-payment-mode-item-${idx}`}
+                                value={item}
+                              >
+                                {item}
+                              </SelectItem>
+                            );
+                          })}
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+
+                {fulfillmentMethod === kFulfillmentMethod.DELIVERY && (
+                  <FormItem>
+                    <FormLabel>Delivery Service Company</FormLabel>
+                    <FormControl>
+                      <Select
+                        onValueChange={setSelectedDeliveryServiceID}
+                        value={selectedDeliveryServiceID}
+                        defaultValue={selectedDeliveryServiceID}
+                      >
+                        <SelectTrigger className="w-full capitalize">
+                          <SelectValue placeholder="Choose" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {currentSettings?.delivery_services.map(
+                            (item: DeliveryServiceType, idx: number) => {
+                              return (
+                                <SelectItem
+                                  className="capitalize"
+                                  key={`select-payment-mode-item-${idx}`}
+                                  value={item.id}
+                                >
+                                  {item.name}
+                                </SelectItem>
+                              );
+                            }
+                          )}
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+
+                <div className="grid grid-cols-1 md:flex md:items-end gap-3">
+                  {fulfillmentMethod === kFulfillmentMethod.DELIVERY && (
+                    <div className="flex-1">
+                      <FormField
+                        control={form.control}
+                        name="coordinates"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>
+                              Coordinates (Latitude, Longitude)
+                            </FormLabel>
+                            <FormControl>
+                              <Input
+                                placeholder="Enter coordinates here"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  )}
+                  {fulfillmentMethod === kFulfillmentMethod.DELIVERY &&
+                    getDirectionByCoordinates(
+                      form.getValues('coordinates')
+                    ) && (
+                      <a
+                        target="_blank"
+                        href={getDirectionByCoordinates(
+                          form.getValues('coordinates')
+                        )}
+                        className="p-3 h-[40px] rounded-md text-sm cursor-pointer font-semibold transition-all flex items-center space-x-2 justify-center bg-highlight hover:bg-highlight_hover text-neutral-950"
+                      >
+                        <NavigationIcon className="h-5" />
+                      </a>
+                    )}
+                </div>
+              </div>
+            </ScrollArea>
           </div>
-        ) : (
-          <div className="w-full grid grid-cols-2 gap-5 pt-5">
-            <Button
-              onClick={(e) => {
-                e.preventDefault();
-                setClose();
-              }}
-              variant={'secondary'}
-            >
-              Cancel
-            </Button>
-            {coordinates ? (
+          {isLoading ? (
+            <div className="w-full h-[50px] flex flex-col items-center justify-center pt-5">
+              <span>
+                <LoaderCircleIcon className="animate-spin" />
+              </span>
+            </div>
+          ) : (
+            <div className="w-full grid grid-cols-2 gap-5 pt-5">
+              <Button
+                onClick={(e) => {
+                  e.preventDefault();
+                  setClose();
+                }}
+                variant={'secondary'}
+              >
+                Cancel
+              </Button>
               <Button
                 type="submit"
                 className="bg-highlight hover:bg-highlight_hover transition-colors text-neutral-950 w-full"
               >
                 Place Order
               </Button>
-            ) : (
-              <Button
-                className="bg-highlight hover:bg-highlight_hover transition-colors text-neutral-950 w-full"
-                onClick={(e) => {
-                  e.preventDefault();
-                  getCoordinates();
-                }}
-              >
-                Allow Location
-              </Button>
-            )}
-          </div>
-        )}
-      </form>
-    </Form>
+            </div>
+          )}
+        </form>
+      </Form>
+    </div>
   );
 }
 

@@ -124,6 +124,17 @@ export const getCartTotal = ({ cart }: { cart: CartItemType[] }) => {
   return total;
 };
 
+export const convertStringCoordinatesToObject = (stringCoordinates: string) => {
+  return {
+    latitude: parseFloat(stringCoordinates.trim().split(',')[0]),
+    longitude: parseFloat(stringCoordinates.trim().split(',')[1]),
+  };
+};
+
+export const getDirectionByCoordinates = (stringCoordinates: string) => {
+  return `https://www.google.com/maps/dir/?api=1&travelmode=driving&layer=traffic&destination=${convertStringCoordinatesToObject(stringCoordinates).latitude},${convertStringCoordinatesToObject(stringCoordinates).longitude}`;
+};
+
 export const getStoresByCart = ({
   cart,
   stores,

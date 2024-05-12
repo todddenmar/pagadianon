@@ -13,10 +13,18 @@ import React from 'react';
 
 type Props = {
   params: { orderID: string };
+  searchParams: { year: string; month: string };
 };
 
-async function fetchOrderData({ params }: Props): Promise<OrderType | null> {
-  const res = await dbGetOrderData(params.orderID);
+async function fetchOrderData({
+  params,
+  searchParams,
+}: Props): Promise<OrderType | null> {
+  const res = await dbGetOrderData({
+    orderID: params.orderID,
+    year: searchParams.year,
+    month: searchParams.month,
+  });
   let dbOrderData: any = null;
   if (res.status === 'success') {
     dbOrderData = res.data;
@@ -27,19 +35,33 @@ async function fetchOrderData({ params }: Props): Promise<OrderType | null> {
   }
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+  searchParams,
+}: Props): Promise<Metadata> {
   // read route params
-  const orderData = await fetchOrderData({ params });
+  const orderData = await fetchOrderData({
+    params,
+    searchParams,
+  });
 
   return {
     title: `${orderData?.customer.firstName}'s Order | Pagadianon`,
     description: 'Customer order page',
   };
 }
-async function OrderPage({ params }: Props) {
-  const orderData = await fetchOrderData({ params });
+async function OrderPage({ params, searchParams }: Props) {
+  const orderData = await fetchOrderData({
+    params,
+    searchParams,
+  });
   // Get the userId from auth() -- if null, the user is not signed in
-  if (!orderData) return <LoadingComponent />;
+  if (!orderData)
+    return (
+      <div className="flex flex-col items-center justify-center h-[600px] text-lg">
+        Order data not found or expired
+      </div>
+    );
   return (
     <OrderContextProvider data={orderData}>
       <div className="my-5">

@@ -71,7 +71,9 @@ function CartContent({ setClose }: { setClose: () => void }) {
             </Button>
             <Button
               className="bg-highlight hover:bg-highlight_hover text-neutral-900"
-              onClick={() => setIsOpenCheckout(true)}
+              onClick={() => {
+                setIsOpenCheckout(true);
+              }}
             >
               Checkout
             </Button>

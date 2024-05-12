@@ -8,7 +8,7 @@ import { CartItemType } from '@/typings';
 function CustomerCheckoutCart({ cart }: { cart: CartItemType[] }) {
   return (
     <div>
-      <ScrollArea className="h-5/6 w-full rounded-md border p-4">
+      <ScrollArea className="h-[200px] md:h-[550px] w-full rounded-md border p-4">
         <div className="grid grid-cols-1 gap-2">
           {cart?.map((item: CartItemType, idx) => {
             return (
@@ -17,7 +17,6 @@ function CustomerCheckoutCart({ cart }: { cart: CartItemType[] }) {
           })}
         </div>
       </ScrollArea>
-
       {cart.length > 0 && (
         <div className="flex justify-between items-center mt-2 px-2">
           <div>Total:</div>

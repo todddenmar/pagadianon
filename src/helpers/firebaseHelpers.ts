@@ -336,11 +336,16 @@ export const dbCreateOrder = async ({ data }: { data: OrderType }) => {
   }
 };
 
-export const dbGetOrderData = async (id: string) => {
-  const date = new Date();
-  const year = moment(date).format('YYYY');
-  const month = moment(date).format('MM');
-  const docRef = doc(db, 'orders', String(year), String(month), id);
+export const dbGetOrderData = async ({
+  orderID,
+  year,
+  month,
+}: {
+  orderID: string;
+  year: string;
+  month: string;
+}) => {
+  const docRef = doc(db, 'orders', String(year), String(month), orderID);
   const docSnap = await getDoc(docRef);
   if (docSnap.exists()) {
     return { status: 'success', data: docSnap.data() };
