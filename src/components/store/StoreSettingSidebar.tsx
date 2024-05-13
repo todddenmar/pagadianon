@@ -15,7 +15,7 @@ function StoreSettingSidebar({
           className={cn(
             'w-full px-4 text-sm py-2 font-semibold rounded-md text-left ',
             {
-              'bg-neutral-800': value === 'contact',
+              'bg-neutral-100 dark:bg-neutral-800': value === 'contact',
             }
           )}
           onClick={() => onValueChange('contact')}
@@ -28,7 +28,7 @@ function StoreSettingSidebar({
           className={cn(
             'w-full px-4 text-sm py-2 font-semibold rounded-md text-left ',
             {
-              'bg-neutral-800': value === 'hours',
+              'bg-neutral-100 dark:bg-neutral-800': value === 'hours',
             }
           )}
           onClick={() => onValueChange('hours')}
@@ -41,7 +41,7 @@ function StoreSettingSidebar({
           className={cn(
             'w-full px-4 text-sm py-2 font-semibold rounded-md text-left ',
             {
-              'bg-neutral-800': value === 'products',
+              'bg-neutral-100 dark:bg-neutral-800': value === 'products',
             }
           )}
           onClick={() => onValueChange('products')}

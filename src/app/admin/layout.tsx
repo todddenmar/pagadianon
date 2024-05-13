@@ -23,6 +23,7 @@ import {
 import AdminPublishSettingsButton from '@/components/admin/AdminPublishSettingsButton';
 import { useAuth } from '@clerk/nextjs';
 import Link from 'next/link';
+import NoDataSection from '@/components/error/NoDataSection';
 
 function AdminLayout({ children }: any) {
   const pathname = usePathname();
@@ -59,24 +60,10 @@ function AdminLayout({ children }: any) {
   }, []);
   const { userId, orgId, has } = useAuth();
   if (!userId) {
-    return (
-      <div className="flex justify-center flex-col items-center h-[400px] gap-5">
-        <div>No Access</div>
-        <Link href="/" className="px-4 py-2 rounded-md bg-red-500">
-          Go Back
-        </Link>
-      </div>
-    );
+    return <NoDataSection title="Not logged in" />;
   }
   if (!orgId && !has({ permission: 'org:admin:access' })) {
-    return (
-      <div className="flex justify-center flex-col items-center h-[400px] gap-5">
-        <div>No Access</div>
-        <Link href="/" className="px-4 py-2 rounded-md bg-red-500">
-          Go Back
-        </Link>
-      </div>
-    );
+    return <NoDataSection title="No Organization found" />;
   }
 
   return (
