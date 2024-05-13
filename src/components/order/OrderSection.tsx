@@ -14,6 +14,9 @@ import { OrderContext } from '../providers/OrderContextProvider';
 function OrderSection() {
   const { orderData } = useContext(OrderContext);
   if (!orderData) return <LoadingComponent />;
+  const totalAmount =
+    getCartTotal({ cart: orderData.cart }) +
+    parseInt(orderData?.deliveryService?.fee || '0');
   return (
     <div>
       <Card className=" mt-2 overflow-hidden">
@@ -33,7 +36,7 @@ function OrderSection() {
               <div className="text-base">Total:</div>
               <div className="text-2xl md:text-4xl font-semibold">
                 <CustomPesoIcon />
-                {getCartTotal({ cart: orderData.cart })}
+                {totalAmount}
               </div>
             </div>
           )}

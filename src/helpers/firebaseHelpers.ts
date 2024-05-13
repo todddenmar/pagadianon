@@ -444,15 +444,16 @@ export const dbUpdateStoreCartStatus = async ({
 export const dbConfirmOrderByDeliveryService = async ({
   orderID,
   data,
-  selectedRider,
   progressStatus,
 }: {
   orderID: string;
   data: {
     id: string;
     isConfirmed: boolean;
+    rider: any;
+    fee: string;
+    confirmedDateTime: string;
   };
-  selectedRider: any;
   progressStatus: string;
 }) => {
   const date = new Date();
@@ -467,7 +468,6 @@ export const dbConfirmOrderByDeliveryService = async ({
   );
   try {
     await updateDoc(userRef, {
-      deliveryRider: selectedRider,
       deliveryService: data,
       progressStatus: progressStatus,
     });

@@ -101,6 +101,9 @@ export type OrderType = {
   deliveryService?: {
     id: string;
     isConfirmed: boolean;
+    confirmedDateTime?: string;
+    rider?: any;
+    fee?: string;
   } | null;
   deliveryRider?: any;
   storesInvolved?: (
