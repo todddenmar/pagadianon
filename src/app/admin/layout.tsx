@@ -74,7 +74,7 @@ function AdminLayout({ children }: any) {
             <AdminSidebar />
           </div>
           <div className="border rounded-t-none md:rounded-l-none rounded-lg md:rounded-r-lg p-2 md:p-6 w-full flex-1">
-            <div className="flex justify-between space-x-5">
+            <div className="grid sm:flex justify-between gap-2">
               <AdminTitle text={pageData?.title} />
               {pageData?.createDialog && (
                 <div className="flex gap-2 items-center">

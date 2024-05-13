@@ -32,6 +32,17 @@ import {
 } from '@/components/ui/dialog';
 import UpdateDeliveryServiceForm from '../forms/UpdateDeliveryServiceForm';
 import ManageDeliveryServicesUsersForm from '../forms/ManageDeliveryServicesUsersForm';
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from '@/components/ui/drawer';
+import { isMobile } from 'react-device-detect';
 
 function DeliveryServicesTable() {
   const [currentSettings, setCurrentSettings] = useAppStore((state) => [
@@ -101,8 +112,8 @@ function DeliveryServicesTable() {
               return (
                 <TableRow key={`delivery_services-item-${idx}`}>
                   <TableCell className="font-medium">{idx + 1}</TableCell>
-                  <TableCell>{item.name}</TableCell>
-                  <TableCell>{item.slug}</TableCell>
+                  <TableCell className="text-nowrap">{item.name}</TableCell>
+                  <TableCell className="text-nowrap">{item.slug}</TableCell>
                   <TableCell className="capitalize inline-flex flex-wrap gap-2">
                     {tags?.map((tag: string, tagIdx: number) => (
                       <Badge key={`tag-${idx}-${tagIdx}`}>{tag}</Badge>
@@ -153,45 +164,98 @@ function DeliveryServicesTable() {
           )}
         </TableBody>
       </Table>
-      <Dialog open={isShowingUsers} onOpenChange={setIsShowingUsers}>
-        {selectedDeliveryService && (
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>
-                Manage Users for: {`${selectedDeliveryService.name}`}
-              </DialogTitle>
-              <DialogDescription>
-                Add, remove or update users.
-              </DialogDescription>
-            </DialogHeader>
-            <ManageDeliveryServicesUsersForm
-              deliveryService={selectedDeliveryService}
-              setClose={() => {
-                setIsShowingUsers(false);
-              }}
-            />
-          </DialogContent>
-        )}
-      </Dialog>
-      <Dialog
-        open={isEditingDeliveryService}
-        onOpenChange={setIsEditingDeliveryService}
-      >
-        {selectedDeliveryService && (
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>
-                Edit Delivery Service: {`${selectedDeliveryService.name}`}
-              </DialogTitle>
-              <DialogDescription>Please fill in the blank.</DialogDescription>
-            </DialogHeader>
-            <UpdateDeliveryServiceForm
-              deliveryService={selectedDeliveryService}
-              setClose={() => setIsEditingDeliveryService(false)}
-            />
-          </DialogContent>
-        )}
-      </Dialog>
+      {isMobile ? (
+        <div>
+          <Drawer open={isShowingUsers} onOpenChange={setIsShowingUsers}>
+            {selectedDeliveryService && (
+              <DrawerContent className="p-5">
+                <DrawerHeader>
+                  <DrawerTitle>
+                    Manage Users for: {`${selectedDeliveryService.name}`}
+                  </DrawerTitle>
+                  <DrawerDescription>
+                    {' '}
+                    Add, remove or update users.
+                  </DrawerDescription>
+                </DrawerHeader>
+                <ManageDeliveryServicesUsersForm
+                  deliveryService={selectedDeliveryService}
+                  setClose={() => {
+                    setIsShowingUsers(false);
+                  }}
+                />
+              </DrawerContent>
+            )}
+          </Drawer>
+          <Drawer
+            open={isEditingDeliveryService}
+            onOpenChange={setIsEditingDeliveryService}
+          >
+            {selectedDeliveryService && (
+              <DrawerContent className="p-5">
+                <DrawerHeader>
+                  <DrawerTitle>
+                    Edit Delivery Service: {`${selectedDeliveryService.name}`}
+                  </DrawerTitle>
+                  <DrawerDescription>
+                    Please fill in the blank.
+                  </DrawerDescription>
+                </DrawerHeader>
+                <UpdateDeliveryServiceForm
+                  deliveryService={selectedDeliveryService}
+                  setClose={() => setIsEditingDeliveryService(false)}
+                />
+              </DrawerContent>
+            )}
+          </Drawer>
+        </div>
+      ) : (
+        <div>
+          <Dialog open={isShowingUsers} onOpenChange={setIsShowingUsers}>
+            {selectedDeliveryService && (
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>
+                    Manage Users for: {`${selectedDeliveryService.name}`}
+                  </DialogTitle>
+                  <DialogDescription>
+                    Add, remove or update users.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="w-full overflow-auto">
+                  <ManageDeliveryServicesUsersForm
+                    deliveryService={selectedDeliveryService}
+                    setClose={() => {
+                      setIsShowingUsers(false);
+                    }}
+                  />
+                </div>
+              </DialogContent>
+            )}
+          </Dialog>
+          <Dialog
+            open={isEditingDeliveryService}
+            onOpenChange={setIsEditingDeliveryService}
+          >
+            {selectedDeliveryService && (
+              <DialogContent className="p-5">
+                <DialogHeader>
+                  <DialogTitle>
+                    Edit Delivery Service: {`${selectedDeliveryService.name}`}
+                  </DialogTitle>
+                  <DialogDescription>
+                    Please fill in the blank.
+                  </DialogDescription>
+                </DialogHeader>
+                <UpdateDeliveryServiceForm
+                  deliveryService={selectedDeliveryService}
+                  setClose={() => setIsEditingDeliveryService(false)}
+                />
+              </DialogContent>
+            )}
+          </Dialog>
+        </div>
+      )}
     </div>
   );
 }

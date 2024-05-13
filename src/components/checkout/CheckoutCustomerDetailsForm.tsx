@@ -30,7 +30,11 @@ import {
 import moment from 'moment';
 import { useAppStore } from '@/lib/store';
 import { v4 as uuidv4 } from 'uuid';
-import { dbAddOrderOnStore, dbCreateOrder } from '@/helpers/firebaseHelpers';
+import {
+  dbAddOrderOnStore,
+  dbCreateOrder,
+  dbGetOrderDataByID,
+} from '@/helpers/firebaseHelpers';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { LoaderCircleIcon, NavigationIcon } from 'lucide-react';
@@ -170,11 +174,37 @@ function CheckoutCustomerDetailsForm() {
 
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    // setIsLoading(true);
+    setIsLoading(true);
     const dateTime = moment(new Date()).format('LLL');
     const id = uuidv4();
     const { firstName, lastName, mobileNumber, address } = values;
     const objCoordinates = convertStringCoordinatesToObject(values.coordinates);
+    const storesInvolved = getStoreIDsByCart({
+      cart: currentUserCart,
+      stores: currentSettings.stores,
+    });
+
+    const storesInvolvedContactInfo = await Promise.all(
+      storesInvolved.map(async (item) => {
+        const res = await dbGetOrderDataByID({ id: item.storeID });
+        if (res.status === 'error') {
+          console.log(res.error);
+          return;
+        }
+        const storeData = res.data!;
+        return {
+          storeID: storeData.id,
+          storeSlug: storeData.slug,
+          contactInfo: {
+            address: storeData.settings.address,
+            coordinates: storeData.settings.coordinates,
+            mobileNumber: storeData.settings.mobileNumber,
+          },
+          isConfirmed: false,
+        };
+      })
+    );
+
     const newData = {
       id: id,
       customer: {
@@ -195,13 +225,8 @@ function CheckoutCustomerDetailsForm() {
           : null,
       cart: currentUserCart,
       createdAt: dateTime,
-      status: {
-        progress: kOrderProgress.PENDING,
-      },
-      storesInvolved: getStoreIDsByCart({
-        cart: currentUserCart,
-        stores: currentSettings.stores,
-      }),
+      status: kOrderProgress.PENDING,
+      storesInvolved: storesInvolvedContactInfo,
     };
     const res = await dbCreateOrder({ data: newData });
 

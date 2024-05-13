@@ -14,9 +14,7 @@ function OrderProgress() {
   const { orderData } = useContext(OrderContext);
   if (!orderData) return <LoadingComponent />;
   const progressText =
-    orderData.status?.progress === undefined
-      ? 'pending'
-      : orderData.status?.progress;
+    orderData.status === undefined ? 'pending' : orderData.status;
   const fulfillmentMethod = orderData.fulfillmentMethod;
   const value =
     fulfillmentMethod === kFulfillmentMethod.PICK_UP

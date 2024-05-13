@@ -419,7 +419,7 @@ export const dbUpdateStoreCartStatus = async ({
   storesInvolved,
 }: {
   orderID: string;
-  storesInvolved: any[];
+  storesInvolved: any[] | undefined;
 }) => {
   const date = new Date();
   const year = moment(date).format('YYYY');
@@ -444,12 +444,16 @@ export const dbUpdateStoreCartStatus = async ({
 export const dbConfirmOrderByDeliveryService = async ({
   orderID,
   data,
+  selectedRider,
+  progressStatus,
 }: {
   orderID: string;
   data: {
     id: string;
     isConfirmed: boolean;
   };
+  selectedRider: any;
+  progressStatus: string;
 }) => {
   const date = new Date();
   const year = moment(date).format('YYYY');
@@ -463,10 +467,22 @@ export const dbConfirmOrderByDeliveryService = async ({
   );
   try {
     await updateDoc(userRef, {
+      deliveryRider: selectedRider,
       deliveryService: data,
+      progressStatus: progressStatus,
     });
     return { status: 'success' };
   } catch (error) {
     return { status: 'error', error };
+  }
+};
+
+export const dbGetOrderDataByID = async ({ id }: { id: string }) => {
+  const docRef = doc(db, 'stores', String(id));
+  const docSnap = await getDoc(docRef);
+  if (docSnap.exists()) {
+    return { status: 'success', data: docSnap.data() };
+  } else {
+    return { status: 'error', error: 'settings not found' };
   }
 };

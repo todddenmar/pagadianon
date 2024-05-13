@@ -23,7 +23,14 @@ function OrderCustomerInfo() {
           />
           <OrderInfoItem
             label="Mobile Number"
-            value={`+63${customer.mobileNumber}`}
+            value={
+              <a
+                className="text-highlight"
+                href={`tel:+63${customer.mobileNumber}`}
+              >
+                +63{customer.mobileNumber}
+              </a>
+            }
           />
           <OrderInfoItem label="Address" value={customer.address} />
         </div>

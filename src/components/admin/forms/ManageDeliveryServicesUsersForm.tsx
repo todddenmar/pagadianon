@@ -47,6 +47,9 @@ function ManageDeliveryServicesUsersForm({
   const formSchema = z.object({
     name: z.string().min(2).max(50),
     email: z.string().min(2).max(50).email(),
+    mobileNumber: z
+      .string()
+      .length(10, { message: 'Mobile number must have 10 digits after +63' }),
     roleType: z.string({
       required_error: 'Please select a Role Type.',
     }),
@@ -56,6 +59,7 @@ function ManageDeliveryServicesUsersForm({
     if (userToEdit) {
       form.setValue('name', userToEdit.name);
       form.setValue('email', userToEdit.email);
+      form.setValue('mobileNumber', userToEdit.mobileNumber);
       form.setValue('roleType', userToEdit.roleType);
     }
   }, [userToEdit]);
@@ -63,6 +67,7 @@ function ManageDeliveryServicesUsersForm({
   const onReset = () => {
     form.setValue('name', '');
     form.setValue('email', '');
+    form.setValue('mobileNumber', '');
     form.setValue('roleType', kDeliveryServiceRoleTypes[0]);
     setUserToEdit(null);
   };
@@ -71,6 +76,7 @@ function ManageDeliveryServicesUsersForm({
     defaultValues: {
       name: '',
       email: '',
+      mobileNumber: '',
       roleType: kDeliveryServiceRoleTypes[0],
     },
   });
@@ -162,6 +168,24 @@ function ManageDeliveryServicesUsersForm({
                   <FormLabel>Email</FormLabel>
                   <FormControl>
                     <Input type="email" placeholder="Enter email" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="mobileNumber"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>(+63) Mobile Number </FormLabel>
+                  <FormControl>
+                    <Input
+                      maxLength={10}
+                      type="number"
+                      placeholder="Enter mobile number here"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

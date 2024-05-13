@@ -6,19 +6,31 @@ import OrderInfoItem from './OrderInfoItem';
 import LoadingComponent from '../admin/LoadingComponent.';
 import { useAppStore } from '@/lib/store';
 import CustomCopyButton from '../CustomComponents/CustomCopyButton';
-import { LoaderIcon, MessageCircleIcon } from 'lucide-react';
+import {
+  CheckCircleIcon,
+  LoaderIcon,
+  MessageCircleIcon,
+  ReplaceIcon,
+} from 'lucide-react';
 import { OrderContext } from '../providers/OrderContextProvider';
 import { getDeliveryServiceUserType } from '@/helpers/appHelpers';
-import { kDeliveryServiceRoleType } from '@/constants';
+import { kDeliveryServiceRoleType, kOrderProgress } from '@/constants';
 import { Button } from '../ui/button';
+import { dbConfirmOrderByDeliveryService } from '@/helpers/firebaseHelpers';
 import {
-  dbConfirmOrderByDeliveryService,
-  dbUpdateDeliveryService,
-} from '@/helpers/firebaseHelpers';
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import OrderSelectRider from './OrderSelectRider';
 
 function OrderInfoSection() {
   const currentSettings = useAppStore((state) => state.currentSettings);
   const [isLoading, setIsLoading] = useState(false);
+  const [isSelectingRider, setIsSelectingRider] = useState(false);
   const { orderData, setOrderData, currentUserEmail } =
     useContext(OrderContext);
   if (!orderData) return <LoadingComponent />;
@@ -33,7 +45,7 @@ function OrderInfoSection() {
   });
   const deliveryIsConfirmed = orderData?.deliveryService?.isConfirmed;
 
-  const onConfirmDeliveryService = async () => {
+  const onConfirmDeliveryService = async (selectedRider: any) => {
     setIsLoading(true);
     const updatedOrderDeliveryServiceStatus = {
       id: orderData?.deliveryService?.id!,
@@ -42,6 +54,8 @@ function OrderInfoSection() {
     const res = await dbConfirmOrderByDeliveryService({
       orderID: orderData.id,
       data: updatedOrderDeliveryServiceStatus,
+      selectedRider,
+      progressStatus: kOrderProgress.CONFIRMED,
     });
     if (res.status === 'error') {
       console.log(res.error);
@@ -49,9 +63,15 @@ function OrderInfoSection() {
     }
     setOrderData({
       ...orderData,
+      deliveryRider: selectedRider,
       deliveryService: updatedOrderDeliveryServiceStatus,
+      progressStatus: kOrderProgress.CONFIRMED,
     });
     setIsLoading(false);
+  };
+
+  const onSelectRider = () => {
+    setIsSelectingRider(true);
   };
 
   return (
@@ -99,8 +119,9 @@ function OrderInfoSection() {
               />
               <div className="text-center py-5 text-sm">
                 {orderData.deliveryService?.isConfirmed ? (
-                  <div className="text-green-500">
-                    Order Confirmed By {deliveryService.name}
+                  <div className="text-green-500 flex items-center gap-2 justify-center">
+                    <span>Order Confirmed By {deliveryService.name}</span>
+                    <CheckCircleIcon className="h-5" />
                   </div>
                 ) : (
                   <div className="animate-pulse text-orange-500">
@@ -110,34 +131,72 @@ function OrderInfoSection() {
               </div>
             </div>
           )}
+          {orderData?.deliveryRider && (
+            <OrderInfoItem
+              label="Delivery Rider"
+              value={
+                <div className="flex items-center gap-2">
+                  <div>
+                    <div>{orderData?.deliveryRider.name}</div>
+                    <a
+                      className="text-highlight"
+                      href={`tel:+63${orderData?.deliveryRider.mobileNumber}`}
+                    >
+                      +63{orderData?.deliveryRider.mobileNumber}
+                    </a>
+                  </div>
+                  {userType === kDeliveryServiceRoleType.MANAGER && (
+                    <button className="flex gap-2 text-highlight">
+                      <ReplaceIcon onClick={onSelectRider} className="h-5" />{' '}
+                    </button>
+                  )}
+                </div>
+              }
+            />
+          )}
         </div>
         {!isLoading ? (
           <div>
             {!deliveryIsConfirmed &&
-            userType === kDeliveryServiceRoleType.MANAGER ? (
-              <Button
-                onClick={onConfirmDeliveryService}
-                className="bg-highlight hover:bg-highlight_hover text-neutral-950 w-full rounded-t-none"
-              >
-                Confirm Delivery Service
-              </Button>
-            ) : (
-              <a
-                target="_blank"
-                href={`https://m.me/${deliveryService?.messengerUsername}`}
-                className="p-3 text-sm cursor-pointer font-semibold transition-all flex items-center space-x-2 justify-center bg-highlight hover:bg-highlight_hover text-neutral-950"
-              >
-                <span>Send us your Order ID</span>
-                <MessageCircleIcon className="h-5" />
-              </a>
-            )}
+              userType === kDeliveryServiceRoleType.MANAGER && (
+                <Button
+                  onClick={onSelectRider}
+                  className="bg-highlight hover:bg-highlight_hover text-neutral-950 w-full rounded-t-none"
+                >
+                  Select Rider
+                </Button>
+              )}
           </div>
         ) : (
           <div className="flex justify-center h-[50px] flex-col items-center">
             <LoaderIcon className="animate-spin" />
           </div>
         )}
+        {userType === null && (
+          <a
+            target="_blank"
+            href={`https://m.me/${deliveryService?.messengerUsername}`}
+            className="p-3 text-sm cursor-pointer font-semibold transition-all flex items-center space-x-2 justify-center bg-highlight hover:bg-highlight_hover text-neutral-950"
+          >
+            <span>Send us your Order ID</span>
+            <MessageCircleIcon className="h-5" />
+          </a>
+        )}
       </Card>
+      <Dialog open={isSelectingRider} onOpenChange={setIsSelectingRider}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Choose a Rider</DialogTitle>
+          </DialogHeader>
+          <OrderSelectRider
+            deliveryService={deliveryService}
+            onSetRider={(val) => {
+              onConfirmDeliveryService(val);
+              setIsSelectingRider(false);
+            }}
+          />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

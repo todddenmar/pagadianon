@@ -24,6 +24,8 @@ export type StoreType = {
   logoURL?: string;
   images?: string[];
   isPublished?: boolean;
+  settings?: any;
+  schedules?: any;
 };
 
 export type CollectionType = {
@@ -93,17 +95,27 @@ export type OrderType = {
   customer: any;
   cart: CartItemType[];
   createdAt: string;
-  status: any;
+  status: string;
   paymentMethod: string;
   fulfillmentMethod: string;
   deliveryService?: {
     id: string;
     isConfirmed: boolean;
   } | null;
-  storesInvolved: {
-    storeID: string;
-    isConfirmed: boolean;
-  }[];
+  deliveryRider?: any;
+  storesInvolved?: (
+    | {
+        storeID: string;
+        storeSlug: string;
+        contactInfo: {
+          address: string;
+          coordinates: string;
+          mobileNumber: string;
+        };
+        isConfirmed: boolean;
+      }
+    | undefined
+  )[];
 };
 
 export type CustomerType = {
