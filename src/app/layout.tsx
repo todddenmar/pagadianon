@@ -11,6 +11,7 @@ import { SyncActiveOrganization } from '@/components/SyncActiveOrganization';
 import { UserType } from '@/typings';
 import Footer from '@/components/Footer';
 import { Toaster } from 'sonner';
+import { dark } from '@clerk/themes';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -26,25 +27,19 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const { sessionClaims } = auth();
-  let userEmail: any = null;
   let dbSettings: any = null;
   let dbUserData: UserType | null = null;
   const user = await currentUser();
-
-  interface EmailAddress {
-    id: string;
-    emailAddress: string;
-  }
+  let userResultData = null;
   if (user && user.emailAddresses && user.primaryEmailAddressId) {
-    const foundEmail = user.emailAddresses.find(
-      (item: EmailAddress) => item.id === user.primaryEmailAddressId
-    );
-    userEmail = foundEmail ? foundEmail.emailAddress : ''; // Assign emailAddress if found, otherwise assign an empty string
-    const userResultData = await dbGetUserData(userEmail);
-    if (userResultData.status === 'success') {
-      dbUserData = userResultData.data;
-    } else {
-      console.log(userResultData.error);
+    const userEmail = user.primaryEmailAddress?.emailAddress;
+    if (userEmail) {
+      userResultData = await dbGetUserData(userEmail);
+      if (userResultData.status === 'success') {
+        dbUserData = userResultData.data;
+      } else {
+        console.log(userResultData.error);
+      }
     }
   }
   const res: any = await dbGetRootSettings();
@@ -53,6 +48,7 @@ export default async function RootLayout({
   }
   return (
     <ClerkProvider>
+      <SyncActiveOrganization membership={sessionClaims?.membership} />
       <html lang="en" suppressHydrationWarning>
         <body className={inter.className}>
           <ThemeProvider
@@ -62,7 +58,6 @@ export default async function RootLayout({
             disableTransitionOnChange
           >
             <FirebaseProvider dbSettings={dbSettings} dbUserData={dbUserData} />
-            <SyncActiveOrganization membership={sessionClaims?.membership} />
             <Header />
             {children}
             <Toaster />

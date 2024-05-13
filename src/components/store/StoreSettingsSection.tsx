@@ -13,7 +13,6 @@ import ContainerLayout from '@/components/layouts/ContainerLayout';
 import StoreSettingsTabs from '@/components/store/StoreSettingsTabs';
 import { Card } from '@/components/ui/card';
 import { useAppStore } from '@/lib/store';
-import LoadingComponent from '../admin/LoadingComponent.';
 
 import {
   Dialog,
@@ -27,12 +26,13 @@ import { PlusIcon } from 'lucide-react';
 import { Button } from '../ui/button';
 import CreateStoreProductForm from './forms/CreateStoreProductForm';
 import { Separator } from '../ui/separator';
+import NoDataSection from '../error/NoDataSection';
 
 function StoreSettingsSection() {
   const [currentStoreData] = useAppStore((state) => [state.currentStoreData]);
   const [isAddingProduct, setIsAddingProduct] = useState(false);
   if (!currentStoreData) {
-    return <LoadingComponent />;
+    return <NoDataSection title="Store data not found" />;
   }
 
   return (

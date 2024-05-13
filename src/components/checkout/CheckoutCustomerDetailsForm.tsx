@@ -43,8 +43,9 @@ import {
 } from '@/helpers/appHelpers';
 import CustomerCheckoutCart from './CustomerCheckoutCart';
 import { ScrollArea } from '../ui/scroll-area';
+import Image from 'next/image';
 
-function CheckoutCustomerDetailsForm({ setClose }: { setClose: () => void }) {
+function CheckoutCustomerDetailsForm() {
   const router = useRouter();
   const [
     currentUserCart,
@@ -219,63 +220,23 @@ function CheckoutCustomerDetailsForm({ setClose }: { setClose: () => void }) {
     setIsDrawerCartOpen(false);
     setIsSheetCartOpen(false);
     setIsLoading(false);
-    setClose();
   }
   return (
     <div className="flex flex-col">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
-          <div className="h-[600px] grid-cols-1 grid md:grid-cols-2 overflow-auto gap-5 md:gap-10">
+          <div className="grid-cols-1 grid md:grid-cols-2 xl:grid-cols-3 items-start gap-5 md:gap-10">
             <CustomerCheckoutCart cart={currentUserCart} />
-            <ScrollArea className=" max-h-[600px]">
-              <div className="space-y-3 px-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  <FormField
-                    control={form.control}
-                    name="firstName"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>First Name</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="Enter first name here"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="lastName"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Last Name</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="Enter last name here"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
+            <div className="space-y-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <FormField
                   control={form.control}
-                  name="mobileNumber"
+                  name="firstName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>(+63) Mobile Number </FormLabel>
+                      <FormLabel>First Name</FormLabel>
                       <FormControl>
-                        <Input
-                          maxLength={10}
-                          type="number"
-                          placeholder="Enter mobile number here"
-                          {...field}
-                        />
+                        <Input placeholder="Enter first name here" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -283,34 +244,96 @@ function CheckoutCustomerDetailsForm({ setClose }: { setClose: () => void }) {
                 />
                 <FormField
                   control={form.control}
-                  name="address"
+                  name="lastName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Address </FormLabel>
+                      <FormLabel>Last Name</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter address here" {...field} />
+                        <Input placeholder="Enter last name here" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
+              </div>
+              <FormField
+                control={form.control}
+                name="mobileNumber"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>(+63) Mobile Number </FormLabel>
+                    <FormControl>
+                      <Input
+                        maxLength={10}
+                        type="number"
+                        placeholder="Enter mobile number here"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="address"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Address </FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter address here" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
+              <FormItem>
+                <FormLabel>Fulfillment Method</FormLabel>
+                <FormControl>
+                  <Select
+                    onValueChange={setFulfillmentMethod}
+                    value={fulfillmentMethod}
+                  >
+                    <SelectTrigger className="w-full capitalize">
+                      <SelectValue placeholder="Choose" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {fulfillmentMethods.map((item: string, idx) => {
+                        return (
+                          <SelectItem
+                            className="capitalize"
+                            key={`select-fulfillment-item-${idx}`}
+                            value={item}
+                          >
+                            {item}
+                          </SelectItem>
+                        );
+                      })}
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+
+              {fulfillmentMethod === kFulfillmentMethod.DELIVERY && (
                 <FormItem>
-                  <FormLabel>Fulfillment Method</FormLabel>
+                  <FormLabel>Payment Method</FormLabel>
                   <FormControl>
                     <Select
-                      onValueChange={setFulfillmentMethod}
-                      value={fulfillmentMethod}
+                      onValueChange={setPaymentMethod}
+                      value={paymentMethod}
+                      defaultValue={paymentMethod}
                     >
                       <SelectTrigger className="w-full capitalize">
                         <SelectValue placeholder="Choose" />
                       </SelectTrigger>
                       <SelectContent>
-                        {fulfillmentMethods.map((item: string, idx) => {
+                        {paymentMethods.map((item: string, idx) => {
                           return (
                             <SelectItem
                               className="capitalize"
-                              key={`select-fulfillment-item-${idx}`}
+                              key={`select-payment-mode-item-${idx}`}
                               value={item}
                             >
                               {item}
@@ -322,137 +345,113 @@ function CheckoutCustomerDetailsForm({ setClose }: { setClose: () => void }) {
                   </FormControl>
                   <FormMessage />
                 </FormItem>
+              )}
 
-                {fulfillmentMethod === kFulfillmentMethod.DELIVERY && (
-                  <FormItem>
-                    <FormLabel>Payment Method</FormLabel>
-                    <FormControl>
-                      <Select
-                        onValueChange={setPaymentMethod}
-                        value={paymentMethod}
-                        defaultValue={paymentMethod}
-                      >
-                        <SelectTrigger className="w-full capitalize">
-                          <SelectValue placeholder="Choose" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {paymentMethods.map((item: string, idx) => {
+              {fulfillmentMethod === kFulfillmentMethod.DELIVERY && (
+                <FormItem>
+                  <FormLabel>Delivery Service Company</FormLabel>
+                  <FormControl>
+                    <Select
+                      onValueChange={setSelectedDeliveryServiceID}
+                      value={selectedDeliveryServiceID}
+                      defaultValue={selectedDeliveryServiceID}
+                    >
+                      <SelectTrigger className="w-full capitalize">
+                        <SelectValue placeholder="Choose" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {currentSettings?.delivery_services.map(
+                          (item: DeliveryServiceType, idx: number) => {
                             return (
                               <SelectItem
                                 className="capitalize"
                                 key={`select-payment-mode-item-${idx}`}
-                                value={item}
+                                value={item.id}
                               >
-                                {item}
+                                {item.name}
                               </SelectItem>
                             );
-                          })}
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                          }
+                        )}
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
 
+              <div className="grid grid-cols-1 md:flex md:items-end gap-3">
                 {fulfillmentMethod === kFulfillmentMethod.DELIVERY && (
-                  <FormItem>
-                    <FormLabel>Delivery Service Company</FormLabel>
-                    <FormControl>
-                      <Select
-                        onValueChange={setSelectedDeliveryServiceID}
-                        value={selectedDeliveryServiceID}
-                        defaultValue={selectedDeliveryServiceID}
-                      >
-                        <SelectTrigger className="w-full capitalize">
-                          <SelectValue placeholder="Choose" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {currentSettings?.delivery_services.map(
-                            (item: DeliveryServiceType, idx: number) => {
-                              return (
-                                <SelectItem
-                                  className="capitalize"
-                                  key={`select-payment-mode-item-${idx}`}
-                                  value={item.id}
-                                >
-                                  {item.name}
-                                </SelectItem>
-                              );
-                            }
-                          )}
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+                  <div className="flex-1">
+                    <FormField
+                      control={form.control}
+                      name="coordinates"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>
+                            Coordinates (Latitude, Longitude)
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="Enter coordinates here"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
                 )}
-
-                <div className="grid grid-cols-1 md:flex md:items-end gap-3">
-                  {fulfillmentMethod === kFulfillmentMethod.DELIVERY && (
-                    <div className="flex-1">
-                      <FormField
-                        control={form.control}
-                        name="coordinates"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>
-                              Coordinates (Latitude, Longitude)
-                            </FormLabel>
-                            <FormControl>
-                              <Input
-                                placeholder="Enter coordinates here"
-                                {...field}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
+                {fulfillmentMethod === kFulfillmentMethod.DELIVERY &&
+                  getDirectionByCoordinates(form.getValues('coordinates')) && (
+                    <a
+                      target="_blank"
+                      href={getDirectionByCoordinates(
+                        form.getValues('coordinates')
+                      )}
+                      className="p-3 h-[40px] rounded-md text-sm cursor-pointer font-semibold transition-all flex items-center space-x-2 justify-center bg-highlight hover:bg-highlight_hover text-neutral-950"
+                    >
+                      <NavigationIcon className="h-5" />
+                    </a>
                   )}
-                  {fulfillmentMethod === kFulfillmentMethod.DELIVERY &&
-                    getDirectionByCoordinates(
-                      form.getValues('coordinates')
-                    ) && (
-                      <a
-                        target="_blank"
-                        href={getDirectionByCoordinates(
-                          form.getValues('coordinates')
-                        )}
-                        className="p-3 h-[40px] rounded-md text-sm cursor-pointer font-semibold transition-all flex items-center space-x-2 justify-center bg-highlight hover:bg-highlight_hover text-neutral-950"
-                      >
-                        <NavigationIcon className="h-5" />
-                      </a>
-                    )}
-                </div>
               </div>
-            </ScrollArea>
+              <div className="pt-5">
+                {isLoading ? (
+                  <div className="w-full h-[50px] flex flex-col items-center justify-center">
+                    <span>
+                      <LoaderCircleIcon className="animate-spin" />
+                    </span>
+                  </div>
+                ) : (
+                  <Button
+                    type="submit"
+                    className="bg-highlight hover:bg-highlight_hover transition-colors text-neutral-950 w-full"
+                  >
+                    Place Order
+                  </Button>
+                )}
+              </div>
+            </div>
+            <div className="hidden xl:flex flex-col items-center justify-center px-5 ">
+              <Image
+                src={'/images/pagadianon-light.svg'}
+                height={400}
+                width={400}
+                alt="image banner"
+                className="hidden h-[200px] md:h-[250px] lg:h-[400px] dark:block"
+                priority={true}
+              />
+              <Image
+                src={'/images/pagadianon-logo.svg'}
+                height={400}
+                width={400}
+                alt="image banner"
+                className=" block h-[200px] md:h-[250px] lg:h-[400px] dark:hidden"
+                priority={true}
+              />
+            </div>
           </div>
-          {isLoading ? (
-            <div className="w-full h-[50px] flex flex-col items-center justify-center pt-5">
-              <span>
-                <LoaderCircleIcon className="animate-spin" />
-              </span>
-            </div>
-          ) : (
-            <div className="w-full grid grid-cols-2 gap-5 pt-5">
-              <Button
-                onClick={(e) => {
-                  e.preventDefault();
-                  setClose();
-                }}
-                variant={'secondary'}
-              >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                className="bg-highlight hover:bg-highlight_hover transition-colors text-neutral-950 w-full"
-              >
-                Place Order
-              </Button>
-            </div>
-          )}
         </form>
       </Form>
     </div>

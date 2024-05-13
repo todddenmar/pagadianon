@@ -1,11 +1,25 @@
+'use client';
 import React from 'react';
 import CheckoutCustomerDetailsForm from './CheckoutCustomerDetailsForm';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 
-function CheckoutSection({ setClose }: { setClose: () => void }) {
+function CheckoutSection() {
   return (
-    <div className="">
-      <CheckoutCustomerDetailsForm setClose={setClose} />
-    </div>
+    <Card>
+      <CardHeader>
+        <CardTitle>Checkout</CardTitle>
+        <CardDescription>Please fill up the required fields.</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <CheckoutCustomerDetailsForm />
+      </CardContent>
+    </Card>
   );
 }
 

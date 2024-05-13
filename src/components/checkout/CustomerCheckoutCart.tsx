@@ -8,7 +8,7 @@ import { CartItemType } from '@/typings';
 function CustomerCheckoutCart({ cart }: { cart: CartItemType[] }) {
   return (
     <div>
-      <ScrollArea className="h-[200px] md:h-[550px] w-full rounded-md border p-4">
+      <ScrollArea className="md:h-[550px] w-full rounded-md border p-4">
         <div className="grid grid-cols-1 gap-2">
           {cart?.map((item: CartItemType, idx) => {
             return (

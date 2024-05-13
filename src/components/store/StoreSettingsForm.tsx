@@ -20,6 +20,15 @@ import { LoaderCircleIcon } from 'lucide-react';
 import moment from 'moment';
 import { dbUpdateStoreSettings } from '@/helpers/firebaseHelpers';
 import { toast } from 'sonner';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+
 import CustomImagePicker from '../CustomComponents/CustomImagePicker';
 const userFormSchema = z.object({
   mobileNumber: z
@@ -106,131 +115,141 @@ function StoreSettingsForm() {
     setIsLoading(false);
   }
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-      <div className="max-w-md w-full mx-auto my-auto">
-        <CustomImagePicker
-          title="Upload Storefront Image"
-          value={storefrontURL}
-          setImageURL={(val) => setStorefrontURL(val)}
-        />
-      </div>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
-          <FormField
-            control={form.control}
-            name="mobileNumber"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>(+63) Mobile Number </FormLabel>
-                <FormControl>
-                  <Input
-                    maxLength={10}
-                    type="number"
-                    placeholder="Enter mobile number here"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Email Address </FormLabel>
-                <FormControl>
-                  <Input
-                    type="email"
-                    placeholder="Enter email address here"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="address"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Address </FormLabel>
-                <FormControl>
-                  <Input placeholder="Enter address here" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="coordinates"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Map Coordinates</FormLabel>
-                <FormControl>
-                  <Input placeholder="Coordinates here" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="facebookUsername"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Facebook Username</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Enter facebook username here"
-                    {...field}
-                  />
-                </FormControl>
+    <Card>
+      <CardHeader>
+        <CardTitle>Contact</CardTitle>
+        <CardDescription>Contact information for this store</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
+              <FormField
+                control={form.control}
+                name="mobileNumber"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>(+63) Mobile Number </FormLabel>
+                    <FormControl>
+                      <Input
+                        maxLength={10}
+                        type="number"
+                        placeholder="Enter mobile number here"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email Address </FormLabel>
+                    <FormControl>
+                      <Input
+                        type="email"
+                        placeholder="Enter email address here"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="address"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Address </FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter address here" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="coordinates"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Map Coordinates</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Coordinates here" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-5">
+                <FormField
+                  control={form.control}
+                  name="facebookUsername"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Facebook Username</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Enter facebook username here"
+                          {...field}
+                        />
+                      </FormControl>
 
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="instagramUsername"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Instagram Username</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Enter instagram username here"
-                    {...field}
-                  />
-                </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="instagramUsername"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Instagram Username</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Enter instagram username here"
+                          {...field}
+                        />
+                      </FormControl>
 
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
 
-          {isLoading ? (
-            <div className="w-full h-[50px] flex flex-col items-center justify-center pt-5">
-              <span>
-                <LoaderCircleIcon className="animate-spin" />
-              </span>
-            </div>
-          ) : (
-            <div className="w-full grid grid-cols-2 gap-5 pt-5">
-              <Button
-                className="bg-highlight hover:bg-highlight_hover"
-                type="submit"
-              >
-                Update
-              </Button>
-            </div>
-          )}
-        </form>
-      </Form>
-    </div>
+              {isLoading ? (
+                <div className="w-full h-[50px] flex flex-col items-center justify-center pt-5">
+                  <span>
+                    <LoaderCircleIcon className="animate-spin" />
+                  </span>
+                </div>
+              ) : (
+                <div className="w-full grid grid-cols-2 gap-5 pt-5">
+                  <Button
+                    className="bg-highlight hover:bg-highlight_hover"
+                    type="submit"
+                  >
+                    Update
+                  </Button>
+                </div>
+              )}
+            </form>
+          </Form>
+          <div className="max-w-md w-full mx-auto my-auto">
+            <CustomImagePicker
+              title="Upload Storefront Image"
+              value={storefrontURL}
+              setImageURL={(val) => setStorefrontURL(val)}
+            />
+          </div>
+        </div>
+      </CardContent>
+    </Card>
   );
 }
 

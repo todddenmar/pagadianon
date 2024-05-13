@@ -9,6 +9,7 @@ import ContainerLayout from '@/components/layouts/ContainerLayout';
 import LoadingComponent from '@/components/admin/LoadingComponent.';
 import StoreSection from '@/components/store/StoreSection';
 import StoreDataProvider from '@/components/store/StoreDataProvider';
+import NoDataSection from '@/components/error/NoDataSection';
 
 type Props = {
   params: { slug: string };
@@ -44,7 +45,7 @@ export default async function StoreTemplatePage({ params }: Props) {
   // Generate metadata using dbStoreData
   let storeProducts: any[] = [];
   if (!storeData) {
-    return <LoadingComponent />;
+    return <NoDataSection title="Store data not found" />;
   }
   const res = await dbGetStoreProducts(storeData?.id);
   if (res.status === 'success') {

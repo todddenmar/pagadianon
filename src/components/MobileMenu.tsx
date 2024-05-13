@@ -49,7 +49,7 @@ function MobileMenu() {
           <Accordion type="single" collapsible>
             <AccordionItem value="item-1">
               <AccordionTrigger className="no-underline">
-                Our Services
+                Marketplace
               </AccordionTrigger>
               <AccordionContent>
                 <ul className="grid gap-2 grid-cols-1 px-2">
@@ -72,7 +72,7 @@ function MobileMenu() {
             </AccordionItem>
           </Accordion>
 
-          <Accordion type="single" collapsible>
+          {/* <Accordion type="single" collapsible>
             <AccordionItem value="item-1">
               <AccordionTrigger className="no-underline">
                 Software Services
@@ -92,7 +92,7 @@ function MobileMenu() {
                 </ul>
               </AccordionContent>
             </AccordionItem>
-          </Accordion>
+          </Accordion> */}
 
           {userId && orgId && hasAdminPermission && (
             <Link
