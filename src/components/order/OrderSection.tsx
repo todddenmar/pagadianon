@@ -16,8 +16,8 @@ function OrderSection() {
   if (!orderData) return <LoadingComponent />;
   return (
     <div>
-      <Card className="p-5 mt-2 ">
-        <div className="grid grid-cols-1 lg:flex gap-5 md:gap-10">
+      <Card className=" mt-2 overflow-hidden">
+        <div className="grid grid-cols-1 lg:flex gap-5 md:gap-10 p-5">
           <div className="space-y-3 lg:max-w-lg">
             <OrderCustomerInfo />
             <OrderInfoSection />
@@ -27,8 +27,7 @@ function OrderSection() {
             <OrderStoreCartItems />
           </div>
         </div>
-        <Separator className="my-3" />
-        <div>
+        <div className="p-5 bg-neutral-900">
           {orderData.cart?.length > 0 && (
             <div className="flex justify-between items-center mt-2 px-2">
               <div className="text-base">Total:</div>

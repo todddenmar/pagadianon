@@ -15,7 +15,7 @@ import { useAppStore } from '@/lib/store';
 import { CollectionType, StoreType } from '@/typings';
 import React, { useState } from 'react';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
-import { LoaderCircleIcon } from 'lucide-react';
+import { CheckIcon, LoaderCircleIcon } from 'lucide-react';
 import { dbUpdateSettings } from '@/helpers/firebaseHelpers';
 import { toast } from 'sonner';
 import moment from 'moment';
@@ -85,7 +85,7 @@ function AddStoresForCollectionForm({
                 <ToggleGroup
                   onValueChange={field.onChange}
                   defaultValue={field.value}
-                  className="inline-flex flex-wrap gap-2"
+                  className="grid grid-cols-1 gap-2"
                   type="multiple"
                 >
                   {currentSettings?.stores?.map(
@@ -95,8 +95,14 @@ function AddStoresForCollectionForm({
                           value={item.id}
                           variant={'outline'}
                           key={`store-item-${idx}`}
+                          className="flex justify-between items-center gap-5"
                         >
-                          {item.name}
+                          <span>{item.name}</span>
+                          <span>
+                            {field.value.includes(item.id) ? (
+                              <CheckIcon className="h-5" />
+                            ) : null}
+                          </span>
                         </ToggleGroupItem>
                       );
                     }

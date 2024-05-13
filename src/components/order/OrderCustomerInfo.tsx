@@ -5,6 +5,7 @@ import OrderInfoItem from './OrderInfoItem';
 import { OrderContext } from '../providers/OrderContextProvider';
 import LoadingComponent from '../admin/LoadingComponent.';
 import { NavigationIcon } from 'lucide-react';
+import { Button } from '../ui/button';
 
 function OrderCustomerInfo() {
   const { orderData } = useContext(OrderContext);
@@ -26,15 +27,20 @@ function OrderCustomerInfo() {
           />
           <OrderInfoItem label="Address" value={customer.address} />
         </div>
-
         {coordinates && (
-          <a
-            target="_blank"
-            href={`https://www.google.com/maps/dir/?api=1&travelmode=driving&layer=traffic&destination=${coordinates.latitude},${coordinates.longitude}`}
-            className="p-3 text-sm cursor-pointer font-semibold transition-all flex items-center space-x-2 justify-center bg-highlight hover:bg-highlight_hover text-neutral-950"
+          <Button
+            className="bg-highlight hover:bg-highlight_hover text-neutral-950 w-full rounded-t-none"
+            asChild
           >
-            <span> Get Direction</span> <NavigationIcon className="h-5" />
-          </a>
+            <a
+              target="_blank"
+              href={`https://www.google.com/maps/dir/?api=1&travelmode=driving&layer=traffic&destination=${coordinates.latitude},${coordinates.longitude}`}
+              className="flex space-x-1 items-center"
+            >
+              <span>Get Direction</span>
+              <NavigationIcon className="h-5" />
+            </a>
+          </Button>
         )}
       </Card>
     </div>

@@ -1,22 +1,58 @@
 import { DeliveryServiceType } from '@/typings';
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import OrderSectionTitle from './OrderSectionTitle';
 import { Card } from '../ui/card';
 import OrderInfoItem from './OrderInfoItem';
 import LoadingComponent from '../admin/LoadingComponent.';
 import { useAppStore } from '@/lib/store';
 import CustomCopyButton from '../CustomComponents/CustomCopyButton';
-import { MessageCircleIcon } from 'lucide-react';
+import { LoaderIcon, MessageCircleIcon } from 'lucide-react';
 import { OrderContext } from '../providers/OrderContextProvider';
+import { getDeliveryServiceUserType } from '@/helpers/appHelpers';
+import { kDeliveryServiceRoleType } from '@/constants';
+import { Button } from '../ui/button';
+import {
+  dbConfirmOrderByDeliveryService,
+  dbUpdateDeliveryService,
+} from '@/helpers/firebaseHelpers';
 
 function OrderInfoSection() {
   const currentSettings = useAppStore((state) => state.currentSettings);
-  const { orderData } = useContext(OrderContext);
+  const [isLoading, setIsLoading] = useState(false);
+  const { orderData, setOrderData, currentUserEmail } =
+    useContext(OrderContext);
   if (!orderData) return <LoadingComponent />;
   if (!currentSettings) return <LoadingComponent />;
   const deliveryService = currentSettings.delivery_services.find(
     (item: DeliveryServiceType) => item.id === orderData.deliveryService?.id
   );
+  let userType = getDeliveryServiceUserType({
+    deliveryServices: currentSettings?.delivery_services,
+    deliveryServiceID: orderData.deliveryService?.id,
+    currentEmail: currentUserEmail,
+  });
+  const deliveryIsConfirmed = orderData?.deliveryService?.isConfirmed;
+
+  const onConfirmDeliveryService = async () => {
+    setIsLoading(true);
+    const updatedOrderDeliveryServiceStatus = {
+      id: orderData?.deliveryService?.id!,
+      isConfirmed: true,
+    };
+    const res = await dbConfirmOrderByDeliveryService({
+      orderID: orderData.id,
+      data: updatedOrderDeliveryServiceStatus,
+    });
+    if (res.status === 'error') {
+      console.log(res.error);
+      return;
+    }
+    setOrderData({
+      ...orderData,
+      deliveryService: updatedOrderDeliveryServiceStatus,
+    });
+    setIsLoading(false);
+  };
 
   return (
     <div>
@@ -64,7 +100,7 @@ function OrderInfoSection() {
               <div className="text-center py-5 text-sm">
                 {orderData.deliveryService?.isConfirmed ? (
                   <div className="text-green-500">
-                    Delivery service confirmed
+                    Order Confirmed By {deliveryService.name}
                   </div>
                 ) : (
                   <div className="animate-pulse text-orange-500">
@@ -75,14 +111,32 @@ function OrderInfoSection() {
             </div>
           )}
         </div>
-        <a
-          target="_blank"
-          href={`https://m.me/${deliveryService?.messengerUsername}`}
-          className="p-3 text-sm cursor-pointer font-semibold transition-all flex items-center space-x-2 justify-center bg-highlight hover:bg-highlight_hover text-neutral-950"
-        >
-          <span>Send us your Order ID</span>
-          <MessageCircleIcon className="h-5" />
-        </a>
+        {!isLoading ? (
+          <div>
+            {!deliveryIsConfirmed &&
+            userType === kDeliveryServiceRoleType.MANAGER ? (
+              <Button
+                onClick={onConfirmDeliveryService}
+                className="bg-highlight hover:bg-highlight_hover text-neutral-950 w-full rounded-t-none"
+              >
+                Confirm Delivery Service
+              </Button>
+            ) : (
+              <a
+                target="_blank"
+                href={`https://m.me/${deliveryService?.messengerUsername}`}
+                className="p-3 text-sm cursor-pointer font-semibold transition-all flex items-center space-x-2 justify-center bg-highlight hover:bg-highlight_hover text-neutral-950"
+              >
+                <span>Send us your Order ID</span>
+                <MessageCircleIcon className="h-5" />
+              </a>
+            )}
+          </div>
+        ) : (
+          <div className="flex justify-center h-[50px] flex-col items-center">
+            <LoaderIcon className="animate-spin" />
+          </div>
+        )}
       </Card>
     </div>
   );

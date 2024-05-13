@@ -36,12 +36,6 @@ function AppButtonDropdown() {
   if (userId && orgId) {
     hasAdminPermission = has({ permission: 'org:admin:access' });
   }
-  console.log({
-    hasAdminPermission,
-    userId,
-    orgId,
-  });
-
   const myStores = currentUserData?.stores.map(
     (storeID: string, idx: number) => {
       const store = currentSettings?.stores.find(

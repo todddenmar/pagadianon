@@ -31,7 +31,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import UpdateDeliveryServiceForm from '../forms/UpdateDeliveryServiceForm';
-import AddDeliveryServiceUserForm from '../forms/AddDeliveryServiceUserForm';
+import ManageDeliveryServicesUsersForm from '../forms/ManageDeliveryServicesUsersForm';
 
 function DeliveryServicesTable() {
   const [currentSettings, setCurrentSettings] = useAppStore((state) => [
@@ -42,7 +42,9 @@ function DeliveryServicesTable() {
     useState<DeliveryServiceType | null>(null);
   const [isEditingDeliveryService, setIsEditingDeliveryService] =
     useState(false);
-  const [isAddingUser, setIsAddingUser] = useState(false);
+  const [isShowingUsers, setIsShowingUsers] = useState(false);
+  const [userToEdit, setUserToEdit] = useState<any>(null);
+
   useState(false);
   if (!currentSettings) return <LoadingComponent />;
   const onEditDeliveryService = (data: DeliveryServiceType) => {
@@ -51,7 +53,7 @@ function DeliveryServicesTable() {
   };
   const onAddUser = (data: DeliveryServiceType) => {
     setSelectedDeliveryService(data);
-    setIsAddingUser(true);
+    setIsShowingUsers(true);
   };
   const onUpdatePublish = async (
     deliveryService: DeliveryServiceType,
@@ -127,7 +129,7 @@ function DeliveryServicesTable() {
                           Edit
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => onAddUser(item)}>
-                          Add User
+                          Manage Users
                         </DropdownMenuItem>
                         {item.isPublished ? (
                           <DropdownMenuItem
@@ -151,18 +153,22 @@ function DeliveryServicesTable() {
           )}
         </TableBody>
       </Table>
-      <Dialog open={isAddingUser} onOpenChange={setIsAddingUser}>
+      <Dialog open={isShowingUsers} onOpenChange={setIsShowingUsers}>
         {selectedDeliveryService && (
           <DialogContent>
             <DialogHeader>
               <DialogTitle>
-                Adding user for: {`${selectedDeliveryService.name}`}
+                Manage Users for: {`${selectedDeliveryService.name}`}
               </DialogTitle>
-              <DialogDescription>Add users with role.</DialogDescription>
+              <DialogDescription>
+                Add, remove or update users.
+              </DialogDescription>
             </DialogHeader>
-            <AddDeliveryServiceUserForm
+            <ManageDeliveryServicesUsersForm
               deliveryService={selectedDeliveryService}
-              setClose={() => setIsAddingUser(false)}
+              setClose={() => {
+                setIsShowingUsers(false);
+              }}
             />
           </DialogContent>
         )}

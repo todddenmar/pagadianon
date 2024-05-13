@@ -2,7 +2,11 @@ import { CartItemType, DeliveryServiceType } from '@/typings';
 import React, { useContext, useState } from 'react';
 import CartListItem from '../cart/CartListItem';
 import CustomPesoIcon from '../CustomComponents/CustomPesoIcon';
-import { getCartTotal, pluralizeNumber } from '@/helpers/appHelpers';
+import {
+  getCartTotal,
+  getDeliveryServiceUserType,
+  pluralizeNumber,
+} from '@/helpers/appHelpers';
 import {
   Dialog,
   DialogContent,
@@ -24,25 +28,31 @@ import moment from 'moment';
 function OrderStoreCartItem({ item }: { item: any }) {
   const [isConfirming, setIsConfirming] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [currentSettings] = useAppStore((state) => [state.currentSettings]);
+  const [currentSettings, currentUserData] = useAppStore((state) => [
+    state.currentSettings,
+    state.currentUserData,
+  ]);
   const { orderData, setOrderData, currentUserEmail } =
     useContext(OrderContext);
-  console.log({ orderData, item });
-  let userType = 'viewer';
   if (!orderData) return <LoadingComponent />;
   if (!currentSettings) return <LoadingComponent />;
-  const deliveryUsers = currentSettings?.delivery_services?.find(
-    (deliveryItem: DeliveryServiceType) =>
-      deliveryItem.id === orderData.deliveryService?.id
-  )?.users;
-  userType =
-    deliveryUsers?.find(
-      (deliveryItem: any) => deliveryItem.email === currentUserEmail
-    )?.roleType || 'viewer';
+  const isStoreManager = currentUserData?.stores?.find(
+    (storeID: string) => storeID === item.storeID
+  )
+    ? 'store manager'
+    : null;
+  let userType =
+    getDeliveryServiceUserType({
+      deliveryServices: currentSettings?.delivery_services,
+      deliveryServiceID: orderData.deliveryService?.id,
+      currentEmail: currentUserEmail,
+    }) || isStoreManager;
 
   const isConfirmed = orderData.storesInvolved.find(
     (storeStatusItem) => storeStatusItem.storeID === item.storeID
   )?.isConfirmed;
+
+  const deliveryIsConfirmed = orderData?.deliveryService?.isConfirmed;
 
   const onConfirm = async () => {
     setIsLoading(true);
@@ -105,13 +115,13 @@ function OrderStoreCartItem({ item }: { item: any }) {
         <div className="p-3 text-sm text-green-500 font-semibold text-center w-full bg-neutral-900 flex justify-center space-x-2">
           <span>Confirmed</span> <CheckCircleIcon className="h-5" />
         </div>
-      ) : userType === kDeliveryServiceRoleType.MANAGER ? (
-        <button
+      ) : deliveryIsConfirmed && userType === 'store manager' ? (
+        <Button
           onClick={() => setIsConfirming(true)}
-          className="p-3 text-sm text-neutral-950 font-semibold text-center w-full bg-highlight hover:bg-highlight_hover"
+          className="text-neutral-950 bg-highlight hover:bg-highlight_hover rounded-t-none"
         >
           Confirm Cart
-        </button>
+        </Button>
       ) : (
         <div className="p-3 text-sm animate-pulse text-orange-400 font-semibold text-center w-full bg-neutral-900 flex justify-center space-x-2">
           <span>Waiting for confirmation...</span>{' '}
@@ -122,9 +132,10 @@ function OrderStoreCartItem({ item }: { item: any }) {
       <Dialog open={isConfirming} onOpenChange={setIsConfirming}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Confirm order for {item.storeName}?</DialogTitle>
+            <DialogTitle>Are you sure you want to confirm cart?</DialogTitle>
             <DialogDescription>
-              This will confirm the cart items for this store.
+              This means {item.storeName} has approved the orders and will start
+              preparing the products.
             </DialogDescription>
           </DialogHeader>
           {isLoading ? (
@@ -144,10 +155,10 @@ function OrderStoreCartItem({ item }: { item: any }) {
                 Cancel
               </Button>
               <Button
-                className="bg-highlight hover:bg-highlight_hover"
+                className="bg-highlight hover:bg-highlight_hover transition-all"
                 onClick={onConfirm}
               >
-                Submit
+                Confirm
               </Button>
             </div>
           )}

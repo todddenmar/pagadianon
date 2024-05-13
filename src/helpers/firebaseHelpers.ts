@@ -377,6 +377,7 @@ export const dbUpdateDeliveryService = async (data: DeliveryServiceType) => {
   }
 };
 
+
 export const dbAddOrderOnStore = async ({
   data,
   customer,
@@ -420,10 +421,49 @@ export const dbUpdateStoreCartStatus = async ({
   orderID: string;
   storesInvolved: any[];
 }) => {
-  const userRef = doc(db, 'orders', String(orderID));
+  const date = new Date();
+  const year = moment(date).format('YYYY');
+  const month = moment(date).format('MM');
+  const userRef = doc(
+    db,
+    'orders',
+    String(year),
+    String(month),
+    String(orderID)
+  );
   try {
     await updateDoc(userRef, {
       storesInvolved: storesInvolved,
+    });
+    return { status: 'success' };
+  } catch (error) {
+    return { status: 'error', error };
+  }
+};
+
+export const dbConfirmOrderByDeliveryService = async ({
+  orderID,
+  data,
+}: {
+  orderID: string;
+  data: {
+    id: string;
+    isConfirmed: boolean;
+  };
+}) => {
+  const date = new Date();
+  const year = moment(date).format('YYYY');
+  const month = moment(date).format('MM');
+  const userRef = doc(
+    db,
+    'orders',
+    String(year),
+    String(month),
+    String(orderID)
+  );
+  try {
+    await updateDoc(userRef, {
+      deliveryService: data,
     });
     return { status: 'success' };
   } catch (error) {

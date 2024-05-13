@@ -1,5 +1,10 @@
 import { urlFor } from '@/lib/client';
-import { CartItemType, ProductType, StoreType } from '@/typings';
+import {
+  CartItemType,
+  DeliveryServiceType,
+  ProductType,
+  StoreType,
+} from '@/typings';
 import _ from 'lodash';
 
 export const checkSlugExists = ({
@@ -181,9 +186,30 @@ export const getStoreIDsByCart = ({
       if (store)
         storesOrdered.push({
           storeID: store.id,
+          storeSlug: store.slug,
           isConfirmed: false,
         });
     }
   });
   return storesOrdered;
 };
+
+export const getDeliveryServiceUserType = ({
+  deliveryServices,
+  deliveryServiceID,
+  currentEmail,
+}: {
+  deliveryServices: DeliveryServiceType[];
+  deliveryServiceID: string | undefined;
+  currentEmail: string;
+}) => {
+  const deliveryUsers = deliveryServices?.find(
+    (deliveryItem: DeliveryServiceType) => deliveryItem.id === deliveryServiceID
+  )?.users;
+  const userType =
+    deliveryUsers?.find(
+      (deliveryItem: any) => deliveryItem.email === currentEmail
+    )?.roleType || null;
+  return userType;
+};
+
