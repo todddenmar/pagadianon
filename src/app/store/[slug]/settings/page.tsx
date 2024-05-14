@@ -1,5 +1,5 @@
 import React from 'react';
-import StoreSettingsSection from '@/components/store/StoreSettingsSection';
+import StoreSettingsSection from '@/components/store/settings/StoreSettingsSection';
 import { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Store Settings | Pagadianon',

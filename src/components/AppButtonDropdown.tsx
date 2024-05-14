@@ -21,6 +21,7 @@ import Link from 'next/link';
 import { useAuth } from '@clerk/nextjs';
 import LoadingComponent from './admin/LoadingComponent.';
 import { LoaderIcon } from 'lucide-react';
+import { Separator } from './ui/separator';
 function AppButtonDropdown() {
   const { userId, orgId, has } = useAuth();
 
@@ -30,8 +31,7 @@ function AppButtonDropdown() {
     state.currentUserData,
     state.currentSettings,
   ]);
-  if (!currentUserData)
-    return null;
+  if (!currentUserData) return null;
   let hasAdminPermission = false;
   if (userId && orgId) {
     hasAdminPermission = has({ permission: 'org:admin:access' });
@@ -61,14 +61,14 @@ function AppButtonDropdown() {
           <DropdownMenuItem onClick={() => setIsOpenMyApps(true)}>
             Stores
           </DropdownMenuItem>
-          <Link href="/orders" legacyBehavior passHref>
-            <DropdownMenuItem onClick={() => setIsOpenDropDown(false)}>
+          <Link href="/orders" >
+            <DropdownMenuItem onClick={() => setIsOpenDropDown(false)} >
               Orders
             </DropdownMenuItem>
           </Link>
 
           {userId && orgId && hasAdminPermission && (
-            <Link href="/admin" legacyBehavior passHref>
+            <Link href="/admin" >
               <DropdownMenuItem onClick={() => setIsOpenDropDown(false)}>
                 Dashboard
               </DropdownMenuItem>
@@ -95,14 +95,23 @@ function AppButtonDropdown() {
                   )
                   .map((store: StoreType, idx: number) => {
                     return (
-                      <Link
-                        href={`/store/${store?.slug}`}
+                      <div
                         key={`stores-${idx}`}
-                        className="p-3 rounded-md border  hover:bg-neutral-100 hover:dark:bg-neutral-900 transition-all"
-                        onClick={() => setIsOpenMyApps(false)}
+                        className="flex justify-between gap-5 items-center rounded-md bg-neutral-900 border px-2 py-3"
                       >
-                        <span className="font-semibold">{store?.name}</span>
-                      </Link>
+                        <span className="font-semibold text-sm">
+                          {store?.name}
+                        </span>
+                        <div className="flex items-center gap-2 h-[20px] text-sm ">
+                          <Link
+                            href={`/store/${store?.slug}`}
+                            onClick={() => setIsOpenMyApps(false)}
+                            className="text-highlight hover:text-highlight_hover"
+                          >
+                            Go To Page
+                          </Link>
+                        </div>
+                      </div>
                     );
                   })}
               </div>

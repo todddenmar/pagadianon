@@ -213,3 +213,14 @@ export const getDeliveryServiceUserType = ({
   return userType;
 };
 
+export const getOrderLinkByDate = ({
+  orderID,
+  year,
+  month,
+}: {
+  orderID: string;
+  year: string;
+  month: string;
+}) => {
+  return `/order/${orderID}?year=${year}&month=${month}`;
+};

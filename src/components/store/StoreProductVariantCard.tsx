@@ -19,12 +19,14 @@ import LoadingComponent from '../admin/LoadingComponent.';
 import { Badge } from '../ui/badge';
 import moment from 'moment';
 import { toast } from 'sonner';
+import { SignInButton, SignedOut } from '@clerk/nextjs';
 
 function StoreProductVariantCard({ variant }: { variant: VariantType }) {
   const [
     currentStoreData,
     currentStoreProducts,
     currentUserCart,
+    currentUserData,
     setCurrentUserCart,
     setIsSheetCartOpen,
     setIsDrawerCartOpen,
@@ -32,6 +34,7 @@ function StoreProductVariantCard({ variant }: { variant: VariantType }) {
     state.currentStoreData,
     state.currentStoreProducts,
     state.currentUserCart,
+    state.currentUserData,
     state.setCurrentUserCart,
     state.setIsSheetCartOpen,
     state.setIsDrawerCartOpen,
@@ -80,9 +83,9 @@ function StoreProductVariantCard({ variant }: { variant: VariantType }) {
       );
       setCurrentUserCart(increaseCartItem);
       setIsOpenDrawer(false);
-      toast.success('Added to cart successfully', {
+      toast.success('Added quantity to cart successfully', {
         description: moment(new Date()).format('LLL'),
-        position: 'bottom-left',
+        position: 'top-left',
         action: {
           label: 'Open Cart',
           onClick: () =>
@@ -96,7 +99,7 @@ function StoreProductVariantCard({ variant }: { variant: VariantType }) {
     setIsOpenDrawer(false);
     toast.success('Added to cart successfully', {
       description: moment(new Date()).format('LLL'),
-      position: 'bottom-left',
+      position: 'top-left',
       action: {
         label: 'Open Cart',
         onClick: () =>
@@ -207,25 +210,38 @@ function StoreProductVariantCard({ variant }: { variant: VariantType }) {
                 </div>
               )}
             </div>
-            <div className="flex items-center gap-5">
-              <ProductQuantitySelector
-                value={quantity}
-                onChange={(val) => setQuantity(val)}
-              />
+            {currentUserData ? (
+              <div className="flex items-center gap-5">
+                <ProductQuantitySelector
+                  value={quantity}
+                  onChange={(val) => setQuantity(val)}
+                />
 
-              <Button
-                className="hidden md:block bg-highlight hover:bg-highlight_hover text-neutral-950 transition-colors"
-                onClick={() => onAddToCart({ isMobile: false })}
-              >
-                Add To Cart
-              </Button>
-              <Button
-                className="block md:hidden bg-highlight hover:bg-highlight_hover text-neutral-950 transition-colors"
-                onClick={() => onAddToCart({ isMobile: true })}
-              >
-                Add To Cart
-              </Button>
-            </div>
+                <Button
+                  className="hidden md:block bg-highlight hover:bg-highlight_hover text-neutral-950 transition-colors"
+                  onClick={() => onAddToCart({ isMobile: false })}
+                >
+                  Add To Cart
+                </Button>
+                <Button
+                  className="block md:hidden bg-highlight hover:bg-highlight_hover text-neutral-950 transition-colors"
+                  onClick={() => onAddToCart({ isMobile: true })}
+                >
+                  Add To Cart
+                </Button>
+              </div>
+            ) : (
+              <SignedOut>
+                <div onClick={()=>{
+                   setIsSheetCartOpen(false)
+                   setIsDrawerCartOpen(false)
+                }} className="rounded-full w-fit border px-3 hover:bg-neutral-50 hover:dark:bg-neutral-800 py-1 text-sm">
+                  <SignInButton >
+                    Sign in before you can add to cart
+                  </SignInButton>
+                </div>
+              </SignedOut>
+            )}
           </div>
         </DrawerContent>
       </Drawer>

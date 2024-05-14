@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import ContainerLayout from '../layouts/ContainerLayout';
 import StoreSidebar from './StoreSidebar';
 import { Drawer, DrawerContent } from '@/components/ui/drawer';
@@ -10,8 +10,6 @@ import { Button } from '../ui/button';
 import StoreInfo from './StoreInfo';
 import { useAppStore } from '@/lib/store';
 import { ProductType, VariantType } from '@/typings';
-import StoreProductVariantCard from './StoreProductVariantCard';
-import CustomTagsSlider from '../CustomComponents/CustomTagsSlider';
 import { getAllUniqueTagsFromItems } from '@/helpers/appHelpers';
 import StoreProductsList from './StoreProductsList';
 

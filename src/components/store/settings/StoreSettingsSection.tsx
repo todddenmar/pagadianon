@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/breadcrumb';
 import Link from 'next/link';
 import ContainerLayout from '@/components/layouts/ContainerLayout';
-import StoreSettingsTabs from '@/components/store/StoreSettingsTabs';
+import StoreSettingsTabs from '@/components/store/settings/StoreSettingsTabs';
 import { Card } from '@/components/ui/card';
 import { useAppStore } from '@/lib/store';
 
@@ -23,10 +23,10 @@ import {
 } from '@/components/ui/dialog';
 
 import { PlusIcon } from 'lucide-react';
-import { Button } from '../ui/button';
-import CreateStoreProductForm from './forms/CreateStoreProductForm';
-import { Separator } from '../ui/separator';
-import NoDataSection from '../error/NoDataSection';
+import { Button } from '../../ui/button';
+import CreateStoreProductForm from '../forms/CreateStoreProductForm';
+import { Separator } from '../../ui/separator';
+import NoDataSection from '../../error/NoDataSection';
 
 function StoreSettingsSection() {
   const [currentStoreData] = useAppStore((state) => [state.currentStoreData]);

@@ -1,3 +1,4 @@
+'use client';
 import { CartItemType, DeliveryServiceType } from '@/typings';
 import React, { useContext, useState } from 'react';
 import CartListItem from '../cart/CartListItem';
@@ -5,7 +6,6 @@ import CustomPesoIcon from '../CustomComponents/CustomPesoIcon';
 import {
   convertStringCoordinatesToObject,
   getCartTotal,
-  getDeliveryServiceUserType,
   pluralizeNumber,
 } from '@/helpers/appHelpers';
 import {
@@ -21,29 +21,23 @@ import { OrderContext } from '../providers/OrderContextProvider';
 import LoadingComponent from '../admin/LoadingComponent.';
 import {
   CheckCircleIcon,
-  CheckIcon,
   InfoIcon,
   LoaderCircleIcon,
   NavigationIcon,
 } from 'lucide-react';
-import { useUser } from '@clerk/nextjs';
 import { useAppStore } from '@/lib/store';
-import { kDeliveryServiceRoleType } from '@/constants';
 import { dbUpdateStoreCartStatus } from '@/helpers/firebaseHelpers';
 import { toast } from 'sonner';
 import moment from 'moment';
-import Link from 'next/link';
 import OrderInfoItem from './OrderInfoItem';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
+import { kDeliveryServiceRoleType, kFulfillmentMethod } from '@/constants';
+import { Separator } from '../ui/separator';
 
 function OrderStoreCartItem({ item }: { item: any }) {
   const [isConfirming, setIsConfirming] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isPickingUp, setIsPickingUp] = useState(false);
+  const [isSetReadyForPickUp, setIsSetReadyForPickUp] = useState(false);
   const [currentSettings, currentUserData] = useAppStore((state) => [
     state.currentSettings,
     state.currentUserData,
@@ -52,26 +46,74 @@ function OrderStoreCartItem({ item }: { item: any }) {
     useContext(OrderContext);
   if (!orderData) return <LoadingComponent />;
   if (!currentSettings) return <LoadingComponent />;
-  const isStoreManager = currentUserData?.stores?.find(
-    (storeID: string) => storeID === item.storeID
-  )
-    ? 'store manager'
-    : null;
-  let userType =
-    getDeliveryServiceUserType({
-      deliveryServices: currentSettings?.delivery_services,
-      deliveryServiceID: orderData.deliveryService?.id,
-      currentEmail: currentUserEmail,
-    }) || isStoreManager;
 
-  const isConfirmed = orderData.storesInvolved?.find(
+  const currentDeliveryService = currentSettings?.delivery_services.find(
+    (delItem: DeliveryServiceType) =>
+      delItem.id === orderData.deliveryService?.id
+  );
+  const isForDelivery =
+    orderData.fulfillmentMethod === kFulfillmentMethod.DELIVERY;
+
+  let isDeliveryServiceManager: boolean = checkIfDSManager();
+  let isStoreManager: boolean = checkIfStoreManager();
+  let isRider: boolean = checkIfRider();
+  let isCustomer: boolean = false;
+
+  console.log({
+    isDeliveryServiceManager,
+    isStoreManager,
+    isRider,
+    isCustomer,
+    currentDeliveryService,
+    currentUserEmail,
+  });
+
+  const isStoreConfirmed = orderData.storesInvolved?.find(
     (storeStatusItem) => storeStatusItem?.storeID === item.storeID
   )?.isConfirmed;
 
-  const deliveryIsConfirmed = orderData?.deliveryService?.isConfirmed;
+  const isPickedUp = orderData.storesInvolved?.find(
+    (storeStatusItem) => storeStatusItem?.storeID === item.storeID
+  )?.isPickedUp;
+
+  const isReadyForPickUp = orderData.storesInvolved?.find(
+    (storeStatusItem) => storeStatusItem?.storeID === item.storeID
+  )?.isReadyForPickUp;
+
+  const isDeliveryConfirmed = orderData?.deliveryService?.isConfirmed;
   const coordinates = convertStringCoordinatesToObject(
     item.contactInfo.coordinates
   );
+
+  function checkIfDSManager() {
+    const userFound = currentDeliveryService?.users?.find(
+      (dsUsers: any) => dsUsers.email === currentUserEmail
+    );
+    if (userFound?.roleType === kDeliveryServiceRoleType.MANAGER) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  function checkIfStoreManager() {
+    return currentUserData?.stores?.find(
+      (storeID: string) => storeID === item.storeID
+    )
+      ? true
+      : false;
+  }
+
+  function checkIfRider() {
+    const userFound = currentDeliveryService?.users?.find(
+      (dsUsers: any) => dsUsers.email === currentUserEmail
+    );
+    if (userFound?.roleType === kDeliveryServiceRoleType.RIDER) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 
   const onConfirm = async () => {
     setIsLoading(true);
@@ -94,6 +136,54 @@ function OrderStoreCartItem({ item }: { item: any }) {
       description: moment(new Date()).format('LLL'),
     });
     setIsConfirming(false);
+    setIsLoading(false);
+  };
+
+  const onPickUp = async () => {
+    setIsLoading(true);
+    const updatedStoresInvolved = orderData.storesInvolved?.map(
+      (storeItem: any) =>
+        storeItem.storeID === item.storeID
+          ? { ...storeItem, isPickedUp: true }
+          : storeItem
+    );
+    const res = await dbUpdateStoreCartStatus({
+      orderID: orderData.id,
+      storesInvolved: updatedStoresInvolved,
+    });
+    if (res.status === 'error') {
+      console.log(res.error);
+      return;
+    }
+    setOrderData({ ...orderData, storesInvolved: updatedStoresInvolved });
+    toast.success(`Picked Up cart items for ${item.name}`, {
+      description: moment(new Date()).format('LLL'),
+    });
+    setIsPickingUp(false);
+    setIsLoading(false);
+  };
+
+  const onReadyForPickUp = async () => {
+    setIsLoading(true);
+    const updatedStoresInvolved = orderData.storesInvolved?.map(
+      (storeItem: any) =>
+        storeItem.storeID === item.storeID
+          ? { ...storeItem, isReadyForPickUp: true }
+          : storeItem
+    );
+    const res = await dbUpdateStoreCartStatus({
+      orderID: orderData.id,
+      storesInvolved: updatedStoresInvolved,
+    });
+    if (res.status === 'error') {
+      console.log(res.error);
+      return;
+    }
+    setOrderData({ ...orderData, storesInvolved: updatedStoresInvolved });
+    toast.success(`Picked Up cart items for ${item.name}`, {
+      description: moment(new Date()).format('LLL'),
+    });
+    setIsSetReadyForPickUp(false);
     setIsLoading(false);
   };
   return (
@@ -177,24 +267,126 @@ function OrderStoreCartItem({ item }: { item: any }) {
           </div>
         </div>
       </div>
+      {isForDelivery ? (
+        <div className=" text-sm font-semibold text-center w-full bg-neutral-900 grid grid-cols-2 h-[40px]">
+          {isStoreConfirmed ? (
+            <StoreConfirmed />
+          ) : isStoreManager ? (
+            <Button
+              onClick={() => setIsConfirming(true)}
+              className="text-neutral-950 bg-highlight hover:bg-highlight_hover rounded-none w-full"
+            >
+              Confirm Cart
+            </Button>
+          ) : (
+            <WaitingForStoreConfirmation />
+          )}
 
-      {isConfirmed ? (
-        <div className="p-3 text-sm text-green-500 font-semibold text-center w-full bg-neutral-900 flex justify-center space-x-2">
-          <span>Confirmed</span> <CheckCircleIcon className="h-5" />
+          {isPickedUp ? (
+            <RiderPickedUp />
+          ) : isRider ? (
+            <Button
+              disabled={!isStoreConfirmed}
+              onClick={() => setIsPickingUp(true)}
+              className="text-neutral-950 bg-highlight hover:bg-highlight_hover rounded-none w-full text-sm"
+            >
+              Pick Up
+            </Button>
+          ) : (
+            <WaitingForRider />
+          )}
         </div>
-      ) : deliveryIsConfirmed && userType === 'store manager' ? (
-        <Button
-          onClick={() => setIsConfirming(true)}
-          className="text-neutral-950 bg-highlight hover:bg-highlight_hover rounded-t-none"
-        >
-          Confirm Cart
-        </Button>
       ) : (
-        <div className="p-3 text-sm animate-pulse text-orange-400 font-semibold text-center w-full bg-neutral-900 flex justify-center space-x-2">
-          <span>Waiting for store confirmation...</span>{' '}
-          <LoaderCircleIcon className="h-5 animate-spin" />
+        <div className=" text-sm font-semibold text-center w-full bg-neutral-900 h-[40px] flex flex-col items-center justify-center">
+          {isStoreConfirmed ? (
+            isStoreManager ? (
+              isReadyForPickUp ? (
+                isPickedUp ? (
+                  <CustomerPickedUp />
+                ) : (
+                  <Button
+                    disabled={!isStoreConfirmed}
+                    onClick={() => setIsPickingUp(true)}
+                    className="text-neutral-950 bg-highlight hover:bg-highlight_hover rounded-none w-full text-sm"
+                  >
+                    Set Customer Picked Up
+                  </Button>
+                )
+              ) : (
+                <Button
+                  disabled={!isStoreConfirmed}
+                  onClick={() => setIsSetReadyForPickUp(true)}
+                  className="text-neutral-950 bg-highlight hover:bg-highlight_hover rounded-none w-full text-sm"
+                >
+                  Set Ready For Pick Up
+                </Button>
+              )
+            ) : isReadyForPickUp ? (
+              isPickedUp ? (
+                <CustomerPickedUp />
+              ) : (
+                <ReadyForPickUp />
+              )
+            ) : (
+              <StoreConfirmed />
+            )
+          ) : isStoreManager ? (
+            <Button
+              onClick={() => setIsConfirming(true)}
+              className="text-neutral-950 bg-highlight hover:bg-highlight_hover rounded-none w-full"
+            >
+              Confirm Cart
+            </Button>
+          ) : (
+            <WaitingForStoreConfirmation />
+          )}
         </div>
       )}
+
+      {/* {orderData.fulfillmentMethod === kFulfillmentMethod.DELIVERY ? (
+        <div className="w-full">
+          {isConfirmed ? (
+            <div className="p-3 text-sm font-semibold text-center w-full bg-neutral-900 grid grid-cols-2 ">
+              <StoreConfirmed />
+              {isPickedUp ? <RiderPickedUp /> : <WaitingForRider />}
+            </div>
+          ) : isAllowingStoreConfirmation ? (
+            <Button
+              onClick={() => setIsConfirming(true)}
+              className="text-neutral-950 bg-highlight hover:bg-highlight_hover rounded-t-none w-full"
+            >
+              Confirm Cart
+            </Button>
+          ) : (
+            <WaitingForStoreConfirmation />
+          )}
+        </div>
+      ) : (
+        <div className="w-full">
+          {isConfirmed ? (
+            <div className="p-3 text-sm text-green-500 font-semibold text-center w-full bg-neutral-900 flex justify-around space-x-2">
+              <div className="flex items-center gap-2">
+                <span>Confirmed</span> <CheckCircleIcon className="h-5" />
+              </div>
+              <div className="flex items-center gap-2">
+                <span>Confirmed</span> <CheckCircleIcon className="h-5" />
+              </div>
+            </div>
+          ) : isStoreManager ? (
+            <Button
+              onClick={() => setIsConfirming(true)}
+              className="text-neutral-950 bg-highlight hover:bg-highlight_hover rounded-t-none w-full"
+            >
+              Confirm Cart
+            </Button>
+          ) : (
+            <div className="p-3 text-sm animate-pulse text-orange-400 font-semibold text-center w-full bg-neutral-900 flex justify-center space-x-2">
+              <span>Waiting for store confirmation...</span>{' '}
+              <LoaderCircleIcon className="h-5 animate-spin" />
+            </div>
+          )}
+        </div>
+      )} */}
 
       <Dialog open={isConfirming} onOpenChange={setIsConfirming}>
         <DialogContent>
@@ -214,7 +406,7 @@ function OrderStoreCartItem({ item }: { item: any }) {
           ) : (
             <div className="w-full grid grid-cols-2 gap-5 pt-5">
               <Button
-                onClick={(e) => {
+                onClick={() => {
                   setIsConfirming(false);
                 }}
                 variant={'secondary'}
@@ -222,10 +414,79 @@ function OrderStoreCartItem({ item }: { item: any }) {
                 Cancel
               </Button>
               <Button
-                className="bg-highlight hover:bg-highlight_hover transition-all"
+                className="bg-highlight hover:bg-highlight_hover transition-all "
                 onClick={onConfirm}
               >
                 Confirm
+              </Button>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+      <Dialog open={isPickingUp} onOpenChange={setIsPickingUp}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Are you sure?</DialogTitle>
+            <DialogDescription>
+              This means the items are picked up.
+            </DialogDescription>
+          </DialogHeader>
+          {isLoading ? (
+            <div className="w-full h-[50px] flex flex-col items-center justify-center pt-5">
+              <span>
+                <LoaderCircleIcon className="animate-spin" />
+              </span>
+            </div>
+          ) : (
+            <div className="w-full grid grid-cols-2 gap-5 pt-5">
+              <Button
+                onClick={() => {
+                  setIsPickingUp(false);
+                }}
+                variant={'secondary'}
+              >
+                Cancel
+              </Button>
+              <Button
+                className="bg-highlight hover:bg-highlight_hover transition-all "
+                onClick={onPickUp}
+              >
+                Yes
+              </Button>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isSetReadyForPickUp} onOpenChange={setIsSetReadyForPickUp}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Are you sure?</DialogTitle>
+            <DialogDescription>
+              Setting items ready for pick up
+            </DialogDescription>
+          </DialogHeader>
+          {isLoading ? (
+            <div className="w-full h-[50px] flex flex-col items-center justify-center pt-5">
+              <span>
+                <LoaderCircleIcon className="animate-spin" />
+              </span>
+            </div>
+          ) : (
+            <div className="w-full grid grid-cols-2 gap-5 pt-5">
+              <Button
+                onClick={() => {
+                  setIsSetReadyForPickUp(false);
+                }}
+                variant={'secondary'}
+              >
+                Cancel
+              </Button>
+              <Button
+                className="bg-highlight hover:bg-highlight_hover transition-all "
+                onClick={onReadyForPickUp}
+              >
+                Yes
               </Button>
             </div>
           )}
@@ -235,4 +496,50 @@ function OrderStoreCartItem({ item }: { item: any }) {
   );
 }
 
+function StoreConfirmed() {
+  return (
+    <div className="flex justify-center text-green-500 items-center gap-1">
+      <span>Store Confirmed</span> <CheckCircleIcon className="h-[16px]" />
+    </div>
+  );
+}
+
+function RiderPickedUp() {
+  return (
+    <div className="flex justify-center text-green-500 items-center  gap-1">
+      <span>Picked Up</span> <CheckCircleIcon className="h-[16px]" />
+    </div>
+  );
+}
+
+function CustomerPickedUp() {
+  return (
+    <div className="flex justify-center text-green-500 items-center  gap-1">
+      <span>Claimed</span> <CheckCircleIcon className="h-[16px]" />
+    </div>
+  );
+}
+
+function ReadyForPickUp() {
+  return (
+    <div className="flex justify-center text-orange-400 items-center  gap-1">
+      <span>Ready For Pick Up</span> <CheckCircleIcon className="h-[16px]" />
+    </div>
+  );
+}
+
+function WaitingForStoreConfirmation() {
+  return (
+    <div className="p-2  flex-col items-center  animate-pulse text-orange-400 font-semibold text-center w-full bg-neutral-900 flex justify-center space-x-2">
+      <span>Waiting for store...</span>
+    </div>
+  );
+}
+function WaitingForRider() {
+  return (
+    <div className="p-2  flex-col items-center  animate-pulse text-orange-400 font-semibold text-center w-full bg-neutral-900 flex justify-center space-x-2">
+      <span>Waiting for rider...</span>
+    </div>
+  );
+}
 export default OrderStoreCartItem;

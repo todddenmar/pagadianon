@@ -11,17 +11,22 @@ import {
 import { Input } from '../ui/input';
 import { PackageSearchIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import moment from 'moment';
 
 function TrackOrderButton() {
   const [orderLink, setOrderLink] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
+
   const onSubmit = () => {
+    const date = new Date();
+    const year = moment(date).format('YYYY');
+    const month = moment(date).format('MM');
     if (orderLink === '') {
       return;
     }
     setIsOpen(false);
-    router.push(`/order/${orderLink}`);
+    router.push(`/order/${orderLink}?year=${year}&month=${month}`);
   };
   return (
     <div>

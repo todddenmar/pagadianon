@@ -4,12 +4,9 @@ import { useAppStore } from '@/lib/store';
 import { cn } from '@/lib/utils';
 import { StoreType } from '@/typings';
 import {
-  CarIcon,
-  FacebookIcon,
+  ClipboardListIcon,
   LayoutListIcon,
-  MapIcon,
   NavigationIcon,
-  PinIcon,
   SettingsIcon,
   StoreIcon,
 } from 'lucide-react';
@@ -17,9 +14,11 @@ import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import React from 'react';
 import LoadingComponent from '../admin/LoadingComponent.';
-import Image from 'next/image';
 import CustomFacebookIcon from '../icons/CustomFacebookIcon';
 import CustomInstagramIcon from '../icons/CustomInstagramIcon';
+import StoreSidebarTitle from './StoreSidebarTitle';
+import StoreSidebarItem from './StoreSidebarItem';
+import StoreSidebarLinkItem from './StoreSidebarLinkItem';
 
 function StoreSidebar({
   value,
@@ -145,17 +144,32 @@ function StoreSidebar({
         <div className="py-5">
           <StoreSidebarTitle text="Admin" />
           <ul>
-            <Link
-              href={`/store/${params.slug}/settings`}
-              className={cn(
-                'px-4 rounded-md items-center py-2 w-full text-left text-sm dark:hover:bg-neutral-900 transition-all  hover:bg-neutral-100 capitalize flex space-x-2'
-              )}
-            >
-              <span>
-                <SettingsIcon className="h-[16px] w-[16px]" />
-              </span>
-              <span>Settings</span>
-            </Link>
+            <li>
+              <Link
+                href={`/store/${params.slug}/orders`}
+                className={cn(
+                  'px-4 rounded-md items-center py-2 w-full text-left text-sm dark:hover:bg-neutral-900 transition-all  hover:bg-neutral-100 capitalize flex space-x-2'
+                )}
+              >
+                <span>
+                  <ClipboardListIcon className="h-[16px] w-[16px]" />
+                </span>
+                <span>Orders</span>
+              </Link>
+            </li>
+            <li>
+              <Link
+                href={`/store/${params.slug}/settings`}
+                className={cn(
+                  'px-4 rounded-md items-center py-2 w-full text-left text-sm dark:hover:bg-neutral-900 transition-all  hover:bg-neutral-100 capitalize flex space-x-2'
+                )}
+              >
+                <span>
+                  <SettingsIcon className="h-[16px] w-[16px]" />
+                </span>
+                <span>Settings</span>
+              </Link>
+            </li>
           </ul>
         </div>
       )}
@@ -163,58 +177,5 @@ function StoreSidebar({
   );
 }
 
-function StoreSidebarTitle({ text }: { text: string }) {
-  return <div className="text-base font-semibold px-4 py-2">{text}</div>;
-}
-function StoreSidebarLinkItem({
-  text,
-  href,
-  icon,
-  target,
-}: {
-  text: string;
-  href: string;
-  icon?: any;
-  target?: string;
-}) {
-  return (
-    <a
-      target={target}
-      href={href}
-      className={cn(
-        'px-4 pl-3 rounded-md py-2 w-full items-center text-left text-sm dark:hover:bg-neutral-900 transition-all  hover:bg-neutral-100 capitalize flex space-x-2'
-      )}
-    >
-      {icon}
-      <span>{text}</span>
-    </a>
-  );
-}
-function StoreSidebarItem({
-  onClick,
-  text,
-  icon,
-  isActive,
-}: {
-  isActive: boolean;
-  onClick: () => void;
-  text: string;
-  icon?: any;
-}) {
-  return (
-    <button
-      onClick={onClick}
-      className={cn(
-        'px-4 rounded-md py-2 w-full items-center text-left text-sm dark:hover:bg-neutral-900 transition-all  hover:bg-neutral-100 capitalize flex space-x-2',
-        {
-          'dark:bg-neutral-800 bg:bg-neutral-50': isActive,
-        }
-      )}
-    >
-      <span>{icon}</span>
-      <span>{text}</span>
-    </button>
-  );
-}
 
 export default StoreSidebar;

@@ -135,7 +135,7 @@ function OrderInfoSection() {
             <OrderInfoItem
               label="Delivery Fee"
               value={
-                <div className="flex items-center font-semibold text-xl text-white">
+                <div className="flex items-center font-semibold  text-white">
                   <CustomPesoIcon />
                   <span>{orderData?.deliveryService?.fee}</span>
                 </div>
@@ -145,7 +145,7 @@ function OrderInfoSection() {
           <OrderInfoItem
             label="Subtotal"
             value={
-              <div className="flex items-center font-semibold text-xl text-white">
+              <div className="flex items-center font-semibold  text-white">
                 <CustomPesoIcon />
                 <span>{getCartTotal({ cart: orderData.cart })}</span>
               </div>

@@ -29,7 +29,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 
-import CustomImagePicker from '../CustomComponents/CustomImagePicker';
+import CustomImagePicker from '../../CustomComponents/CustomImagePicker';
 const userFormSchema = z.object({
   mobileNumber: z
     .string()

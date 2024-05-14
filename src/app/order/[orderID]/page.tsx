@@ -1,13 +1,10 @@
 import CustomPageHeader from '@/components/CustomPageHeader';
-import LoadingComponent from '@/components/admin/LoadingComponent.';
 import ContainerLayout from '@/components/layouts/ContainerLayout';
 import OrderProgress from '@/components/order/OrderProgress';
 import OrderSection from '@/components/order/OrderSection';
 import OrderContextProvider from '@/components/providers/OrderContextProvider';
 import { dbGetOrderData } from '@/helpers/firebaseHelpers';
 import { OrderType } from '@/typings';
-import { SignIn } from '@clerk/nextjs';
-import { auth, currentUser } from '@clerk/nextjs/server';
 import { Metadata } from 'next';
 import React from 'react';
 
@@ -71,7 +68,6 @@ async function OrderPage({ params, searchParams }: Props) {
               title={'Order Page'}
               description="Customer order page"
             />
-            <OrderProgress />
           </div>
 
           {orderData ? (

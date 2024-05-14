@@ -102,10 +102,10 @@ function CartListItem({
           <CustomPesoIcon />
           <span>{cartItem.price * qty}</span>
         </div>
-        <div className="flex items-center dark:text-neutral-500">
+        <div className="flex text-sm  items-center dark:text-neutral-500">
           {!isAllowingUpdate && <div>{qty}</div>}
           <XIcon className="h-3" />
-          <div className="flex text-sm items-center ">
+          <div className="flex items-center ">
             <CustomPesoIcon />
             {cartItem.price}
           </div>

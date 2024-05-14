@@ -20,8 +20,8 @@ function OrderSection() {
   return (
     <div>
       <Card className=" mt-2 overflow-hidden">
-        <div className="grid grid-cols-1 lg:flex gap-5 md:gap-10 p-5">
-          <div className="space-y-3 lg:max-w-lg">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:flex xl:grid-cols-2 gap-5  p-5">
+          <div className="space-y-3 lg:max-w-md">
             <OrderCustomerInfo />
             <OrderInfoSection />
           </div>

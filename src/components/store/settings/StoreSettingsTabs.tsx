@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import StoreBusinessHoursListCard from './StoreBusinessHoursListCard';
+import StoreBusinessHoursListCard from '../StoreBusinessHoursListCard';
 import StoreSettingsForm from './StoreSettingsForm';
-import { Card } from '../ui/card';
-import StoreProductsTable from './StoreProductsTable';
-import { Button } from '../ui/button';
+import { Card } from '../../ui/card';
+import StoreProductsTable from '../StoreProductsTable';
+import { Button } from '../../ui/button';
 import { cn } from '@/lib/utils';
 import StoreSettingSidebar from './StoreSettingSidebar';
 function StoreSettingsTabs() {

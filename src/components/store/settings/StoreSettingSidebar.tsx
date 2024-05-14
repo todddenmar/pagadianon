@@ -1,4 +1,7 @@
 import { cn } from '@/lib/utils';
+import { ClipboardListIcon } from 'lucide-react';
+import Link from 'next/link';
+import { useParams } from 'next/navigation';
 import React from 'react';
 
 function StoreSettingSidebar({
@@ -8,6 +11,8 @@ function StoreSettingSidebar({
   value: string;
   onValueChange: (val: string) => void;
 }) {
+  const params = useParams<{ slug: string }>();
+
   return (
     <ul className="grid grid-cols-1 gap-1 w-[200px]">
       <li>
@@ -49,6 +54,18 @@ function StoreSettingSidebar({
           Products
         </button>
       </li>
+
+      <Link
+        href={`/store/${params.slug}/orders`}
+        className={cn(
+          'px-4 rounded-md items-center py-2 w-full text-left text-sm dark:hover:bg-neutral-900 transition-all  hover:bg-neutral-100 capitalize flex space-x-2'
+        )}
+      >
+        <span>
+          <ClipboardListIcon className="h-[16px] w-[16px]" />
+        </span>
+        <span>Orders</span>
+      </Link>
     </ul>
   );
 }

@@ -194,6 +194,7 @@ export const kOrderPickUpProgressTpyes = [
   kOrderProgress.PENDING,
   kOrderProgress.CONFIRMED,
   kOrderProgress.READY,
+  kOrderProgress.PICKED_UP,
 ];
 
 export const kFulfillmentMethod = {

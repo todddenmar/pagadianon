@@ -23,7 +23,7 @@ function OrderStoreCartItems() {
   }));
   console.log({ storeCartsWithStatus });
   return (
-    <div className="gap-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 mt-2">
+    <div className="gap-3 grid grid-cols-1  lg:grid-cols-1 xl:grid-cols-2 mt-2">
       {storeCartsWithStatus?.map((item: any, idx: number) => {
         return <OrderStoreCartItem key={`store-cart-${idx}`} item={item} />;
       })}

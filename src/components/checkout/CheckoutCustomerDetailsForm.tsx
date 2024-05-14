@@ -33,12 +33,14 @@ import { v4 as uuidv4 } from 'uuid';
 import {
   dbAddOrderOnStore,
   dbCreateOrder,
+  dbGetCustomerDataByEmail,
   dbGetOrderDataByID,
+  dbSaveCustomerData,
 } from '@/helpers/firebaseHelpers';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { LoaderCircleIcon, NavigationIcon } from 'lucide-react';
-import { DeliveryServiceType, OrderType } from '@/typings';
+import { CustomerType, DeliveryServiceType, OrderType } from '@/typings';
 import {
   convertStringCoordinatesToObject,
   getDirectionByCoordinates,
@@ -54,12 +56,14 @@ function CheckoutCustomerDetailsForm() {
   const [
     currentUserCart,
     currentSettings,
+    currentUserData,
     setCurrentUserCart,
     setIsDrawerCartOpen,
     setIsSheetCartOpen,
   ] = useAppStore((state) => [
     state.currentUserCart,
     state.currentSettings,
+    state.currentUserData,
     state.setCurrentUserCart,
     state.setIsDrawerCartOpen,
     state.setIsSheetCartOpen,
@@ -72,6 +76,7 @@ function CheckoutCustomerDetailsForm() {
     kFulfillmentMethod.PICK_UP
   );
   const [paymentMethod, setPaymentMethod] = useState(kPaymentMethod.COD);
+  const [customerData, setCustomerData] = useState<any>(null);
   const [coordinates, setCoordinates] = useState<{
     latitude: number;
     longitude: number;
@@ -147,6 +152,37 @@ function CheckoutCustomerDetailsForm() {
     },
   });
 
+  const setCustomerDataForm = () => {
+    if (!customerData) {
+      return;
+    }
+    const { firstName, lastName, mobileNumber, address, coordinates } =
+      customerData;
+    form.setValue('firstName', firstName);
+    form.setValue('lastName', lastName);
+    form.setValue('mobileNumber', mobileNumber);
+    form.setValue('address', address);
+  };
+
+  useEffect(() => {
+    if (customerData) setCustomerDataForm();
+  }, [customerData]);
+
+  useEffect(() => {
+    getSetCustomerData();
+  }, [currentUserData]);
+
+  const getSetCustomerData = async () => {
+    const res = await dbGetCustomerDataByEmail({
+      email: currentUserData.email,
+    });
+    if (res.status === 'error') {
+      console.log(res.error);
+      return;
+    }
+    setCustomerData(res.data);
+  };
+
   const updateStoresOrder = async ({
     orderID,
     customer,
@@ -158,11 +194,21 @@ function CheckoutCustomerDetailsForm() {
       cart: currentUserCart,
       stores: currentSettings.stores,
     });
+
     storesInvolved.forEach(async (item: any) => {
       const res = await dbAddOrderOnStore({
         data: item,
         customer,
         orderID: orderID,
+        paymentMethod: paymentMethod,
+        fulfillmentMethod: fulfillmentMethod,
+        deliveryService:
+          fulfillmentMethod === kFulfillmentMethod.DELIVERY
+            ? {
+                id: selectedDeliveryServiceID,
+                isConfirmed: false,
+              }
+            : null,
       });
       if (res.status === 'error') {
         console.log(res.error);
@@ -201,21 +247,37 @@ function CheckoutCustomerDetailsForm() {
             mobileNumber: storeData.settings.mobileNumber,
           },
           isConfirmed: false,
+          isPickedUp: false,
+          isReadyForPickUp: false,
         };
       })
     );
+    const newCustomerData = {
+      firstName,
+      lastName,
+      email: currentUserData.email,
+      mobileNumber,
+      address,
+      coordinates: objCoordinates,
+    };
+    if (!customerData) {
+      const res = await dbSaveCustomerData({ data: newCustomerData });
+      if (res.status === 'error') {
+        console.log(res.error);
+        return;
+      }
+      setCustomerData({
+        ...currentUserData,
+        customerData: customerData,
+      });
+    }
 
     const newData = {
       id: id,
-      customer: {
-        firstName,
-        lastName,
-        mobileNumber,
-        address,
-        coordinates: objCoordinates,
-      },
+      customer: newCustomerData,
       paymentMethod: paymentMethod,
       fulfillmentMethod: fulfillmentMethod,
+      customerEmail: currentUserData.email,
       deliveryService:
         fulfillmentMethod === kFulfillmentMethod.DELIVERY
           ? {
@@ -229,12 +291,14 @@ function CheckoutCustomerDetailsForm() {
       storesInvolved: storesInvolvedContactInfo,
     };
     const res = await dbCreateOrder({ data: newData });
-
     if (res.status === 'error') {
       console.log(res.error);
       return;
     }
-    await updateStoresOrder({ orderID: id, customer: newData.customer });
+    await updateStoresOrder({
+      orderID: id,
+      customer: newData.customer,
+    });
     toast.success('Order created successfully', {
       description: moment(new Date()).format('LLL'),
     });

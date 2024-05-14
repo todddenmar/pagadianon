@@ -1,6 +1,7 @@
 import { kOrderProgress } from '@/constants';
 import { db } from '@/firebase';
 import {
+  CustomerType,
   DeliveryServiceType,
   OrderType,
   ProductType,
@@ -330,6 +331,18 @@ export const dbCreateOrder = async ({ data }: { data: OrderType }) => {
       doc(db, 'orders', String(year), String(month), String(data.id)),
       data
     );
+    await setDoc(
+      doc(
+        db,
+        'customers',
+        String(data.customer.email),
+        'orders',
+        String(year),
+        String(month),
+        String(data.id)
+      ),
+      data
+    );
     return { status: 'success' };
   } catch (error) {
     return { status: 'error', error };
@@ -377,15 +390,20 @@ export const dbUpdateDeliveryService = async (data: DeliveryServiceType) => {
   }
 };
 
-
 export const dbAddOrderOnStore = async ({
   data,
   customer,
   orderID,
+  paymentMethod,
+  fulfillmentMethod,
+  deliveryService,
 }: {
   data: any;
   customer: any;
   orderID: string;
+  paymentMethod: string;
+  fulfillmentMethod: string;
+  deliveryService: any;
 }) => {
   const date = new Date();
   const year = moment(date).format('YYYY');
@@ -406,6 +424,10 @@ export const dbAddOrderOnStore = async ({
         cart: data.cart,
         customer,
         status: kOrderProgress.PENDING,
+        paymentMethod,
+        fulfillmentMethod,
+        deliveryService,
+        createdAt: moment(date).format('LLL'),
       }
     );
     return { status: 'success' };
@@ -486,3 +508,79 @@ export const dbGetOrderDataByID = async ({ id }: { id: string }) => {
     return { status: 'error', error: 'settings not found' };
   }
 };
+
+export const dbGetStoreOrdersByID = async ({
+  id,
+  year,
+  month,
+}: {
+  id: string;
+  year: string;
+  month: string;
+}) => {
+  try {
+    const querySnapshot = await getDocs(
+      collection(
+        db,
+        'stores',
+        String(id),
+        'orders',
+        String(year),
+        String(month)
+      )
+    );
+    let ordersArray: any[] = [];
+    querySnapshot.forEach((doc) => {
+      ordersArray.push(doc.data());
+    });
+    return { status: 'success', data: ordersArray };
+  } catch (error) {
+    return { status: 'error', error: error };
+  }
+};
+
+export const dbGetCustomerDataByEmail = async ({
+  email,
+}: {
+  email: string;
+}) => {
+  const docRef = doc(db, 'customers', String(email));
+  const docSnap = await getDoc(docRef);
+  if (docSnap.exists()) {
+    return { status: 'success', data: docSnap.data() };
+  } else {
+    return { status: 'error', error: 'settings not found' };
+  }
+};
+
+export const dbSaveCustomerData = async ({ data }: { data: CustomerType }) => {
+  try {
+    await setDoc(doc(db, 'customers', String(data.email)), data);
+    return { status: 'success' };
+  } catch (error) {
+    return { status: 'error', error };
+  }
+};
+
+export const dbGetOrdersByEmail = async ({ email }: { email: string }) => {
+  const date = new Date();
+  const year = moment(date).format('YYYY');
+  const month = moment(date).format('MM');
+  try {
+    const q = query(
+      collection(db, 'orders', String(year), String(month)),
+      where('customerEmail', '==', email)
+    );
+    let results: any[] = [];
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      // doc.data() is never undefined for query doc snapshots
+      results.push(doc.data());
+    });
+    return { status: 'success', data: results };
+  } catch (error) {
+    return { status: 'error', error };
+  }
+};
+
+

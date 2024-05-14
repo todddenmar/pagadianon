@@ -96,6 +96,7 @@ export type OrderType = {
   cart: CartItemType[];
   createdAt: string;
   status: string;
+  customerEmail: string;
   paymentMethod: string;
   fulfillmentMethod: string;
   deliveryService?: {
@@ -116,6 +117,8 @@ export type OrderType = {
           mobileNumber: string;
         };
         isConfirmed: boolean;
+        isPickedUp: boolean;
+        isReadyForPickUp: boolean;
       }
     | undefined
   )[];
@@ -125,6 +128,7 @@ export type CustomerType = {
   firstName: string;
   lastName: string;
   mobileNumber: string;
+  email: string;
   address: string;
   coordinates: {
     latitude: number;
