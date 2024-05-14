@@ -37,15 +37,6 @@ function ManageOrderDelivery({ setClose }: { setClose: () => void }) {
   const { orderData, setOrderData, currentUserEmail } =
     useContext(OrderContext);
   const [isLoading, setIsLoading] = useState(false);
-  if (!orderData) return <LoadingComponent />;
-  if (!currentSettings) return <LoadingComponent />;
-
-  const deliveryService = currentSettings.delivery_services.find(
-    (item: DeliveryServiceType) => item.id === orderData.deliveryService?.id
-  );
-  const riders = deliveryService?.users?.filter(
-    (item: any) => item.roleType === kDeliveryServiceRoleType.RIDER
-  );
 
   const formSchema = z.object({
     riderID: z.string(),
@@ -61,6 +52,18 @@ function ManageOrderDelivery({ setClose }: { setClose: () => void }) {
       deliveryFee: '',
     },
   });
+  if (!orderData) return <LoadingComponent />;
+  if (!currentSettings) return <LoadingComponent />;
+
+  const deliveryService = currentSettings.delivery_services.find(
+    (item: DeliveryServiceType) => item.id === orderData.deliveryService?.id
+  );
+  const riders = deliveryService?.users?.filter(
+    (item: any) => item.roleType === kDeliveryServiceRoleType.RIDER
+  );
+
+ 
+
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
