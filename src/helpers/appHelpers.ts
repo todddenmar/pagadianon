@@ -226,3 +226,8 @@ export const getOrderLinkByDate = ({
 }) => {
   return `/order/${orderID}?year=${year}&month=${month}`;
 };
+
+ export const playNotification = () => {
+   const sound = new Audio('/notification.mp3');
+   sound.play();
+ };

@@ -56,6 +56,7 @@ import Link from 'next/link';
 function CheckoutCustomerDetailsForm() {
   const router = useRouter();
   const { user } = useUser();
+  const [locationError, setLocationError] = useState<string | null>(null);
   const userEmail = user?.primaryEmailAddress?.emailAddress;
   const [
     currentUserCart,
@@ -87,14 +88,51 @@ function CheckoutCustomerDetailsForm() {
     latitude: number;
     longitude: number;
   } | null>(null);
+
   const getCoordinates = () => {
-    navigator.geolocation.getCurrentPosition(function (position) {
-      setCoordinates({
-        latitude: position.coords.latitude,
-        longitude: position.coords.longitude,
-      });
-    });
+    if (navigator.geolocation) {
+      // If geolocation is supported, prompt the user for location access
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setCoordinates({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          });
+          form.setValue(
+            'coordinates',
+            `${position.coords.latitude}, ${position.coords.longitude}`
+          );
+          setLocationError(null); // Reset any previous error
+        },
+        (error) => {
+          // Handle errors
+          switch (error.code) {
+            case error.PERMISSION_DENIED:
+              console.error('User denied the request for Geolocation.');
+              setLocationError(
+                'User denied access to location. Click the button again to try again.'
+              );
+              break;
+            case error.POSITION_UNAVAILABLE:
+              console.error('Location information is unavailable.');
+              setLocationError('Location information is unavailable.');
+              break;
+            case error.TIMEOUT:
+              console.error('The request to get user location timed out.');
+              setLocationError('The request to get user location timed out.');
+              break;
+            default:
+              console.error('An error occurred:', error.message);
+              setLocationError('An error occurred: ' + error.message);
+          }
+        }
+      );
+    } else {
+      console.error('Geolocation is not supported by this browser.');
+      setLocationError('Geolocation is not supported by this browser.');
+    }
   };
+
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(function (position) {
       setCoordinates({
@@ -107,6 +145,10 @@ function CheckoutCustomerDetailsForm() {
       );
     });
   }, []);
+
+  useEffect(() => {
+    if (fulfillmentMethod === kFulfillmentMethod.DELIVERY) getCoordinates();
+  }, [fulfillmentMethod]);
   const paymentMethods =
     fulfillmentMethod === kFulfillmentMethod.PICK_UP
       ? [kPaymentMethod.COD]
@@ -507,12 +549,24 @@ function CheckoutCustomerDetailsForm() {
                       <Link href={'/'}>Continue Shopping</Link>
                     </Button>
                     {currentUserCart.length > 0 ? (
-                      <Button
-                        type="submit"
-                        className="bg-highlight hover:bg-highlight_hover transition-colors text-neutral-950 w-full"
-                      >
-                        Place Order
-                      </Button>
+                      form.getValues('coordinates') === '' ? (
+                        <Button
+                          onClick={(e) => {
+                            e.preventDefault();
+                            getCoordinates();
+                          }}
+                          className="bg-highlight hover:bg-highlight_hover transition-colors text-neutral-950 w-full"
+                        >
+                          Get Current Location
+                        </Button>
+                      ) : (
+                        <Button
+                          type="submit"
+                          className="bg-highlight hover:bg-highlight_hover transition-colors text-neutral-950 w-full"
+                        >
+                          Place Order
+                        </Button>
+                      )
                     ) : (
                       <div className="flex flex-col items-center justify-center w-full h-[100px] text-neutral-500 text-sm">
                         Your cart is empty
