@@ -50,9 +50,6 @@ export default async function RootLayout({
     <ClerkProvider>
       <SyncActiveOrganization membership={sessionClaims?.membership} />
       <html lang="en" suppressHydrationWarning>
-        <head>
-          <link rel="icon" href="/favicon.ico" sizes="any" />
-        </head>
         <body className={inter.className}>
           <ThemeProvider
             attribute="class"
