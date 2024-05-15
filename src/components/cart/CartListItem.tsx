@@ -6,6 +6,7 @@ import { Input } from '../ui/input';
 import CustomPesoIcon from '../CustomComponents/CustomPesoIcon';
 import { useAppStore } from '@/lib/store';
 import { cn } from '@/lib/utils';
+import { setLocalStorageItem } from '@/helpers/localStorageHelpers';
 function CartListItem({
   cartItem,
   isAllowingUpdate,
@@ -28,6 +29,7 @@ function CartListItem({
         : cartItem
     );
     setCurrentUserCart(updatedCart);
+    setLocalStorageItem('cart', updatedCart);
   };
 
   const onIncreaseQuantity = (item: CartItemType) => {
@@ -41,6 +43,7 @@ function CartListItem({
         : cartItem
     );
     setCurrentUserCart(updatedCart);
+    setLocalStorageItem('cart', updatedCart);
   };
 
   const onRemoveItem = (variantID: string) => {
@@ -48,6 +51,7 @@ function CartListItem({
       (item) => item.variantID != variantID
     );
     setCurrentUserCart(updatedCart);
+    setLocalStorageItem('cart', updatedCart);
   };
   const qty = cartItem.quantity;
   return (

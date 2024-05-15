@@ -50,9 +50,14 @@ import {
 import CustomerCheckoutCart from './CustomerCheckoutCart';
 import { ScrollArea } from '../ui/scroll-area';
 import Image from 'next/image';
+import { setLocalStorageItem } from '@/helpers/localStorageHelpers';
+import { useUser } from '@clerk/nextjs';
+import Link from 'next/link';
 
 function CheckoutCustomerDetailsForm() {
   const router = useRouter();
+  const { user } = useUser();
+  const userEmail = user?.primaryEmailAddress?.emailAddress;
   const [
     currentUserCart,
     currentSettings,
@@ -125,8 +130,7 @@ function CheckoutCustomerDetailsForm() {
         message: 'Email Address must be at least 2 characters.',
       })
       .max(50)
-      .email()
-      .optional(),
+      .email(),
     address: z
       .string()
       .min(2, {
@@ -147,6 +151,7 @@ function CheckoutCustomerDetailsForm() {
       firstName: '',
       lastName: '',
       mobileNumber: '',
+      email: userEmail || '',
       address: '',
       coordinates: '',
     },
@@ -161,6 +166,7 @@ function CheckoutCustomerDetailsForm() {
     form.setValue('firstName', firstName);
     form.setValue('lastName', lastName);
     form.setValue('mobileNumber', mobileNumber);
+    form.setValue('email', userEmail || '');
     form.setValue('address', address);
   };
 
@@ -181,41 +187,6 @@ function CheckoutCustomerDetailsForm() {
       return;
     }
     setCustomerData(res.data);
-  };
-
-  const updateStoresOrder = async ({
-    orderID,
-    customer,
-  }: {
-    orderID: string;
-    customer: any;
-  }) => {
-    const storesInvolved = getStoresByCart({
-      cart: currentUserCart,
-      stores: currentSettings.stores,
-    });
-
-    storesInvolved.forEach(async (item: any) => {
-      const res = await dbAddOrderOnStore({
-        data: item,
-        customer,
-        orderID: orderID,
-        paymentMethod: paymentMethod,
-        fulfillmentMethod: fulfillmentMethod,
-        deliveryService:
-          fulfillmentMethod === kFulfillmentMethod.DELIVERY
-            ? {
-                id: selectedDeliveryServiceID,
-                isConfirmed: false,
-              }
-            : null,
-      });
-      if (res.status === 'error') {
-        console.log(res.error);
-        return;
-      }
-      console.log('Added order on store');
-    });
   };
 
   // 2. Define a submit handler.
@@ -239,16 +210,12 @@ function CheckoutCustomerDetailsForm() {
         }
         const storeData = res.data!;
         return {
-          storeID: storeData.id,
-          storeSlug: storeData.slug,
+          ...item,
           contactInfo: {
             address: storeData.settings.address,
             coordinates: storeData.settings.coordinates,
             mobileNumber: storeData.settings.mobileNumber,
           },
-          isConfirmed: false,
-          isPickedUp: false,
-          isReadyForPickUp: false,
         };
       })
     );
@@ -278,16 +245,17 @@ function CheckoutCustomerDetailsForm() {
       paymentMethod: paymentMethod,
       fulfillmentMethod: fulfillmentMethod,
       customerEmail: currentUserData.email,
-      deliveryService:
+      deliveryServiceID: selectedDeliveryServiceID,
+      deliveryServiceInfo:
         fulfillmentMethod === kFulfillmentMethod.DELIVERY
           ? {
-              id: selectedDeliveryServiceID,
               isConfirmed: false,
             }
           : null,
       cart: currentUserCart,
       createdAt: dateTime,
       status: kOrderProgress.PENDING,
+      storeIDs: storesInvolvedContactInfo?.map((item) => item?.storeID),
       storesInvolved: storesInvolvedContactInfo,
     };
     const res = await dbCreateOrder({ data: newData });
@@ -295,10 +263,10 @@ function CheckoutCustomerDetailsForm() {
       console.log(res.error);
       return;
     }
-    await updateStoresOrder({
-      orderID: id,
-      customer: newData.customer,
-    });
+    // await updateStoresOrder({
+    //   orderID: id,
+    //   customer: newData.customer,
+    // });
     toast.success('Order created successfully', {
       description: moment(new Date()).format('LLL'),
     });
@@ -306,6 +274,7 @@ function CheckoutCustomerDetailsForm() {
     const month = moment(dateTime).format('MM');
     router.push(`/order/${id}?year=${year}&month=${month}`);
     setCurrentUserCart([]);
+    setLocalStorageItem('cart', []);
     setIsDrawerCartOpen(false);
     setIsSheetCartOpen(false);
     setIsLoading(false);
@@ -345,6 +314,25 @@ function CheckoutCustomerDetailsForm() {
                   )}
                 />
               </div>
+
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email Address</FormLabel>
+                    <FormControl>
+                      <Input
+                        readOnly={userEmail ? true : false}
+                        placeholder="Enter last name here"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
               <FormField
                 control={form.control}
                 name="mobileNumber"
@@ -513,12 +501,23 @@ function CheckoutCustomerDetailsForm() {
                     </span>
                   </div>
                 ) : (
-                  <Button
-                    type="submit"
-                    className="bg-highlight hover:bg-highlight_hover transition-colors text-neutral-950 w-full"
-                  >
-                    Place Order
-                  </Button>
+                  <div className="grid grid-cols-2 gap-5">
+                    <Button asChild variant={'secondary'}>
+                      <Link href={'/'}>Continue Shopping</Link>
+                    </Button>
+                    {currentUserCart.length > 0 ? (
+                      <Button
+                        type="submit"
+                        className="bg-highlight hover:bg-highlight_hover transition-colors text-neutral-950 w-full"
+                      >
+                        Place Order
+                      </Button>
+                    ) : (
+                      <div className="flex flex-col items-center justify-center w-full h-[100px] text-neutral-500 text-sm">
+                        Your cart is empty
+                      </div>
+                    )}
+                  </div>
                 )}
               </div>
             </div>

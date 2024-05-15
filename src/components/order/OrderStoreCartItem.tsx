@@ -48,8 +48,7 @@ function OrderStoreCartItem({ item }: { item: any }) {
   if (!currentSettings) return <LoadingComponent />;
 
   const currentDeliveryService = currentSettings?.delivery_services.find(
-    (delItem: DeliveryServiceType) =>
-      delItem.id === orderData.deliveryService?.id
+    (delItem: DeliveryServiceType) => delItem.id === orderData.deliveryServiceID
   );
   const isForDelivery =
     orderData.fulfillmentMethod === kFulfillmentMethod.DELIVERY;
@@ -80,7 +79,7 @@ function OrderStoreCartItem({ item }: { item: any }) {
     (storeStatusItem) => storeStatusItem?.storeID === item.storeID
   )?.isReadyForPickUp;
 
-  const isDeliveryConfirmed = orderData?.deliveryService?.isConfirmed;
+  const isDeliveryConfirmed = orderData?.deliveryServiceInfo?.isConfirmed;
   const coordinates = convertStringCoordinatesToObject(
     item.contactInfo.coordinates
   );

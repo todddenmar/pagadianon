@@ -20,6 +20,7 @@ import { Badge } from '../ui/badge';
 import moment from 'moment';
 import { toast } from 'sonner';
 import { SignInButton, SignedOut } from '@clerk/nextjs';
+import { setLocalStorageItem } from '@/helpers/localStorageHelpers';
 
 function StoreProductVariantCard({ variant }: { variant: VariantType }) {
   const [
@@ -82,6 +83,7 @@ function StoreProductVariantCard({ variant }: { variant: VariantType }) {
           : cartItem
       );
       setCurrentUserCart(increaseCartItem);
+      setLocalStorageItem('cart', increaseCartItem);
       setIsOpenDrawer(false);
       toast.success('Added quantity to cart successfully', {
         description: moment(new Date()).format('LLL'),
@@ -96,6 +98,7 @@ function StoreProductVariantCard({ variant }: { variant: VariantType }) {
     }
     const updatedCart = [...currentUserCart, newData];
     setCurrentUserCart(updatedCart);
+    setLocalStorageItem('cart', updatedCart);
     setIsOpenDrawer(false);
     toast.success('Added to cart successfully', {
       description: moment(new Date()).format('LLL'),
@@ -232,11 +235,14 @@ function StoreProductVariantCard({ variant }: { variant: VariantType }) {
               </div>
             ) : (
               <SignedOut>
-                <div onClick={()=>{
-                   setIsSheetCartOpen(false)
-                   setIsDrawerCartOpen(false)
-                }} className="rounded-full w-fit border px-3 hover:bg-neutral-50 hover:dark:bg-neutral-800 py-1 text-sm">
-                  <SignInButton >
+                <div
+                  onClick={() => {
+                    setIsSheetCartOpen(false);
+                    setIsDrawerCartOpen(false);
+                  }}
+                  className="rounded-full w-fit border px-3 hover:bg-neutral-50 hover:dark:bg-neutral-800 py-1 text-sm"
+                >
+                  <SignInButton>
                     Sign in before you can add to cart
                   </SignInButton>
                 </div>

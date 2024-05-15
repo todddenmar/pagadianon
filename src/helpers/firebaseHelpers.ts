@@ -331,18 +331,6 @@ export const dbCreateOrder = async ({ data }: { data: OrderType }) => {
       doc(db, 'orders', String(year), String(month), String(data.id)),
       data
     );
-    await setDoc(
-      doc(
-        db,
-        'customers',
-        String(data.customer.email),
-        'orders',
-        String(year),
-        String(month),
-        String(data.id)
-      ),
-      data
-    );
     return { status: 'success' };
   } catch (error) {
     return { status: 'error', error };
@@ -519,23 +507,19 @@ export const dbGetStoreOrdersByID = async ({
   month: string;
 }) => {
   try {
-    const querySnapshot = await getDocs(
-      collection(
-        db,
-        'stores',
-        String(id),
-        'orders',
-        String(year),
-        String(month)
-      )
+    const q = query(
+      collection(db, 'orders', String(year), String(month)),
+      where('storeIDs', 'array-contains', String(id))
     );
-    let ordersArray: any[] = [];
+    let results: any[] = [];
+    const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
-      ordersArray.push(doc.data());
+      // doc.data() is never undefined for query doc snapshots
+      results.push(doc.data());
     });
-    return { status: 'success', data: ordersArray };
+    return { status: 'success', data: results };
   } catch (error) {
-    return { status: 'error', error: error };
+    return { status: 'error', error };
   }
 };
 

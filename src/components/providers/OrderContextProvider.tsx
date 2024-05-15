@@ -47,9 +47,6 @@ function OrderContextProvider({
     return () => unsub();
   }, []);
 
-  if (!isLoaded || !isSignedIn) {
-    return <NoDataSection title="You are not signed in" />;
-  }
 
   return (
     <OrderContext.Provider

@@ -188,6 +188,8 @@ export const getStoreIDsByCart = ({
           storeID: store.id,
           storeSlug: store.slug,
           isConfirmed: false,
+          isPickedUp: false,
+          isReadyForPickUp: false,
         });
     }
   });

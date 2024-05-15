@@ -99,14 +99,15 @@ export type OrderType = {
   customerEmail: string;
   paymentMethod: string;
   fulfillmentMethod: string;
-  deliveryService?: {
-    id: string;
+  deliveryServiceID: string;
+  deliveryServiceInfo?: {
     isConfirmed: boolean;
     confirmedDateTime?: string;
     rider?: any;
     fee?: string;
   } | null;
   deliveryRider?: any;
+  storeIDs: string[];
   storesInvolved?: (
     | {
         storeID: string;

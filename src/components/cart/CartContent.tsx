@@ -16,6 +16,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import CustomPesoIcon from '../CustomComponents/CustomPesoIcon';
 import CheckoutSection from '../checkout/CheckoutSection';
 import Link from 'next/link';
+import { setLocalStorageItem } from '@/helpers/localStorageHelpers';
 function CartContent({ setClose }: { setClose: () => void }) {
   const [currentUserCart, setCurrentUserCart] = useAppStore((state) => [
     state.currentUserCart,
@@ -24,6 +25,7 @@ function CartContent({ setClose }: { setClose: () => void }) {
   const [isClearingCart, setIsClearingCart] = useState(false);
   const onClearCart = () => {
     setCurrentUserCart([]);
+    setLocalStorageItem('cart', []);
     setIsClearingCart(false);
     setClose();
   };

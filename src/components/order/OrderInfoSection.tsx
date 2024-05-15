@@ -35,14 +35,14 @@ function OrderInfoSection() {
   if (!orderData) return <LoadingComponent />;
   if (!currentSettings) return <LoadingComponent />;
   const deliveryService = currentSettings.delivery_services.find(
-    (item: DeliveryServiceType) => item.id === orderData.deliveryService?.id
+    (item: DeliveryServiceType) => item.id === orderData.deliveryServiceID
   );
   let userType = getDeliveryServiceUserType({
     deliveryServices: currentSettings?.delivery_services,
-    deliveryServiceID: orderData.deliveryService?.id,
+    deliveryServiceID: orderData.deliveryServiceID,
     currentEmail: currentUserEmail,
   });
-  const deliveryIsConfirmed = orderData?.deliveryService?.isConfirmed;
+  const deliveryIsConfirmed = orderData?.deliveryServiceInfo?.isConfirmed;
 
   const onManageDelivery = () => {
     setIsManagingDelivery(true);
@@ -92,11 +92,11 @@ function OrderInfoSection() {
                 }
               />
               <div className="text-center py-5 text-sm">
-                {orderData.deliveryService?.isConfirmed ? (
+                {orderData.deliveryServiceInfo?.isConfirmed ? (
                   <div className="text-green-500 flex items-center gap-2 justify-center">
                     <span>
                       Order Confirmed at{' '}
-                      {orderData.deliveryService.confirmedDateTime}
+                      {orderData.deliveryServiceInfo.confirmedDateTime}
                     </span>
                     <CheckCircleIcon className="h-5" />
                   </div>
@@ -108,18 +108,18 @@ function OrderInfoSection() {
               </div>
             </div>
           )}
-          {orderData?.deliveryService?.rider && (
+          {orderData?.deliveryServiceInfo?.rider && (
             <OrderInfoItem
               label="Delivery Rider"
               value={
                 <div className="flex items-center gap-2">
                   <div>
-                    <div>{orderData?.deliveryService?.rider.name}</div>
+                    <div>{orderData?.deliveryServiceInfo?.rider.name}</div>
                     <a
                       className="text-highlight"
-                      href={`tel:+63${orderData?.deliveryService?.rider.mobileNumber}`}
+                      href={`tel:+63${orderData?.deliveryServiceInfo?.rider.mobileNumber}`}
                     >
-                      +63{orderData?.deliveryService?.rider.mobileNumber}
+                      +63{orderData?.deliveryServiceInfo?.rider.mobileNumber}
                     </a>
                   </div>
                   {userType === kDeliveryServiceRoleType.MANAGER && (
@@ -131,13 +131,13 @@ function OrderInfoSection() {
               }
             />
           )}
-          {orderData?.deliveryService?.fee && (
+          {orderData?.deliveryServiceInfo?.fee && (
             <OrderInfoItem
               label="Delivery Fee"
               value={
                 <div className="flex items-center font-semibold  text-white">
                   <CustomPesoIcon />
-                  <span>{orderData?.deliveryService?.fee}</span>
+                  <span>{orderData?.deliveryServiceInfo?.fee}</span>
                 </div>
               }
             />

@@ -19,6 +19,7 @@ import { dbGetStoreOrdersByID } from '@/helpers/firebaseHelpers';
 import { OrderType } from '@/typings';
 import moment from 'moment';
 import LoadingComponent from '@/components/admin/LoadingComponent.';
+import StoreOrdersTable from './StoreOrdersTable';
 
 function StoreOrdersSection({ slug }: { slug: string }) {
   const [currentStoreData] = useAppStore((state) => [state.currentStoreData]);
@@ -44,7 +45,13 @@ function StoreOrdersSection({ slug }: { slug: string }) {
   }, [currentStoreData]);
 
   if (!currentStoreData) {
-    return <NoDataSection title="Store data not found" />;
+    return (
+      <NoDataSection
+        title="Store data not found"
+        href={`/store/${slug}`}
+        linkText="Go back to store page"
+      />
+    );
   }
   if (!orders) {
     return <LoadingComponent />;
@@ -87,7 +94,7 @@ function StoreOrdersSection({ slug }: { slug: string }) {
         </div>
         <Separator className="my-5" />
         <div>
-          <StoreOrdersList orders={orders} />
+          <StoreOrdersTable orders={orders} />
         </div>
       </Card>
     </ContainerLayout>

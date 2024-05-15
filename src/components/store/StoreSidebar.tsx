@@ -154,7 +154,7 @@ function StoreSidebar({
                 <span>
                   <ClipboardListIcon className="h-[16px] w-[16px]" />
                 </span>
-                <span>Orders</span>
+                <span>Store Orders</span>
               </Link>
             </li>
             <li>
