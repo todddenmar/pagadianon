@@ -181,6 +181,7 @@ export const kOrderProgress = {
   TO_DELIVER: 'to deliver',
   DELIVERED: 'delivered',
   READY: 'ready for pick-up',
+  RECEIVED: 'order received',
 };
 export const kOrderDeliveryProgressTypes = [
   kOrderProgress.PENDING,

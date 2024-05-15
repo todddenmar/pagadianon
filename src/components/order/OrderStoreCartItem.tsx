@@ -47,7 +47,7 @@ function OrderStoreCartItem({ item }: { item: any }) {
   if (!orderData) return <LoadingComponent />;
   if (!currentSettings) return <LoadingComponent />;
 
-  const currentDeliveryService = currentSettings?.delivery_services.find(
+  const currentDeliveryService = currentSettings?.delivery_services?.find(
     (delItem: DeliveryServiceType) => delItem.id === orderData.deliveryServiceID
   );
   const isForDelivery =
@@ -238,7 +238,7 @@ function OrderStoreCartItem({ item }: { item: any }) {
                 </DialogContent>
               </Dialog>
             </div>
-            <div className="text-neutral-400 text-sm">
+            <div className="text-neutral-600 dark:text-neutral-400 text-sm">
               {pluralizeNumber({
                 plural: 'Items',
                 singular: 'Item',
@@ -296,7 +296,7 @@ function OrderStoreCartItem({ item }: { item: any }) {
           )}
         </div>
       ) : (
-        <div className=" text-sm font-semibold text-center w-full bg-neutral-900 h-[40px] flex flex-col items-center justify-center">
+        <div className=" text-sm font-semibold text-center w-full bg-neutral-100 dark:bg-neutral-900 h-[40px] flex flex-col items-center justify-center">
           {isStoreConfirmed ? (
             isStoreManager ? (
               isReadyForPickUp ? (

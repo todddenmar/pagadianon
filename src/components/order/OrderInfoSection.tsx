@@ -27,14 +27,15 @@ import {
 } from '@/components/ui/dialog';
 import ManageOrderDelivery from './ManageOrderDelivery';
 import CustomPesoIcon from '../CustomComponents/CustomPesoIcon';
+import { Skeleton } from '../ui/skeleton';
 
 function OrderInfoSection() {
   const currentSettings = useAppStore((state) => state.currentSettings);
   const [isManagingDelivery, setIsManagingDelivery] = useState(false);
   const { orderData, currentUserEmail } = useContext(OrderContext);
-  if (!orderData) return <LoadingComponent />;
-  if (!currentSettings) return <LoadingComponent />;
-  const deliveryService = currentSettings.delivery_services.find(
+  if (!orderData) return <OrderInfoSectionSkeleton />;
+  if (!currentSettings) return <OrderInfoSectionSkeleton />;
+  const deliveryService = currentSettings.delivery_services?.find(
     (item: DeliveryServiceType) => item.id === orderData.deliveryServiceID
   );
   let userType = getDeliveryServiceUserType({
@@ -186,4 +187,12 @@ function OrderInfoSection() {
   );
 }
 
+function OrderInfoSectionSkeleton() {
+  return (
+    <div>
+      <Skeleton className="h-[28px] w-[150px] rounded-md" />
+      <Skeleton className="h-[240px] w-full rounded-md mt-2" />
+    </div>
+  );
+}
 export default OrderInfoSection;

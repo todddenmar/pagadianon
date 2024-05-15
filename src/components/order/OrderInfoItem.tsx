@@ -4,7 +4,9 @@ function OrderInfoItem({ label, value }: { label: string; value?: any }) {
   return (
     <div className="text-sm flex space-x-2 justify-between capitalize">
       <label>{label}:</label>
-      <div className="text-neutral-400 text-right justify-end">{value}</div>
+      <div className="text-neutral-600 dark:text-neutral-400 text-right justify-end">
+        {value}
+      </div>
     </div>
   );
 }

@@ -523,3 +523,30 @@ export const dbGetOrdersByEmail = async ({ email }: { email: string }) => {
 };
 
 
+export const dbConfirmOrderReceived = async ({
+  orderID,
+  orderReceivedNote,
+}: {
+  orderID: string;
+  orderReceivedNote: string;
+}) => {
+  const date = new Date();
+  const year = moment(date).format('YYYY');
+  const month = moment(date).format('MM');
+  const userRef = doc(
+    db,
+    'orders',
+    String(year),
+    String(month),
+    String(orderID)
+  );
+  try {
+    await updateDoc(userRef, {
+      orderReceivedNote: orderReceivedNote,
+      status: kOrderProgress.RECEIVED,
+    });
+    return { status: 'success' };
+  } catch (error) {
+    return { status: 'error', error };
+  }
+};

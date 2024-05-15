@@ -1,12 +1,21 @@
 import CustomPageHeader from '@/components/CustomPageHeader';
 import ContainerLayout from '@/components/layouts/ContainerLayout';
 import OrderProgress from '@/components/order/OrderProgress';
+import OrderReceivedButton from '@/components/order/OrderReceivedButton';
 import OrderSection from '@/components/order/OrderSection';
 import OrderContextProvider from '@/components/providers/OrderContextProvider';
-import { dbGetOrderData } from '@/helpers/firebaseHelpers';
+import { Button } from '@/components/ui/button';
+import { kOrderProgress } from '@/constants';
+import {
+  dbConfirmOrderReceived,
+  dbGetOrderData,
+} from '@/helpers/firebaseHelpers';
 import { OrderType } from '@/typings';
+import { auth, currentUser } from '@clerk/nextjs/server';
+import moment from 'moment';
 import { Metadata } from 'next';
 import React from 'react';
+import { toast } from 'sonner';
 
 type Props = {
   params: { orderID: string };
@@ -52,6 +61,7 @@ async function OrderPage({ params, searchParams }: Props) {
     params,
     searchParams,
   });
+
   // Get the userId from auth() -- if null, the user is not signed in
   if (!orderData)
     return (
@@ -59,15 +69,24 @@ async function OrderPage({ params, searchParams }: Props) {
         Order data not found or expired
       </div>
     );
+
   return (
     <OrderContextProvider data={orderData}>
       <div className="my-5">
         <ContainerLayout>
-          <div className="grid grid-cols-1 md:grid-cols-2 items-start gap-5">
+          <div className="grid grid-cols-1 md:flex justify-between items-end gap-5">
             <CustomPageHeader
               title={'Order Page'}
               description="Customer order page"
             />
+
+            {orderData.status === kOrderProgress.RECEIVED ? (
+              <div className="capitalize text-green-500 text-sm">
+                {orderData.orderReceivedNote}
+              </div>
+            ) : (
+              <OrderReceivedButton />
+            )}
           </div>
 
           {orderData ? (

@@ -28,7 +28,7 @@ function StoreOrdersTable({ orders }: { orders: OrderType[] }) {
     switch (status) {
       case kOrderProgress.PENDING:
         return <Badge className="bg-orange-400 capitalize">{status}</Badge>;
-      case kOrderProgress.DELIVERED:
+      case kOrderProgress.RECEIVED:
         return <Badge className="bg-green-400 capitalize">{status}</Badge>;
       default:
         return <Badge className="capitalize">{status}</Badge>;

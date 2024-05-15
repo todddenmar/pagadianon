@@ -74,7 +74,9 @@ function CheckoutCustomerDetailsForm() {
   ]);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedDeliveryServiceID, setSelectedDeliveryServiceID] = useState(
-    currentSettings?.delivery_services[0].id || null
+    currentSettings?.delivery_services
+      ? currentSettings?.delivery_services[0].id
+      : null
   );
   const [fulfillmentMethod, setFulfillmentMethod] = useState(
     kFulfillmentMethod.PICK_UP
@@ -174,12 +176,12 @@ function CheckoutCustomerDetailsForm() {
   }, [customerData]);
 
   useEffect(() => {
-    getSetCustomerData();
-  }, [currentUserData]);
+    if (userEmail) getSetCustomerData();
+  }, [userEmail]);
 
   const getSetCustomerData = async () => {
     const res = await dbGetCustomerDataByEmail({
-      email: currentUserData.email,
+      email: userEmail!,
     });
     if (res.status === 'error') {
       console.log(res.error);
@@ -193,7 +195,7 @@ function CheckoutCustomerDetailsForm() {
     setIsLoading(true);
     const dateTime = moment(new Date()).format('LLL');
     const id = uuidv4();
-    const { firstName, lastName, mobileNumber, address } = values;
+    const { firstName, lastName, mobileNumber, address, email } = values;
     const objCoordinates = convertStringCoordinatesToObject(values.coordinates);
     const storesInvolved = getStoreIDsByCart({
       cart: currentUserCart,
@@ -221,7 +223,7 @@ function CheckoutCustomerDetailsForm() {
     const newCustomerData = {
       firstName,
       lastName,
-      email: currentUserData.email,
+      email,
       mobileNumber,
       address,
       coordinates: objCoordinates,
@@ -243,7 +245,7 @@ function CheckoutCustomerDetailsForm() {
       customer: newCustomerData,
       paymentMethod: paymentMethod,
       fulfillmentMethod: fulfillmentMethod,
-      customerEmail: currentUserData.email,
+      customerEmail: email,
       deliveryServiceID: selectedDeliveryServiceID,
       deliveryServiceInfo:
         fulfillmentMethod === kFulfillmentMethod.DELIVERY

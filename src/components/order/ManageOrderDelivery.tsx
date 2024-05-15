@@ -55,7 +55,7 @@ function ManageOrderDelivery({ setClose }: { setClose: () => void }) {
   if (!orderData) return <LoadingComponent />;
   if (!currentSettings) return <LoadingComponent />;
 
-  const deliveryService = currentSettings.delivery_services.find(
+  const deliveryService = currentSettings.delivery_services?.find(
     (item: DeliveryServiceType) => item.id === orderData.deliveryServiceID
   );
   const riders = deliveryService?.users?.filter(

@@ -212,41 +212,25 @@ function StoreProductVariantCard({ variant }: { variant: VariantType }) {
                 </div>
               )}
             </div>
-            {currentUserData ? (
-              <div className="flex items-center gap-5">
-                <ProductQuantitySelector
-                  value={quantity}
-                  onChange={(val) => setQuantity(val)}
-                />
+            <div className="flex items-center gap-5">
+              <ProductQuantitySelector
+                value={quantity}
+                onChange={(val) => setQuantity(val)}
+              />
 
-                <Button
-                  className="hidden md:block bg-highlight hover:bg-highlight_hover text-neutral-950 transition-colors"
-                  onClick={() => onAddToCart({ isMobile: false })}
-                >
-                  Add To Cart
-                </Button>
-                <Button
-                  className="block md:hidden bg-highlight hover:bg-highlight_hover text-neutral-950 transition-colors"
-                  onClick={() => onAddToCart({ isMobile: true })}
-                >
-                  Add To Cart
-                </Button>
-              </div>
-            ) : (
-              <SignedOut>
-                <div
-                  onClick={() => {
-                    setIsSheetCartOpen(false);
-                    setIsDrawerCartOpen(false);
-                  }}
-                  className="rounded-full w-fit border px-3 hover:bg-neutral-50 hover:dark:bg-neutral-800 py-1 text-sm"
-                >
-                  <SignInButton>
-                    Sign in before you can add to cart
-                  </SignInButton>
-                </div>
-              </SignedOut>
-            )}
+              <Button
+                className="hidden md:block bg-highlight hover:bg-highlight_hover text-neutral-950 transition-colors"
+                onClick={() => onAddToCart({ isMobile: false })}
+              >
+                Add To Cart
+              </Button>
+              <Button
+                className="block md:hidden bg-highlight hover:bg-highlight_hover text-neutral-950 transition-colors"
+                onClick={() => onAddToCart({ isMobile: true })}
+              >
+                Add To Cart
+              </Button>
+            </div>
           </div>
         </DrawerContent>
       </Drawer>

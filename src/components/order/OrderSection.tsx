@@ -30,7 +30,7 @@ function OrderSection() {
             <OrderStoreCartItems />
           </div>
         </div>
-        <div className="p-5 bg-neutral-900">
+        <div className="p-5 bg-neutral-100 dark:bg-neutral-900">
           {orderData.cart?.length > 0 && (
             <div className="flex justify-between items-center mt-2 px-2">
               <div className="text-base">Total:</div>
