@@ -131,8 +131,20 @@ export const getCartTotal = ({ cart }: { cart: CartItemType[] }) => {
 
 export const convertStringCoordinatesToObject = (stringCoordinates: string) => {
   return {
-    latitude: parseFloat(stringCoordinates.trim().split(',')[0]),
-    longitude: parseFloat(stringCoordinates.trim().split(',')[1]),
+    latitude: parseFloat(
+      stringCoordinates
+        .replaceAll('(', '')
+        .replaceAll(')', '')
+        .trim()
+        .split(',')[0]
+    ),
+    longitude: parseFloat(
+      stringCoordinates
+        .replaceAll('(', '')
+        .replaceAll(')', '')
+        .trim()
+        .split(',')[1]
+    ),
   };
 };
 

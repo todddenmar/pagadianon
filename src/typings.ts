@@ -99,7 +99,7 @@ export type OrderType = {
   paymentMethod: string;
   fulfillmentMethod: string;
   orderReceivedNote?: string;
-  deliveryServiceID: string;
+  deliveryServiceID?: string;
   deliveryServiceInfo?: {
     isConfirmed: boolean;
     confirmedDateTime?: string;

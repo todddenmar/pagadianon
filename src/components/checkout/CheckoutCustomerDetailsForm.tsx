@@ -246,7 +246,10 @@ function CheckoutCustomerDetailsForm() {
       paymentMethod: paymentMethod,
       fulfillmentMethod: fulfillmentMethod,
       customerEmail: email,
-      deliveryServiceID: selectedDeliveryServiceID,
+      deliveryServiceID:
+        fulfillmentMethod === kFulfillmentMethod.DELIVERY
+          ? selectedDeliveryServiceID
+          : null,
       deliveryServiceInfo:
         fulfillmentMethod === kFulfillmentMethod.DELIVERY
           ? {
@@ -432,7 +435,6 @@ function CheckoutCustomerDetailsForm() {
                     <Select
                       onValueChange={setSelectedDeliveryServiceID}
                       value={selectedDeliveryServiceID}
-                      defaultValue={selectedDeliveryServiceID}
                     >
                       <SelectTrigger className="w-full capitalize">
                         <SelectValue placeholder="Choose" />
