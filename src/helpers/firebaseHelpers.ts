@@ -378,51 +378,6 @@ export const dbUpdateDeliveryService = async (data: DeliveryServiceType) => {
   }
 };
 
-export const dbAddOrderOnStore = async ({
-  data,
-  customer,
-  orderID,
-  paymentMethod,
-  fulfillmentMethod,
-  deliveryService,
-}: {
-  data: any;
-  customer: any;
-  orderID: string;
-  paymentMethod: string;
-  fulfillmentMethod: string;
-  deliveryService: any;
-}) => {
-  const date = new Date();
-  const year = moment(date).format('YYYY');
-  const month = moment(date).format('MM');
-  try {
-    await setDoc(
-      doc(
-        db,
-        'stores',
-        String(data.storeID),
-        'orders',
-        String(year),
-        String(month),
-        String(orderID)
-      ),
-      {
-        orderID: orderID,
-        cart: data.cart,
-        customer,
-        status: kOrderProgress.PENDING,
-        paymentMethod,
-        fulfillmentMethod,
-        deliveryService,
-        createdAt: moment(date).format('LLL'),
-      }
-    );
-    return { status: 'success' };
-  } catch (error) {
-    return { status: 'error', error };
-  }
-};
 
 export const dbUpdateStoreCartStatus = async ({
   orderID,
@@ -478,7 +433,7 @@ export const dbConfirmOrderByDeliveryService = async ({
   );
   try {
     await updateDoc(userRef, {
-      deliveryService: data,
+      deliveryServiceInfo: data,
       progressStatus: progressStatus,
     });
     return { status: 'success' };

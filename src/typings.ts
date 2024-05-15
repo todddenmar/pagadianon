@@ -86,7 +86,6 @@ export type CartItemType = {
   price: number;
   totalAmount: number;
   quantity: number;
-  createdAt: string;
   storeID: string;
 };
 

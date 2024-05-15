@@ -58,7 +58,7 @@ function StoreProductVariantCard({ variant }: { variant: VariantType }) {
   )?.icon;
 
   const onAddToCart = ({ isMobile }: { isMobile: boolean }) => {
-    const dateToday = new Date();
+   
     const newData = {
       variantID: variant.id,
       imageURL: firstImage,
@@ -67,7 +67,6 @@ function StoreProductVariantCard({ variant }: { variant: VariantType }) {
       price: parseInt(variant.price),
       totalAmount: parseInt(variant.price) * quantity,
       quantity: quantity,
-      createdAt: moment(dateToday).format('LLL'),
       storeID: currentStoreData.id,
     };
 

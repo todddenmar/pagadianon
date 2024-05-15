@@ -90,7 +90,7 @@ function ManageOrderDelivery({ setClose }: { setClose: () => void }) {
     }
     setOrderData({
       ...orderData,
-      deliveryService: updatedOrderDeliveryServiceStatus,
+      deliveryServiceInfo: updatedOrderDeliveryServiceStatus,
       progressStatus: kOrderProgress.CONFIRMED,
     });
     setIsLoading(false);

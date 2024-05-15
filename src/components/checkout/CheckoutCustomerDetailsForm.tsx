@@ -31,7 +31,6 @@ import moment from 'moment';
 import { useAppStore } from '@/lib/store';
 import { v4 as uuidv4 } from 'uuid';
 import {
-  dbAddOrderOnStore,
   dbCreateOrder,
   dbGetCustomerDataByEmail,
   dbGetOrderDataByID,
