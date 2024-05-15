@@ -16,7 +16,7 @@ function OrderSection() {
   if (!orderData) return <LoadingComponent />;
   const totalAmount =
     getCartTotal({ cart: orderData.cart }) +
-    parseInt(orderData?.deliveryService?.fee || '0');
+    parseInt(orderData?.deliveryServiceInfo?.fee || '0');
   return (
     <div>
       <Card className=" mt-2 overflow-hidden">
