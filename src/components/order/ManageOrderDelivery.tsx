@@ -56,13 +56,11 @@ function ManageOrderDelivery({ setClose }: { setClose: () => void }) {
   if (!currentSettings) return <LoadingComponent />;
 
   const deliveryService = currentSettings.delivery_services.find(
-    (item: DeliveryServiceType) => item.id === orderData.deliveryService?.id
+    (item: DeliveryServiceType) => item.id === orderData.deliveryServiceID
   );
   const riders = deliveryService?.users?.filter(
     (item: any) => item.roleType === kDeliveryServiceRoleType.RIDER
   );
-
- 
 
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof formSchema>) {
@@ -74,7 +72,7 @@ function ManageOrderDelivery({ setClose }: { setClose: () => void }) {
       (item: any) => item.id === values.riderID
     );
     const updatedOrderDeliveryServiceStatus = {
-      id: orderData?.deliveryService?.id!,
+      id: orderData?.deliveryServiceID!,
       isConfirmed: true,
       rider: selectedRider,
       fee: values.deliveryFee,
