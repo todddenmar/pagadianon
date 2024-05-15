@@ -10,7 +10,6 @@ import {
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { EditIcon } from 'lucide-react';
-import { ScrollArea } from '@/components/ui/scroll-area';
 
 function DeliveryServiceUsersTable({
   users,

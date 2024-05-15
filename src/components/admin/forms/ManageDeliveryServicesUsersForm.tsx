@@ -22,7 +22,6 @@ import {
 import { Input } from '@/components/ui/input';
 import { useAppStore } from '@/lib/store';
 import { kDeliveryServiceRoleTypes } from '@/constants';
-import { LoaderCircleIcon } from 'lucide-react';
 import moment from 'moment';
 import { v4 as uuidv4 } from 'uuid';
 import { toast } from 'sonner';

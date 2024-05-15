@@ -18,7 +18,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useAppStore } from '@/lib/store';
-import { DeliveryServiceType, UserType } from '@/typings';
+import { DeliveryServiceType } from '@/typings';
 import { CheckIcon, MoreHorizontalIcon, XIcon } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
@@ -34,13 +34,10 @@ import UpdateDeliveryServiceForm from '../forms/UpdateDeliveryServiceForm';
 import ManageDeliveryServicesUsersForm from '../forms/ManageDeliveryServicesUsersForm';
 import {
   Drawer,
-  DrawerClose,
   DrawerContent,
   DrawerDescription,
-  DrawerFooter,
   DrawerHeader,
   DrawerTitle,
-  DrawerTrigger,
 } from '@/components/ui/drawer';
 import { isMobile } from 'react-device-detect';
 
@@ -54,7 +51,6 @@ function DeliveryServicesTable() {
   const [isEditingDeliveryService, setIsEditingDeliveryService] =
     useState(false);
   const [isShowingUsers, setIsShowingUsers] = useState(false);
-  const [userToEdit, setUserToEdit] = useState<any>(null);
 
   useState(false);
   if (!currentSettings) return <LoadingComponent />;

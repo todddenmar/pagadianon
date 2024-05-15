@@ -22,7 +22,6 @@ import {
 } from '@/helpers/firebaseHelpers';
 import AdminPublishSettingsButton from '@/components/admin/AdminPublishSettingsButton';
 import { useAuth } from '@clerk/nextjs';
-import Link from 'next/link';
 import NoDataSection from '@/components/error/NoDataSection';
 
 function AdminLayout({ children }: any) {
@@ -96,7 +95,7 @@ function AdminLayout({ children }: any) {
                           {pageData?.createDialog.description}
                         </DialogDescription>
                       </DialogHeader>
-                      <div>{pageData?.createDialog.form}</div>
+                      <div>{pageData?.createDialog.form()}</div>
                     </DialogContent>
                   </Dialog>
                   {pageData?.createDialog.isSettings && (

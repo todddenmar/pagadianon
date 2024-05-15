@@ -4,7 +4,6 @@ import {
   CombineIcon,
   HandHelpingIcon,
   LayoutDashboardIcon,
-  MusicIcon,
   ShirtIcon,
   StoreIcon,
   TruckIcon,
@@ -37,7 +36,7 @@ export const kAdminPageData = {
       title: 'Create New Store',
       description: 'Stores are the businesses we give services',
       isSettings: true,
-      form: <CreateStoreForm />,
+      form: () => <CreateStoreForm />,
     },
   },
   COLLECTIONS: {
@@ -49,7 +48,7 @@ export const kAdminPageData = {
       title: 'Create New Collection',
       description: 'A collection of stores',
       isSettings: false,
-      form: <CreateStoreCollectionForm />,
+      form: () => <CreateStoreCollectionForm />,
     },
   },
   DELIVERY_SERVICES: {
@@ -61,7 +60,7 @@ export const kAdminPageData = {
       title: 'Create New Delivery Service',
       description: 'Delivery Service partners who can accept orders',
       isSettings: true,
-      form: <CreateDeliveryServiceForm />,
+      form: () => <CreateDeliveryServiceForm />,
     },
   },
   USERS: {
@@ -73,7 +72,7 @@ export const kAdminPageData = {
       title: 'Create New User',
       description: 'Users who uses our services',
       isSettings: false,
-      form: <CreateStoreUserForm />,
+      form: () => <CreateStoreUserForm />,
     },
   },
 };
