@@ -325,7 +325,7 @@ function CheckoutCustomerDetailsForm() {
                     <FormControl>
                       <Input
                         readOnly={userEmail ? true : false}
-                        placeholder="Enter last name here"
+                        placeholder="Enter email address here"
                         {...field}
                       />
                     </FormControl>
