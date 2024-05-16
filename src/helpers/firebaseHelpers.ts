@@ -19,6 +19,7 @@ import {
   updateDoc,
   query,
   where,
+  addDoc,
 } from 'firebase/firestore';
 import moment from 'moment';
 
@@ -378,7 +379,6 @@ export const dbUpdateDeliveryService = async (data: DeliveryServiceType) => {
   }
 };
 
-
 export const dbUpdateStoreCartStatus = async ({
   orderID,
   storesInvolved,
@@ -522,7 +522,6 @@ export const dbGetOrdersByEmail = async ({ email }: { email: string }) => {
   }
 };
 
-
 export const dbConfirmOrderReceived = async ({
   orderID,
   orderReceivedNote,
@@ -546,6 +545,76 @@ export const dbConfirmOrderReceived = async ({
       status: kOrderProgress.RECEIVED,
     });
     return { status: 'success' };
+  } catch (error) {
+    return { status: 'error', error };
+  }
+};
+
+export const dbAddStoreImage = async ({
+  storeID,
+  data,
+}: {
+  storeID: string;
+  data: any;
+}) => {
+  try {
+    const docRef = await addDoc(
+      collection(db, 'stores', String(storeID), 'images'),
+      data
+    );
+    return { status: 'success', data: docRef.id };
+  } catch (error) {
+    return { status: 'error', error };
+  }
+};
+export const dbUpdateStoreImage = async ({
+  storeID,
+  imageID,
+  downloadURL,
+}: {
+  storeID: string;
+  imageID: string;
+  downloadURL: string;
+}) => {
+  const userRef = doc(db, 'stores', String(storeID), 'images', imageID);
+  try {
+    await updateDoc(userRef, {
+      downloadURL: downloadURL,
+      imageID,
+    });
+    return { status: 'success' };
+  } catch (error) {
+    return { status: 'error', error };
+  }
+};
+export const dbUpdateStoreGalleryImages = async ({
+  storeID,
+  images,
+}: {
+  storeID: string;
+  images: string[];
+}) => {
+  const userRef = doc(db, 'stores', String(storeID));
+  try {
+    await updateDoc(userRef, {
+      galleryImages: images,
+    });
+    return { status: 'success' };
+  } catch (error) {
+    return { status: 'error', error };
+  }
+};
+
+export const dbGetStoreImages = async ({ storeID }: { storeID: string }) => {
+  try {
+    const q = query(collection(db, 'stores', String(storeID), 'images'));
+    let results: any[] = [];
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      // doc.data() is never undefined for query doc snapshots
+      results.push(doc.data());
+    });
+    return { status: 'success', data: results };
   } catch (error) {
     return { status: 'error', error };
   }

@@ -6,12 +6,12 @@ export const metadata: Metadata = {
   description: 'Settings for a Pagadianon store',
 };
 
-async function StoreSettingsPage() {
-  return (
-    <div className="relative">
-      <StoreSettingsSection />
-    </div>
-  );
-}
+ function StoreSettingsPage() {
+   return (
+     <div className="relative">
+       <StoreSettingsSection />
+     </div>
+   );
+ }
 
 export default StoreSettingsPage;

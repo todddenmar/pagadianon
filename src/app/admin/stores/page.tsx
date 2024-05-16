@@ -1,10 +1,8 @@
 import StoresTable from '@/components/admin/tables/StoreTables';
 import AdminStoreContextProvider from '@/components/providers/AdminStoreContextProvider';
-import { client } from '@/lib/client';
-import { getStoresSanityData } from '@/lib/queries/sanity';
 
 async function AdminStoresPage() {
-  const data = await getStoresSanityData({ client: client });
+  const data: any[] = [];
 
   return (
     <AdminStoreContextProvider data={data}>

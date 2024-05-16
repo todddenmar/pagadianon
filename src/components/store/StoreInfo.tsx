@@ -8,6 +8,13 @@ import CustomMapLocation from '../CustomComponents/CustomMapLocation';
 import CustomEmailLink from '../CustomComponents/CustomEmailLink';
 import CustomMobileLink from '../CustomComponents/CustomMobileLink';
 import { ImageIcon } from 'lucide-react';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from '@/components/ui/carousel';
 
 function StoreInfo() {
   const [tabValue, setTabValue] = useState('info');
@@ -30,14 +37,30 @@ function StoreInfo() {
         <TabsContent value="info">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 lg:items-start">
             <div className="w-full relative rounded-md overflow-hidden bg-neutral-200 dark:bg-neutral-900 aspect-square flex flex-col items-center justify-center">
-              {currentStoreData?.settings?.storefrontURL ? (
-                <Image
-                  src={currentStoreData?.settings?.storefrontURL}
-                  alt={`image-selected`}
-                  width={600}
-                  height={600}
-                  className="object-contain object-center h-full w-full"
-                />
+              {currentStoreData?.galleryImages ? (
+                <Carousel>
+                  <CarouselContent>
+                    {currentStoreData?.galleryImages?.map(
+                      (item: string, idx: number) => {
+                        return (
+                          <CarouselItem key={`prod-image-${idx}`}>
+                            <div className=" aspect-square flex flex-col relative items-center justify-center bg-neutral-900 rounded-md overflow-hidden">
+                              <Image
+                                src={item}
+                                alt={`image-gallery-${idx}`}
+                                width={400}
+                                height={400}
+                                className="object-cover h-full w-full group-hover:scale-105 transition-all"
+                              />
+                            </div>
+                          </CarouselItem>
+                        );
+                      }
+                    )}
+                  </CarouselContent>
+                  <CarouselPrevious className="ml-8 md:ml-0" />
+                  <CarouselNext className="mr-8 md:mr-0" />
+                </Carousel>
               ) : (
                 <ImageIcon />
               )}

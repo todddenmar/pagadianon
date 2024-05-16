@@ -84,30 +84,6 @@ function StoresTable() {
     });
     return isNotEqual;
   };
-  const onSyncImages = async (store: StoreType) => {
-    setIsSynching(true);
-    const images = getImageURLsFromSanityStoreBySlug({
-      sanityStores: sanityStores,
-      slug: store.slug,
-    });
-    const res = await dbUpdateProductImages({
-      storeID: store.id,
-      images: images,
-    });
-    if (res.status === 'error') {
-      console.log(res.error);
-      return;
-    }
-    const updatedStore = { ...store, images: images };
-    const updatedStores = currentStores?.map((item) =>
-      item.id === store.id ? updatedStore : item
-    );
-    setCurrentStores(updatedStores);
-    toast.success('Stores images synced successfully', {
-      description: moment(new Date()).format('LLL'),
-    });
-    setIsSynching(false);
-  };
 
   const onUpdatePublish = async (store: StoreType, isPublished: boolean) => {
     const updatedSettingsStores = currentSettings?.stores.map(
@@ -142,7 +118,6 @@ function StoresTable() {
             <TableHead>Slug</TableHead>
             <TableHead>Tags</TableHead>
             <TableHead>SaaS Type</TableHead>
-            <TableHead>Sanity Images</TableHead>
             <TableHead className="text-center">Is Published</TableHead>
             <TableHead className="text-right"></TableHead>
           </TableRow>
@@ -166,28 +141,7 @@ function StoresTable() {
                   ))}
                 </TableCell>
                 <TableCell>{saas?.title}</TableCell>
-                <TableCell>
-                  {checkIfImagesSynced(item) ? (
-                    <div className="flex space-x-2 items-center">
-                      <span>Synced</span>
-                      <CheckIcon className="h-5 text-green-500" />
-                    </div>
-                  ) : isSynching ? (
-                    <div
-                      className={cn(
-                        'flex animate-pulse space-x-2 items-center'
-                      )}
-                    >
-                      <span>Synching Images</span>
-                      <LoaderIcon className="h-5 animate-spin" />
-                    </div>
-                  ) : (
-                    <div className={cn('flex space-x-2 items-center')}>
-                      <span>Not Synced</span>
-                      <XIcon className="h-5 text-red-500" />
-                    </div>
-                  )}
-                </TableCell>
+
                 <TableCell className="flex justify-center">
                   {item.isPublished ? (
                     <div className="flex space-x-2 items-center">
@@ -224,14 +178,6 @@ function StoresTable() {
                           onClick={() => onUpdatePublish(item, true)}
                         >
                           Publish
-                        </DropdownMenuItem>
-                      )}
-                      {!checkIfImagesSynced(item) && (
-                        <DropdownMenuItem
-                          onClick={() => onSyncImages(item)}
-                          className="flex items-center gap-1"
-                        >
-                          Sync Images
                         </DropdownMenuItem>
                       )}
                     </DropdownMenuContent>

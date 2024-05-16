@@ -16,20 +16,14 @@ function UpdateStoreLogoForm({
   store: StoreType;
   setClose: () => void;
 }) {
-  const [currentSettings, setCurrentSettings] = useAppStore((state) => [
-    state.currentSettings,
-    state.setCurrentSettings,
-  ]);
-  const [isLoading, setIsLoading] = useState(false);
-  const sanityStores = useContext(AdminStoreContext);
-  const sanityStore = sanityStores.data.find(
-    (item) => item.slug.current === store.slug
+  const [currentSettings, currentStores, setCurrentSettings] = useAppStore(
+    (state) => [
+      state.currentSettings,
+      state.currentStores,
+      state.setCurrentSettings,
+    ]
   );
-  let images: string[] | null = [];
-  sanityStore?.images?.forEach((item: any) => {
-    const src = urlFor(item).url();
-    images.push(src);
-  });
+  const [isLoading, setIsLoading] = useState(false);
 
   const settingStore = currentSettings?.stores.find(
     (item: StoreType) => item.id === store.id
@@ -37,6 +31,9 @@ function UpdateStoreLogoForm({
   const [imageSelected, setImageSelected] = useState<string | null>(
     settingStore.logoURL || null
   );
+
+  const storeImages = currentStores.find((item) => item.id === store.id).images;
+  console.log({ currentStores });
 
   const onUpdateLogo = async () => {
     setIsLoading(true);
@@ -59,10 +56,11 @@ function UpdateStoreLogoForm({
     setIsLoading(false);
     setClose();
   };
+
   return (
     <div>
       <div className="grid grid-cols-4 gap-2">
-        {images?.map((item: string, idx: number) => {
+        {storeImages?.map((item: string, idx: number) => {
           return (
             <Image
               src={item}

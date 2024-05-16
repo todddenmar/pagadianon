@@ -27,12 +27,20 @@ import { Button } from '../../ui/button';
 import CreateStoreProductForm from '../forms/CreateStoreProductForm';
 import { Separator } from '../../ui/separator';
 import NoDataSection from '../../error/NoDataSection';
+import { useParams } from 'next/navigation';
 
 function StoreSettingsSection() {
+  const params = useParams();
   const [currentStoreData] = useAppStore((state) => [state.currentStoreData]);
   const [isAddingProduct, setIsAddingProduct] = useState(false);
   if (!currentStoreData) {
-    return <NoDataSection title="Store data not found" />;
+    return (
+      <NoDataSection
+        title="Store data not found"
+        href={`/store/${params.slug}`}
+        linkText="Go back to store page"
+      />
+    );
   }
 
   return (

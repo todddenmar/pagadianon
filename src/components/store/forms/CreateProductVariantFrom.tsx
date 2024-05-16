@@ -2,7 +2,7 @@
 import { Button } from '@/components/ui/button';
 import { useAppStore } from '@/lib/store';
 import _ from 'lodash';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -26,7 +26,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card } from '@/components/ui/card';
 import Image from 'next/image';
 import CustomPesoIcon from '@/components/CustomComponents/CustomPesoIcon';
-import { dbUpdateStoreVariants } from '@/helpers/firebaseHelpers';
+import {
+  dbGetStoreImages,
+  dbUpdateStoreVariants,
+} from '@/helpers/firebaseHelpers';
 
 function CreateProductVariantForm({
   product,
@@ -39,6 +42,8 @@ function CreateProductVariantForm({
   const [selectedImages, setSelectedImages] = useState<
     string[] | null | undefined
   >(null);
+
+  const [storeImages, setStoreImages] = useState<any[]>([]);
   const [variants, setVariants] = useState<any>(product?.variants);
   const [tabValue, setTabValue] = useState('form');
   const [toEditVariant, setToEditVariant] = useState<VariantType | null>(null);
@@ -48,6 +53,10 @@ function CreateProductVariantForm({
       state.currentStoreProducts,
       state.setCurrentStoreProducts,
     ]);
+
+  useEffect(() => {
+    getStoreImages();
+  }, []);
 
   const formSchema = z.object({
     name: z
@@ -86,6 +95,15 @@ function CreateProductVariantForm({
     form.setValue('price', item.price);
     form.setValue('compareAtPrice', item.compareAtPrice);
     setSelectedImages(item.images);
+  };
+
+  const getStoreImages = async () => {
+    const res = await dbGetStoreImages({ storeID: currentStoreData.id });
+    if (res.status === 'error') {
+      console.log(res.error);
+      return;
+    }
+    setStoreImages(res.data || []);
   };
 
   const onSave = async () => {
@@ -135,16 +153,11 @@ function CreateProductVariantForm({
           : item
       );
       setVariants(updatedVariants);
-      toast.success('Variant updated successfully', {
-        description: moment(new Date()).format('LLL'),
-      });
+
       setToEditVariant(null);
     } else {
       const updatedVariants = variants ? [...variants, newData] : [newData];
       setVariants(updatedVariants);
-      toast.success('Added a new variant successfully', {
-        description: moment(new Date()).format('LLL'),
-      });
     }
     setIsLoading(false);
     setTabValue('variants');
@@ -233,7 +246,7 @@ function CreateProductVariantForm({
               </div>
               <ScrollArea className="h-[200px] w-full rounded-md border p-4">
                 <CustomMultiImagePicker
-                  images={currentStoreData?.images}
+                  images={storeImages.map((item) => item.downloadURL)}
                   value={selectedImages}
                   onChange={(val) => setSelectedImages(val)}
                 />
@@ -267,8 +280,12 @@ function CreateProductVariantForm({
               const firstImage = item.images ? item.images[0] : null;
 
               return (
-                <div key={`variant-${idx}`} onClick={() => onEditVariant(item)}>
-                  <div className="w-full aspect-square flex flex-col relative items-center justify-center bg-neutral-900 rounded-md overflow-hidden p-3">
+                <div
+                  key={`variant-${idx}`}
+                  onClick={() => onEditVariant(item)}
+                  className="cursor-pointer "
+                >
+                  <div className="w-full aspect-square flex flex-col relative items-center justify-center bg-neutral-900 rounded-md overflow-hidden">
                     {firstImage ? (
                       <Image
                         src={firstImage}

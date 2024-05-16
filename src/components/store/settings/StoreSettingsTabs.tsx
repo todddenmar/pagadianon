@@ -8,6 +8,15 @@ import StoreProductsTable from '../StoreProductsTable';
 import { Button } from '../../ui/button';
 import { cn } from '@/lib/utils';
 import StoreSettingSidebar from './StoreSettingSidebar';
+import StoreSettingsGallery from './StoreSettingsGallery';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+
 function StoreSettingsTabs() {
   const [tabValue, setTabValue] = useState('contact');
   return (
@@ -24,19 +33,33 @@ function StoreSettingsTabs() {
         onValueChange={(val) => setTabValue(val)}
         className="w-full "
       >
-        <TabsList className="block md:hidden">
-          <TabsTrigger onClick={() => setTabValue('contact')} value="contact">
-            Contact
-          </TabsTrigger>
-          <TabsTrigger onClick={() => setTabValue('hours')} value="hours">
-            Business Hours
-          </TabsTrigger>
-          <TabsTrigger onClick={() => setTabValue('products')} value="products">
-            Products
-          </TabsTrigger>
-        </TabsList>
+        <div className="block md:hidden">
+          <Select value={tabValue} onValueChange={setTabValue}>
+            <SelectTrigger className="capitalize">
+              <SelectValue placeholder="Theme" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="contact" className="capitalize">
+                contact
+              </SelectItem>
+              <SelectItem value="gallery" className="capitalize">
+                gallery
+              </SelectItem>
+              <SelectItem value="hours" className="capitalize">
+                hours
+              </SelectItem>
+              <SelectItem value="products" className="capitalize">
+                products
+              </SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
         <TabsContent value="contact">
           <StoreSettingsForm />
+        </TabsContent>
+        <TabsContent value="gallery">
+          <StoreSettingsGallery />
         </TabsContent>
         <TabsContent value="hours">
           <StoreBusinessHoursListCard />

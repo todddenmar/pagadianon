@@ -3,13 +3,14 @@ import { cn } from '@/lib/utils';
 import { ImageIcon } from 'lucide-react';
 import Image from 'next/image';
 import React, { useState } from 'react';
+import CustomImageSelectionItem from './CustomImageSelectionItem';
 
 function CustomMultiImagePicker({
   images,
   value,
   onChange,
 }: {
-  images: string[];
+  images: any[];
   value: string[] | null | undefined;
   onChange: (val: string[]) => void;
 }) {
@@ -25,12 +26,10 @@ function CustomMultiImagePicker({
             const isSelected = value?.includes(item);
             const currentValues = value || [];
             return (
-              <Image
-                src={item}
-                key={`sanity-image-${idx}`}
-                alt={`image-${idx}`}
-                width={150}
-                height={150}
+              <CustomImageSelectionItem
+                key={`store-image-${idx}`}
+                url={item}
+                isSelected={isSelected || false}
                 onClick={() => {
                   if (isSelected) {
                     onChange(currentValues.filter((val) => val != item));
@@ -38,12 +37,6 @@ function CustomMultiImagePicker({
                     onChange([...currentValues, item]);
                   }
                 }}
-                className={cn(
-                  'rounded-md overflow-hidden cursor-pointer hover:md:border-white border',
-                  {
-                    'border-white': isSelected,
-                  }
-                )}
               />
             );
           })}

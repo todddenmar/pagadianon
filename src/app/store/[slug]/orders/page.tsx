@@ -6,14 +6,14 @@ export const metadata: Metadata = {
   title: 'Store Orders | Pagadianon',
   description: 'Orders for a Pagadianon store',
 };
-async function StoreOrdersPage({ params }: { params: { slug: string } }) {
-  console.log({ params });
+ function StoreOrdersPage({ params }: { params: { slug: string } }) {
+   console.log({ params });
 
-  return (
-    <div className="relative">
-      <StoreOrdersSection slug={params.slug} />
-    </div>
-  );
-}
+   return (
+     <div className="relative">
+       <StoreOrdersSection slug={params.slug} />
+     </div>
+   );
+ }
 
 export default StoreOrdersPage;

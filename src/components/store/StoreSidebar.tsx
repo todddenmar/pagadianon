@@ -97,7 +97,7 @@ function StoreSidebar({
               <StoreSidebarItem
                 isActive={value === 'store'}
                 onClick={() => onChange('store')}
-                text={'Store Front'}
+                text={'Store Info'}
                 icon={<StoreIcon className="h-[16px] w-[16px]" />}
               />
             </li>

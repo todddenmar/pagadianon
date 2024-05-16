@@ -240,13 +240,6 @@ function StoreSettingsForm() {
               )}
             </form>
           </Form>
-          <div className="max-w-md w-full mx-auto my-auto">
-            <CustomImagePicker
-              title="Upload Storefront Image"
-              value={storefrontURL}
-              setImageURL={(val) => setStorefrontURL(val)}
-            />
-          </div>
         </div>
       </CardContent>
     </Card>

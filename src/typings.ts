@@ -22,10 +22,10 @@ export type StoreType = {
   users?: any[];
   tags: string;
   logoURL?: string;
-  images?: string[];
   isPublished?: boolean;
   settings?: any;
   schedules?: any;
+  galleryImages?: string[];
 };
 
 export type CollectionType = {
