@@ -47,7 +47,7 @@ const userFormSchema = z.object({
     .min(2, {
       message: 'Address must be at least 2 characters.',
     })
-    .max(100),
+    .max(200),
   coordinates: z
     .string()
     .min(2, {

@@ -65,7 +65,7 @@ function CreateStoreProductForm({ setClose }: { setClose: () => void }) {
         message: 'Name must be at least 2 characters.',
       })
       .max(50),
-    description: z.string().max(100).optional(),
+    description: z.string().max(200).optional(),
     slug: z
       .string()
       .min(2, {
