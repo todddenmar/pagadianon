@@ -31,7 +31,6 @@ function StoreImagesUploader({ setClose }: { setClose: () => void }) {
     getStoreImages();
     setSelectedImages(currentStoreData?.galleryImages);
   }, [currentStoreData]);
-  if (!currentStoreData) return <LoadingComponent />;
 
   useEffect(() => {
     const unsubscribe = onSnapshot(
@@ -44,6 +43,7 @@ function StoreImagesUploader({ setClose }: { setClose: () => void }) {
 
     return () => unsubscribe();
   }, []);
+  if (!currentStoreData) return <LoadingComponent />;
 
   const getStoreImages = async () => {
     const res = await dbGetStoreImages({ storeID: currentStoreData.id });
