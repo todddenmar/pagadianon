@@ -24,7 +24,7 @@ function CustomVariantsSlider({
       {variants
         .sort((a, b) => (a < b ? -1 : 1))
         ?.map((variant: VariantType, idx: number) => {
-          return (
+          return variant.name === 'default' ? null : (
             <Badge
               className="cursor-pointer"
               onClick={() => onChange(variant.name)}
