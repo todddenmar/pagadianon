@@ -26,10 +26,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card } from '@/components/ui/card';
 import Image from 'next/image';
 import CustomPesoIcon from '@/components/CustomComponents/CustomPesoIcon';
-import {
-  dbUpdateStore,
-  dbUpdateStoreVariants,
-} from '@/helpers/firebaseHelpers';
+import { dbUpdateStoreVariants } from '@/helpers/firebaseHelpers';
 
 function CreateProductVariantForm({
   product,
@@ -59,7 +56,7 @@ function CreateProductVariantForm({
         message: 'Name must be at least 2 characters.',
       })
       .max(50),
-    description: z.string().max(100).optional(),
+    description: z.string().max(200).optional(),
     price: z
       .string()
       .refine((val) => parseInt(val) > 0, { message: 'Price must be above 0' }),

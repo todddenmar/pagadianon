@@ -41,6 +41,7 @@ import { toast } from 'sonner';
 import moment from 'moment';
 import { cn } from '@/lib/utils';
 import LoadingComponent from '../LoadingComponent.';
+import Link from 'next/link';
 
 function StoresTable() {
   const [currentStores, currentSettings, setCurrentSettings, setCurrentStores] =
@@ -155,7 +156,9 @@ function StoresTable() {
             return (
               <TableRow key={`store-item-${idx}`}>
                 <TableCell className="font-medium">{idx + 1}</TableCell>
-                <TableCell>{item.name}</TableCell>
+                <TableCell>
+                  <Link href={`/store/${item.slug}`}>{item.name}</Link>
+                </TableCell>
                 <TableCell>{item.slug}</TableCell>
                 <TableCell className="capitalize inline-flex flex-wrap gap-2">
                   {tags?.map((tag: string, tagIdx: number) => (

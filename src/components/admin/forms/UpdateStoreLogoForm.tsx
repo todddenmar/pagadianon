@@ -26,7 +26,7 @@ function UpdateStoreLogoForm({
     (item) => item.slug.current === store.slug
   );
   let images: string[] | null = [];
-  sanityStore.images?.forEach((item: any) => {
+  sanityStore?.images?.forEach((item: any) => {
     const src = urlFor(item).url();
     images.push(src);
   });

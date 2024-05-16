@@ -66,7 +66,7 @@ export const getImageURLsFromSanityStoreBySlug = ({
     (item: any) => item.slug.current === slug
   );
   let images: string[] | null = [];
-  sanityStore.images?.forEach((item: any) => {
+  sanityStore?.images?.forEach((item: any) => {
     const src = urlFor(item).url();
     images.push(src);
   });

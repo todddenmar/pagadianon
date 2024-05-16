@@ -156,7 +156,12 @@ function StoreProductVariantCard({ variant }: { variant: VariantType }) {
       <Drawer open={isOpenDrawer} onOpenChange={setIsOpenDrawer}>
         <DrawerContent>
           <div className="md:max-w-lg md:mx-auto p-5 pb-10">
-            <div className="my-2 text-center">
+            <div className="flex justify-center">
+              {variant.name.toLowerCase() != 'default' && (
+                <Badge>{variant.name}</Badge>
+              )}
+            </div>
+            <div className="mb-5 mt-2 text-center">
               <div className="font-semibold">{productData.name}</div>
               <div className="text-neutral-500 text-sm">
                 {variant.description}

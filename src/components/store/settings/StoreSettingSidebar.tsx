@@ -55,17 +55,6 @@ function StoreSettingSidebar({
         </button>
       </li>
 
-      <Link
-        href={`/store/${params.slug}/orders`}
-        className={cn(
-          'px-4 rounded-md items-center py-2 w-full text-left text-sm dark:hover:bg-neutral-900 transition-all  hover:bg-neutral-100 capitalize flex space-x-2'
-        )}
-      >
-        <span>
-          <ClipboardListIcon className="h-[16px] w-[16px]" />
-        </span>
-        <span>Orders</span>
-      </Link>
     </ul>
   );
 }
