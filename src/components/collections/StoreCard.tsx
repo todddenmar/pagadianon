@@ -12,7 +12,7 @@ function StoreCard({ store }: { store: StoreType }) {
     <div className="border rounded-xl overflow-hidden group bg-neutral-100 dark:bg-neutral-900 flex">
       <div className="p-3 w-full flex-1">
         <div className="flex gap-3 relative">
-          <div className="flex flex-col items-center justify-center relative h-[100px] sm:h-[150px] md:h-[120px] lg:h-[150px] xl:h-[150px] 2xl:h-[150px] aspect-square ">
+          <div className="flex flex-col items-center justify-center relative h-[120px] sm:h-[150px] md:h-[120px] lg:h-[150px] xl:h-[150px] 2xl:h-[150px] aspect-square ">
             {store.logoURL ? (
               <Image
                 src={store.logoURL}
@@ -36,7 +36,7 @@ function StoreCard({ store }: { store: StoreType }) {
             <div className="text-xs sm:text-sm dark:text-neutral-400 line-clamp-2 md:line-clamp-2 lg:line-clamp-3">
               {store.description}
             </div>
-            <div className="inline-flex gap-2 mt-5 bottom-0 absolute">
+            <div className="inline-flex flex-wrap gap-2 mt-5 bottom-0 absolute">
               {tags.map((tag, idx) => (
                 <Badge key={`${store.slug}-tag-${idx}`} className="capitalize">
                   {tag}
