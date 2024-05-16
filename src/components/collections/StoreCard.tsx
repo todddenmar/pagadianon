@@ -17,8 +17,8 @@ function StoreCard({ store }: { store: StoreType }) {
               <Image
                 src={store.logoURL}
                 alt={store.name}
-                width={200}
-                height={200}
+                width={150}
+                height={150}
                 className="object-contain rounded-xl group-hover:scale-105 transition-all"
               />
             ) : (

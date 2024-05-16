@@ -116,7 +116,7 @@ function StoreProductVariantCard({ variant }: { variant: VariantType }) {
         className="group w-full cursor-pointer"
         onClick={() => setIsOpenDrawer(true)}
       >
-        <div className="w-full aspect-square flex flex-col relative items-center justify-center bg-neutral-100 dark:bg-neutral-900 rounded-md overflow-hidden p-3">
+        <div className="w-full aspect-square flex flex-col relative items-center justify-center bg-neutral-100 dark:bg-neutral-900 rounded-md overflow-hidden ">
           <div className="absolute bottom-2 right-2 z-10">
             {variant.name.toLowerCase() != 'default' && (
               <Badge>{variant.name}</Badge>
@@ -179,7 +179,7 @@ function StoreProductVariantCard({ variant }: { variant: VariantType }) {
                             alt={`${variant.name} ${idx}`}
                             width={200}
                             height={200}
-                            className="object-cover h-full w-full group-hover:scale-105 transition-all"
+                            className="object-contain h-full w-full group-hover:scale-105 transition-all"
                           />
                         </div>
                       </CarouselItem>
@@ -197,7 +197,7 @@ function StoreProductVariantCard({ variant }: { variant: VariantType }) {
                     alt={variant.name}
                     width={200}
                     height={200}
-                    className="object-cover h-full w-full group-hover:scale-105 transition-all"
+                    className="object-contain h-full w-full group-hover:scale-105 transition-all"
                   />
                 ) : (
                   categoryIcon

@@ -1,13 +1,21 @@
 import { AdminStoreContext } from '@/components/providers/AdminStoreContextProvider';
 import { Button } from '@/components/ui/button';
-import { dbUpdateSettings } from '@/helpers/firebaseHelpers';
+import {
+  dbGetRootSettingsImages,
+  dbUpdateSettings,
+} from '@/helpers/firebaseHelpers';
 import { urlFor } from '@/lib/client';
 import { useAppStore } from '@/lib/store';
 import { cn } from '@/lib/utils';
 import { StoreType } from '@/typings';
 import { LoaderCircleIcon } from 'lucide-react';
 import Image from 'next/image';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
+import UploadAdminImageFiles from './UploadAdminImageFiles';
+import { collection, onSnapshot } from 'firebase/firestore';
+import { db } from '@/firebase';
+import { Skeleton } from '@/components/ui/skeleton';
+import CustomImageSelectionItem from '@/components/CustomComponents/CustomImageSelectionItem';
 
 function UpdateStoreLogoForm({
   store,
@@ -24,6 +32,33 @@ function UpdateStoreLogoForm({
     ]
   );
   const [isLoading, setIsLoading] = useState(false);
+  const [images, setImages] = useState<any>([]);
+  console.log({ images });
+
+  useEffect(() => {
+    getRootSettingsImages();
+  }, [currentSettings]);
+
+  useEffect(() => {
+    const unsubscribe = onSnapshot(
+      collection(db, 'root', 'settings', 'images'),
+      (snap) => {
+        const images = snap.docs.map((item) => item.data());
+        setImages(images);
+      }
+    );
+
+    return () => unsubscribe();
+  }, []);
+
+  const getRootSettingsImages = async () => {
+    const res = await dbGetRootSettingsImages();
+    if (res.status === 'error') {
+      console.log(res.error);
+      return;
+    }
+    setImages(res.data || []);
+  };
 
   const settingStore = currentSettings?.stores.find(
     (item: StoreType) => item.id === store.id
@@ -31,9 +66,6 @@ function UpdateStoreLogoForm({
   const [imageSelected, setImageSelected] = useState<string | null>(
     settingStore.logoURL || null
   );
-
-  const storeImages = currentStores.find((item) => item.id === store.id).images;
-  console.log({ currentStores });
 
   const onUpdateLogo = async () => {
     setIsLoading(true);
@@ -59,21 +91,15 @@ function UpdateStoreLogoForm({
 
   return (
     <div>
-      <div className="grid grid-cols-4 gap-2">
-        {storeImages?.map((item: string, idx: number) => {
+      <UploadAdminImageFiles />
+      <div className="grid grid-cols-4 gap-2 mt-5">
+        {images?.map((item: any, idx: number) => {
           return (
-            <Image
-              src={item}
-              key={`sanity-image-${idx}`}
-              alt={`image-${idx}`}
-              width={150}
-              height={150}
-              className={cn('rounded-md border', {
-                'border-white': imageSelected === item,
-              })}
-              onClick={() => {
-                setImageSelected(item);
-              }}
+            <CustomImageSelectionItem
+              key={`store-image-${idx}`}
+              url={item.downloadURL}
+              isSelected={imageSelected === item.downloadURL}
+              onClick={() => setImageSelected(item.downloadURL)}
             />
           );
         })}

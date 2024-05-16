@@ -17,15 +17,15 @@ import {
 } from '@/components/ui/dialog';
 
 import { Button } from '@/components/ui/button';
-import StoreImagesUploader from './StoreSettingsImageUploader';
+import StoreImagesUploader from './StoreImagesUploader';
 import { useAppStore } from '@/lib/store';
 import { useShallow } from 'zustand/react/shallow';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import { Skeleton } from '@/components/ui/skeleton';
+import StoreImageRemover from './StoreImageRemover';
 
 function StoreSettingsGallery() {
-  const [isUploading, setIsUploading] = useState(false);
   const [currentStoreData, setCurrentStoreData] = useAppStore(
     useShallow((state) => [state.currentStoreData, state.setCurrentStoreData])
   );
@@ -40,7 +40,6 @@ function StoreSettingsGallery() {
                 These images will be shown on store information tab
               </CardDescription>
             </div>
-            <Button onClick={() => setIsUploading(true)}>Upload Images</Button>
           </div>
         </CardHeader>
         <CardContent>
@@ -76,20 +75,6 @@ function StoreSettingsGallery() {
           )}
         </CardContent>
       </Card>
-
-      <Dialog open={isUploading} onOpenChange={setIsUploading}>
-        <DialogContent className="max-w-lg">
-          <DialogHeader>
-            <DialogTitle>Image Uploader</DialogTitle>
-            <DialogDescription>
-              Upload all images that this store
-            </DialogDescription>
-          </DialogHeader>
-          <div>
-            <StoreImagesUploader setClose={() => setIsUploading(false)} />
-          </div>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }

@@ -14,6 +14,7 @@ import CustomMobileLink from '../CustomComponents/CustomMobileLink';
 import Image from 'next/image';
 import { StoreType } from '@/typings';
 import LoadingComponent from '../admin/LoadingComponent.';
+import { Skeleton } from '../ui/skeleton';
 
 function StoreBanner({
   title,
@@ -26,7 +27,8 @@ function StoreBanner({
     state.currentStoreData,
     state.currentSettings,
   ]);
-  if (!currentStoreData) return <LoadingComponent />;
+  if (!currentStoreData || !currentSettings)
+    return <Skeleton className="rounded-lg h-auto md:h-[300px] w-full" />;
 
   const logoURL = currentSettings.stores.find(
     (item: StoreType) => item.id === currentStoreData.id

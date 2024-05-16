@@ -48,6 +48,7 @@
     "sanity": "^3.39.0",
     "sonner": "^1.4.41",
     "styled-components": "^6.1.8",
+    "swiper": "^11.0.7",
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7",
     "uuidv4": "^6.2.13",

@@ -14,7 +14,7 @@ function NoDataSection({
   return (
     <div className="h-[500px] w-full flex flex-col items-center justify-center">
       <div className="flex flex-col gap-3">
-        <p className="capitalize">{title}</p>
+        <p className="capitalize text-center">{title}</p>
         <Button
           className="bg-highlight hover:bg-highlight_hover transition-all font-semibold"
           asChild

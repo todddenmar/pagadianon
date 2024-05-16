@@ -4,11 +4,11 @@ import { useState } from 'react';
 import Dropzone from 'react-dropzone';
 import { storage } from '@/firebase';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
-import { dbAddStoreImage, dbUpdateStoreImage } from '@/helpers/firebaseHelpers';
+import { dbAddAdminImage, dbUpdateAdminImage } from '@/helpers/firebaseHelpers';
 import { useUser } from '@clerk/nextjs';
 import moment from 'moment';
 
-function CustomDropzone({ storeID }: { storeID: string }) {
+function UploadAdminImageFiles() {
   const { user } = useUser();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -37,17 +37,16 @@ function CustomDropzone({ storeID }: { storeID: string }) {
       createdAt: moment(new Date()).format('LLL'),
       isArchived: false,
     };
-    const res = await dbAddStoreImage({ storeID: storeID, data: newData });
+    const res = await dbAddAdminImage({ data: newData });
     if (res.status === 'error') {
       console.log(res.error);
       return;
     }
     const imageID = res.data;
-    const imageRef = ref(storage, `stores/${storeID}/files/${imageID}`);
+    const imageRef = ref(storage, `root/settings/files/${imageID}`);
     await uploadBytes(imageRef, selectedFile).then(async (snapshot) => {
       const downloadURL = await getDownloadURL(imageRef);
-      const res = await dbUpdateStoreImage({
-        storeID: storeID,
+      const res = await dbUpdateAdminImage({
         imageID: imageID!,
         downloadURL,
       });
@@ -100,4 +99,4 @@ function CustomDropzone({ storeID }: { storeID: string }) {
   );
 }
 
-export default CustomDropzone;
+export default UploadAdminImageFiles;

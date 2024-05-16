@@ -285,14 +285,14 @@ function CreateProductVariantForm({
                   onClick={() => onEditVariant(item)}
                   className="cursor-pointer "
                 >
-                  <div className="w-full aspect-square flex flex-col relative items-center justify-center bg-neutral-900 rounded-md overflow-hidden">
+                  <div className="w-full aspect-square flex flex-col relative items-center justify-center bg-neutral-200 dark:bg-neutral-900 rounded-md overflow-hidden">
                     {firstImage ? (
                       <Image
                         src={firstImage}
                         alt={item.name}
-                        width={200}
-                        height={200}
-                        className="object-cover h-full w-full group-hover:scale-105 transition-all"
+                        width={100}
+                        height={100}
+                        className="object-contain h-full w-full group-hover:scale-105 transition-all"
                       />
                     ) : (
                       <ImageIcon />

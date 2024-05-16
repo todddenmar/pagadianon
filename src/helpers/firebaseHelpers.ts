@@ -1,5 +1,5 @@
 import { kOrderProgress } from '@/constants';
-import { db } from '@/firebase';
+import { db, storage } from '@/firebase';
 import {
   CustomerType,
   DeliveryServiceType,
@@ -21,6 +21,7 @@ import {
   where,
   addDoc,
 } from 'firebase/firestore';
+import { deleteObject, ref } from 'firebase/storage';
 import moment from 'moment';
 
 export const dbAddNewStore = async (data: StoreType) => {
@@ -607,7 +608,86 @@ export const dbUpdateStoreGalleryImages = async ({
 
 export const dbGetStoreImages = async ({ storeID }: { storeID: string }) => {
   try {
-    const q = query(collection(db, 'stores', String(storeID), 'images'));
+    const q = query(
+      collection(db, 'stores', String(storeID), 'images'),
+      where('isArchived', '==', false)
+    );
+    let results: any[] = [];
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      // doc.data() is never undefined for query doc snapshots
+      results.push(doc.data());
+    });
+    return { status: 'success', data: results };
+  } catch (error) {
+    return { status: 'error', error };
+  }
+};
+
+export const dbDeleteStorageImage = async ({
+  storeID,
+  imageID,
+}: {
+  storeID: string;
+  imageID: string;
+}) => {
+  try {
+    // Create a reference to the file to delete
+    const desertRef = ref(storage, `stores/${storeID}/files/${imageID}`);
+    const imageRef = doc(
+      db,
+      'stores',
+      String(storeID),
+      'images',
+      String(imageID)
+    );
+    await updateDoc(imageRef, {
+      isArchived: true,
+    });
+    // Delete the file
+    await deleteObject(desertRef);
+    return { status: 'success' };
+  } catch (error) {
+    return { status: 'error', error };
+  }
+};
+
+export const dbAddAdminImage = async ({ data }: { data: any }) => {
+  try {
+    const docRef = await addDoc(
+      collection(db, 'root', 'settings', 'images'),
+      data
+    );
+    return { status: 'success', data: docRef.id };
+  } catch (error) {
+    return { status: 'error', error };
+  }
+};
+export const dbUpdateAdminImage = async ({
+  imageID,
+  downloadURL,
+}: {
+  imageID: string;
+  downloadURL: string;
+}) => {
+  const userRef = doc(db, 'root', 'settings', 'images', imageID);
+  try {
+    await updateDoc(userRef, {
+      downloadURL: downloadURL,
+      imageID,
+    });
+    return { status: 'success' };
+  } catch (error) {
+    return { status: 'error', error };
+  }
+};
+
+export const dbGetRootSettingsImages = async () => {
+  try {
+    const q = query(
+      collection(db, 'root', 'settings', 'images'),
+      where('isArchived', '==', false)
+    );
     let results: any[] = [];
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
