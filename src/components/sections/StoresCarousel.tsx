@@ -4,6 +4,8 @@ import {
   Carousel,
   CarouselContent,
   CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
 } from '@/components/ui/carousel';
 import { StoreType } from '@/typings';
 import StoreCard from '../collections/StoreCard';
@@ -18,11 +20,13 @@ function StoresCarousel({
   description?: string;
 }) {
   return (
-    <div>
+    <div className="relative">
       <ContainerLayout>
         <div className="pb-5">
           <h3 className="text-lg md:text-2xl font-bold">{title}</h3>
-          <p className="text-sm text-neutral-400">{description}</p>
+          <p className="text-sm text-neutral-600 dark:text-neutral-500">
+            {description}
+          </p>
         </div>
         <Carousel>
           <CarouselContent>
@@ -37,6 +41,14 @@ function StoresCarousel({
               );
             })}
           </CarouselContent>
+          <div className="absolute -top-[70px] right-0 h-[50px] w-[70px] 2xl:hidden">
+            <CarouselPrevious className="absolute left-0" />
+            <CarouselNext className="absolute right-0" />
+          </div>
+          <div className="hidden 2xl:block">
+            <CarouselPrevious />
+            <CarouselNext />
+          </div>
         </Carousel>
       </ContainerLayout>
     </div>
