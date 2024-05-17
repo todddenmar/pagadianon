@@ -44,7 +44,7 @@ function StoreOrdersTable({ orders }: { orders: OrderType[] }) {
     }
   };
   return (
-    <Card className="p-3">
+    <Card>
       <CardHeader>
         <div className="flex items-start justify-between gap-2">
           <div className="grid grid-cols-1 gap-2">
@@ -54,7 +54,7 @@ function StoreOrdersTable({ orders }: { orders: OrderType[] }) {
         </div>
       </CardHeader>
       <CardContent>
-        <Table>
+        <Table className="text-nowrap">
           <TableCaption>A list of your recent invoices.</TableCaption>
           <TableHeader>
             <TableRow>

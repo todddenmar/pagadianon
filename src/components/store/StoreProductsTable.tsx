@@ -61,7 +61,7 @@ function StoreProductsTable() {
   if (!currentStoreProducts) return <LoadingComponent />;
 
   return (
-    <Card className="p-3">
+    <Card>
       <CardHeader>
         <div className="flex items-start justify-between gap-2">
           <div className="grid grid-cols-1 gap-2">

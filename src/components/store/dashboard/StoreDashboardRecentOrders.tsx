@@ -25,11 +25,19 @@ function StoreDashboardRecentOrders({ orders }: { orders: OrderType[] }) {
   const getStatusComponent = (status: string) => {
     switch (status) {
       case kOrderProgress.PENDING:
-        return <Badge className="bg-orange-400 capitalize">{status}</Badge>;
+        return (
+          <Badge className="bg-orange-400 capitalize text-nowrap">
+            {status}
+          </Badge>
+        );
       case kOrderProgress.RECEIVED:
-        return <Badge className="bg-green-400 capitalize">{status}</Badge>;
+        return (
+          <Badge className="bg-green-400 capitalize text-nowrap">
+            {status}
+          </Badge>
+        );
       default:
-        return <Badge className="capitalize">{status}</Badge>;
+        return <Badge className="capitalize text-nowrap">{status}</Badge>;
     }
   };
   if (!currentStoreData)
@@ -42,47 +50,44 @@ function StoreDashboardRecentOrders({ orders }: { orders: OrderType[] }) {
           description={'Orders made today.'}
         />
         <CardContent className="flex-1">
-          <ScrollArea className="h-full px-4">
-            <Table>
-              <TableCaption>A list of your recent invoices.</TableCaption>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>No.</TableHead>
-                  <TableHead>Time</TableHead>
-                  <TableHead>Method</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead className="text-right">Amount</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {orders?.map((order, idx) => {
-                  return (
-                    <TableRow key={`recent-order-item-${idx}`}>
-                      <TableCell className="font-medium">{`${idx + 1}`}</TableCell>
-                      <TableCell className="text-nowrap">
-                        {moment(new Date(order.createdAt)).format('h:mm a')}
-                      </TableCell>
-                      <TableCell className="capitalize">
-                        {order.fulfillmentMethod}
-                      </TableCell>
-                      <TableCell className="capitalize">
-                        {getStatusComponent(order.status)}
-                      </TableCell>
-                      <TableCell className="text-right flex items-center justify-end">
-                        <CustomPesoIcon />{' '}
-                        {getCartTotal({
-                          cart: order.cart.filter(
-                            (cartItem) =>
-                              cartItem.storeID === currentStoreData.id
-                          ),
-                        })}
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
-          </ScrollArea>
+          <Table className="text-nowrap">
+            <TableCaption>A list of your recent invoices.</TableCaption>
+            <TableHeader>
+              <TableRow>
+                <TableHead>No.</TableHead>
+                <TableHead>Time</TableHead>
+                <TableHead>Method</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead className="text-right">Amount</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {orders?.map((order, idx) => {
+                return (
+                  <TableRow key={`recent-order-item-${idx}`}>
+                    <TableCell className="font-medium">{`${idx + 1}`}</TableCell>
+                    <TableCell className="text-nowrap">
+                      {moment(new Date(order.createdAt)).format('h:mm a')}
+                    </TableCell>
+                    <TableCell className="capitalize">
+                      {order.fulfillmentMethod}
+                    </TableCell>
+                    <TableCell className="capitalize">
+                      {getStatusComponent(order.status)}
+                    </TableCell>
+                    <TableCell className="text-right flex items-center justify-end">
+                      <CustomPesoIcon />{' '}
+                      {getCartTotal({
+                        cart: order.cart.filter(
+                          (cartItem) => cartItem.storeID === currentStoreData.id
+                        ),
+                      })}
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
         </CardContent>
       </Card>
     </div>
