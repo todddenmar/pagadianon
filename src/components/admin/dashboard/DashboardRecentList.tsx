@@ -10,6 +10,8 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { kOrderProgress } from '@/constants';
+import { Badge } from '@/components/ui/badge';
 
 function DashboardRecentList() {
   return (

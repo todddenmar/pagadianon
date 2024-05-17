@@ -4,8 +4,6 @@ import ContainerLayout from '../layouts/ContainerLayout';
 import {
   ImageIcon,
   MailIcon,
-  MapIcon,
-  MapPinIcon,
   SmartphoneIcon,
 } from 'lucide-react';
 import { useAppStore } from '@/lib/store';
@@ -13,15 +11,18 @@ import CustomEmailLink from '../CustomComponents/CustomEmailLink';
 import CustomMobileLink from '../CustomComponents/CustomMobileLink';
 import Image from 'next/image';
 import { StoreType } from '@/typings';
-import LoadingComponent from '../admin/LoadingComponent.';
 import { Skeleton } from '../ui/skeleton';
+import { Button } from '../ui/button';
+import Link from 'next/link';
 
 function StoreBanner({
   title,
   description,
+  isManager,
 }: {
   title: string;
   description: string | null | undefined;
+  isManager?: boolean;
 }) {
   const [currentStoreData, currentSettings] = useAppStore((state) => [
     state.currentStoreData,
@@ -57,23 +58,29 @@ function StoreBanner({
             </div>
           </div>
           <div className="py-2 md:py-5">
-            <div className="grid grid-cols-1 sm:inline-flex justify-between gap-4 text-sm ">
-              <div className="flex justify-center gap-4">
-                {currentStoreData?.settings?.email && (
-                  <CustomEmailLink email={currentStoreData?.settings?.email}>
-                    <MailIcon className="h-[16px]" /> Email Us
-                  </CustomEmailLink>
-                )}
-                {currentStoreData?.settings?.mobileNumber && (
-                  <CustomMobileLink
-                    mobileNumber={currentStoreData?.settings?.mobileNumber}
-                  >
-                    <SmartphoneIcon className="h-[16px]" />
-                    Call Us
-                  </CustomMobileLink>
-                )}
+            {isManager ? (
+              <Button asChild>
+                <Link href={`/store/${currentStoreData.slug}`}>Go to Page</Link>
+              </Button>
+            ) : (
+              <div className="grid grid-cols-1 sm:inline-flex justify-between gap-4 text-sm ">
+                <div className="flex justify-center gap-4">
+                  {currentStoreData?.settings?.email && (
+                    <CustomEmailLink email={currentStoreData?.settings?.email}>
+                      <MailIcon className="h-[16px]" /> Email Us
+                    </CustomEmailLink>
+                  )}
+                  {currentStoreData?.settings?.mobileNumber && (
+                    <CustomMobileLink
+                      mobileNumber={currentStoreData?.settings?.mobileNumber}
+                    >
+                      <SmartphoneIcon className="h-[16px]" />
+                      Call Us
+                    </CustomMobileLink>
+                  )}
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </ContainerLayout>

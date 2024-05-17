@@ -1,11 +1,14 @@
 import { urlFor } from '@/lib/client';
 import {
   CartItemType,
+  CustomerType,
   DeliveryServiceType,
+  OrderType,
   ProductType,
   StoreType,
 } from '@/typings';
 import _ from 'lodash';
+import moment from 'moment';
 
 export const checkSlugExists = ({
   slug,
@@ -239,7 +242,107 @@ export const getOrderLinkByDate = ({
   return `/order/${orderID}?year=${year}&month=${month}`;
 };
 
- export const playNotification = () => {
-   const sound = new Audio('/notification.mp3');
-   sound.play();
- };
+export const playNotification = () => {
+  const sound = new Audio('/notification.mp3');
+  sound.play();
+};
+
+export const getUniqueCustomersByOrders = (orders: OrderType[]) => {
+  let uniqueEmails: string[] = [];
+  let uniqueCustomers: CustomerType[] = [];
+  orders.forEach((item) => {
+    if (!uniqueEmails.includes(item.customerEmail)) {
+      uniqueEmails.push(item.customerEmail);
+      uniqueCustomers.push(item.customer);
+    }
+  });
+  return uniqueCustomers;
+};
+
+export const getOrdersToday = (orders: OrderType[]) => {
+  const today = moment(new Date()).format('YYYY-MM-DD');
+  const ordersToday = orders.filter(
+    (item) => moment(new Date(item.createdAt)).format('YYYY-MM-DD') === today
+  );
+  return ordersToday;
+};
+
+export const formatStringDate = ({
+  date,
+  format,
+}: {
+  date: string;
+  format: string;
+}) => {
+  return moment(new Date(date)).format(format);
+};
+
+export const getTotalOrderSalesByDate = ({
+  orders,
+  date,
+  storeID,
+}: {
+  orders: OrderType[];
+  date: string;
+  storeID: string;
+}) => {
+  let total = 0;
+  orders.forEach((order: OrderType) => {
+    if (moment(new Date(order.createdAt)).format('DD') === date)
+      total =
+        total +
+        getCartTotal({
+          cart: order.cart.filter((cartItem) => cartItem.storeID === storeID),
+        });
+  });
+  return total;
+};
+
+export const getDaysInCurrentMonth = () => {
+  const date = new Date();
+  const year = date.getFullYear();
+  const month = date.getMonth();
+
+  // Creating a new date object set to the first day of the next month
+  // Then setting the day to 0 to get the last day of the current month
+  const lastDayOfMonth = new Date(year, month + 1, 0).getDate();
+
+  return lastDayOfMonth;
+};
+
+export const getMonthlyChartDataByOrders = ({
+  orders,
+  storeID,
+}: {
+  orders: OrderType[];
+  storeID: string;
+}) => {
+  let uniqueDates: string[] = [];
+  orders.forEach((item) => {
+    if (
+      !uniqueDates.includes(
+        formatStringDate({ date: item.createdAt, format: 'D' })
+      )
+    ) {
+      uniqueDates.push(formatStringDate({ date: item.createdAt, format: 'D' }));
+    }
+  });
+  let chartData: any[] = [];
+  let lastDay = getDaysInCurrentMonth();
+  for (let x = 0; x < lastDay; x++) {
+    const day = x + 1;
+    chartData.push({
+      name: day,
+      total: getTotalOrderSalesByDate({
+        orders: orders,
+        date: String(day),
+        storeID: storeID,
+      }),
+    });
+  }
+  // const chartData = uniqueDates.map((item) => ({
+  //   name: item,
+  //   total: getTotalOrderSalesByDate({ orders: orders, date: item }),
+  // }));
+  return chartData;
+};

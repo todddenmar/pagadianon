@@ -17,7 +17,7 @@ function AdminPage() {
   return (
     <div>
       <section className="mt-2 md:mt-5 flex flex-col">
-        <DashboardCards />
+        {/* <DashboardCards /> */}
         <div className="mt-2 md:mt-5">
           <div className="grid grid-cols-1 lg:flex gap-2 md:gap-5">
             <DashboardChart />

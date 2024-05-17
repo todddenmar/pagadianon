@@ -22,6 +22,7 @@ import { useAuth } from '@clerk/nextjs';
 import LoadingComponent from './admin/LoadingComponent.';
 import { LoaderIcon } from 'lucide-react';
 import { Separator } from './ui/separator';
+import { Button } from './ui/button';
 function AppButtonDropdown() {
   const { userId, orgId, has } = useAuth();
 
@@ -87,7 +88,7 @@ function AppButtonDropdown() {
               </DialogDescription>
             </DialogHeader>
 
-            <ScrollArea className="h-[300px] w-full rounded-md p-2">
+            <ScrollArea className="h-[300px] w-full rounded-md px-4">
               <div className="grid grid-cols-1 gap-2">
                 {myStores
                   .sort((a: StoreType, b: StoreType) =>
@@ -97,19 +98,25 @@ function AppButtonDropdown() {
                     return (
                       <div
                         key={`stores-${idx}`}
-                        className="flex justify-between gap-5 items-center rounded-md bg-neutral-900 border px-2 py-3"
+                        className="grid grid-cols-1 p-3 rounded-md border bg-neutral-900"
                       >
-                        <span className="font-semibold text-sm">
+                        <div className="font-semibold text-base">
                           {store?.name}
-                        </span>
-                        <div className="flex items-center gap-2 h-[20px] text-sm ">
-                          <Link
-                            href={`/store/${store?.slug}`}
+                        </div>
+                        <div className="grid grid-cols-2 gap-2 mt-2">
+                          <Button
+                            asChild
                             onClick={() => setIsOpenMyApps(false)}
-                            className="text-highlight hover:text-highlight_hover"
                           >
-                            Go To Page
-                          </Link>
+                            <Link href={`/store/${store?.slug}`}>
+                              Store Page
+                            </Link>
+                          </Button>
+                          <Button onClick={() => setIsOpenMyApps(false)}>
+                            <Link href={`/store/${store?.slug}/dashboard`}>
+                              Dashboard
+                            </Link>
+                          </Button>
                         </div>
                       </div>
                     );

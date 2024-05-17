@@ -17,7 +17,7 @@ import {
 } from '../ui/card';
 import { useAppStore } from '@/lib/store';
 import { ProductType } from '@/typings';
-import { LoaderCircleIcon, MoreHorizontalIcon } from 'lucide-react';
+import { LoaderCircleIcon, MoreHorizontalIcon, PlusIcon } from 'lucide-react';
 import LoadingComponent from '../admin/LoadingComponent.';
 import {
   DropdownMenu,
@@ -38,6 +38,8 @@ import {
 import { Badge } from '../ui/badge';
 import CreateProductVariantForm from './forms/CreateProductVariantFrom';
 import UpdateStoreProductForm from './forms/UpdateStoreProductForm';
+import { Button } from '../ui/button';
+import CreateStoreProductForm from './forms/CreateStoreProductForm';
 
 function StoreProductsTable() {
   const [currentStoreProducts, setCurrentStoreProducts, currentStoreData] =
@@ -46,6 +48,7 @@ function StoreProductsTable() {
       state.setCurrentStoreProducts,
       state.currentStoreData,
     ]);
+  const [isAddingProduct, setIsAddingProduct] = useState(false);
   const [isOpenVariantsModal, setIsOpenVariantsModal] = useState(false);
   const [isEditingProductModal, setIsEditingProductModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -60,8 +63,18 @@ function StoreProductsTable() {
   return (
     <Card className="p-3">
       <CardHeader>
-        <CardTitle>Contact</CardTitle>
-        <CardDescription>Contact information for this store</CardDescription>
+        <div className="flex items-start justify-between gap-2">
+          <div className="grid grid-cols-1 gap-2">
+            <CardTitle>Products</CardTitle>
+            <CardDescription>A list of what you sell</CardDescription>
+          </div>
+          <Button
+            className="flex space-x-2 "
+            onClick={() => setIsAddingProduct(true)}
+          >
+            <PlusIcon className="h-[16px]" /> Add Product
+          </Button>
+        </div>
       </CardHeader>
       <CardContent>
         <Table>
@@ -134,6 +147,18 @@ function StoreProductsTable() {
           </TableBody>
         </Table>
       </CardContent>
+
+      <Dialog open={isAddingProduct} onOpenChange={setIsAddingProduct}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Creating new product</DialogTitle>
+            <DialogDescription>
+              This product will only be available on this store.
+            </DialogDescription>
+          </DialogHeader>
+          <CreateStoreProductForm setClose={() => setIsAddingProduct(false)} />
+        </DialogContent>
+      </Dialog>
       <Dialog
         open={isEditingProductModal}
         onOpenChange={setIsEditingProductModal}

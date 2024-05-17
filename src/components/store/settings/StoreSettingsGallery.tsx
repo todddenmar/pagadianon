@@ -3,7 +3,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
@@ -13,7 +12,6 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog';
 
 import { Button } from '@/components/ui/button';
@@ -26,19 +24,30 @@ import { Skeleton } from '@/components/ui/skeleton';
 import StoreImageRemover from './StoreImageRemover';
 
 function StoreSettingsGallery() {
-  const [currentStoreData, setCurrentStoreData] = useAppStore(
-    useShallow((state) => [state.currentStoreData, state.setCurrentStoreData])
+  const [currentStoreData] = useAppStore(
+    useShallow((state) => [state.currentStoreData])
   );
+  const [isUploading, setIsUploading] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+
   return (
     <div>
       <Card>
         <CardHeader>
-          <div className="grid grid-cols-1 gap-5 md:flex justify-between items-start">
-            <div className="grid grid-cols-1 gap-1">
+          <div className="flex items-start justify-between gap-2">
+            <div className="grid grid-cols-1 gap-2">
               <CardTitle>Gallery</CardTitle>
               <CardDescription>
                 These images will be shown on store information tab
               </CardDescription>
+            </div>
+            <div className="grid grid-cols-1 md:flex gap-2 items-center">
+              <Button onClick={() => setIsUploading(true)}>
+                Upload Images
+              </Button>
+              <Button onClick={() => setIsDeleting(true)}>
+                Archive Images
+              </Button>
             </div>
           </div>
         </CardHeader>
@@ -75,6 +84,34 @@ function StoreSettingsGallery() {
           )}
         </CardContent>
       </Card>
+
+      <Dialog open={isUploading} onOpenChange={setIsUploading}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Image Uploader</DialogTitle>
+            <DialogDescription>
+              Upload all images that this store
+            </DialogDescription>
+          </DialogHeader>
+          <div>
+            <StoreImagesUploader setClose={() => setIsUploading(false)} />
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isDeleting} onOpenChange={setIsDeleting}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Archive Images</DialogTitle>
+            <DialogDescription>
+              These images will not show up on the list
+            </DialogDescription>
+          </DialogHeader>
+          <div>
+            <StoreImageRemover setClose={() => setIsDeleting(false)} />
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

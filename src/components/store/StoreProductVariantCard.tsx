@@ -135,8 +135,8 @@ function StoreProductVariantCard({ variant }: { variant: VariantType }) {
           )}
         </div>
         <div className="mt-2">
-          <div>{productData.name}</div>
-          <p className="text-sm text-neutral-500 line-clamp-1">
+          <div className="line-clamp-1">{productData.name}</div>
+          <p className="text-sm text-neutral-500 line-clamp-1 h-[20px]">
             {variant.description}
           </p>
           <div className="flex space-x-2 items-end justify-start">
@@ -195,8 +195,8 @@ function StoreProductVariantCard({ variant }: { variant: VariantType }) {
                   <Image
                     src={firstImage}
                     alt={variant.name}
-                    width={200}
-                    height={200}
+                    width={300}
+                    height={300}
                     className="object-contain h-full w-full group-hover:scale-105 transition-all"
                   />
                 ) : (
@@ -217,6 +217,7 @@ function StoreProductVariantCard({ variant }: { variant: VariantType }) {
                 </div>
               )}
             </div>
+
             <div className="flex items-center gap-5">
               <ProductQuantitySelector
                 value={quantity}

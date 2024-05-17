@@ -63,6 +63,7 @@ export type VariantType = {
   compareAtPrice?: string;
   createdAt: any;
   updatedAt?: any;
+  isAllowingOrder?: boolean;
   images?: string[];
 };
 
@@ -151,4 +152,11 @@ export type DeliveryServiceType = {
   isPublished?: boolean;
   facebookUsername: string;
   messengerUsername: string;
+};
+
+export type DashCardItemType = {
+  label: string;
+  icon: any;
+  value: string;
+  description: string;
 };

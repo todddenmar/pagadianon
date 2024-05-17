@@ -42,12 +42,12 @@ function StoresCarousel({
             })}
           </CarouselContent>
           <div className="absolute -top-[70px] right-0 h-[50px] w-[70px] 2xl:hidden">
-            <CarouselPrevious className="absolute left-0" />
-            <CarouselNext className="absolute right-0" />
+            <CarouselPrevious className="absolute left-0 bg-highlight text-neutral-950" />
+            <CarouselNext className="absolute right-0 bg-highlight text-neutral-950" />
           </div>
           <div className="hidden 2xl:block">
-            <CarouselPrevious />
-            <CarouselNext />
+            <CarouselPrevious className="bg-highlight text-neutral-950" />
+            <CarouselNext className="bg-highlight text-neutral-950" />
           </div>
         </Carousel>
       </ContainerLayout>

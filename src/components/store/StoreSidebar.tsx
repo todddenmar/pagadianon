@@ -140,39 +140,6 @@ function StoreSidebar({
           </ul>
         </div>
       </div>
-      {isAdmin && (
-        <div className="py-5">
-          <StoreSidebarTitle text="Admin" />
-          <ul>
-            <li>
-              <Link
-                href={`/store/${params.slug}/orders`}
-                className={cn(
-                  'px-4 rounded-md items-center py-2 w-full text-left text-sm dark:hover:bg-neutral-900 transition-all  hover:bg-neutral-100 capitalize flex space-x-2'
-                )}
-              >
-                <span>
-                  <ClipboardListIcon className="h-[16px] w-[16px]" />
-                </span>
-                <span>Store Orders</span>
-              </Link>
-            </li>
-            <li>
-              <Link
-                href={`/store/${params.slug}/settings`}
-                className={cn(
-                  'px-4 rounded-md items-center py-2 w-full text-left text-sm dark:hover:bg-neutral-900 transition-all  hover:bg-neutral-100 capitalize flex space-x-2'
-                )}
-              >
-                <span>
-                  <SettingsIcon className="h-[16px] w-[16px]" />
-                </span>
-                <span>Settings</span>
-              </Link>
-            </li>
-          </ul>
-        </div>
-      )}
     </div>
   );
 }
