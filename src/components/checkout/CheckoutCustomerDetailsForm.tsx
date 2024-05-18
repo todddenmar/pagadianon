@@ -45,6 +45,7 @@ import {
   getDirectionByCoordinates,
   getStoreIDsByCart,
   getStoresByCart,
+  sendEmail,
 } from '@/helpers/appHelpers';
 import CustomerCheckoutCart from './CustomerCheckoutCart';
 import { ScrollArea } from '../ui/scroll-area';
@@ -276,7 +277,17 @@ function CheckoutCustomerDetailsForm() {
     });
     const year = moment(dateTime).format('YYYY');
     const month = moment(dateTime).format('MM');
-    router.push(`/order/${id}?year=${year}&month=${month}`);
+    const orderPath = `/order/${id}?year=${year}&month=${month}`;
+    // try {
+    //   const emailResult = await sendEmail({
+    //     email: email,
+    //     orderLink: `https://pagadianon.vercel.app${orderPath}`,
+    //   });
+    //   console.log({ emailResult });
+    // } catch (error) {
+    //   console.log({ error });
+    // }
+    router.push(orderPath);
     setCurrentUserCart([]);
     setLocalStorageItem('cart', []);
     setIsDrawerCartOpen(false);

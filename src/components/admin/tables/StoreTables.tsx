@@ -86,7 +86,7 @@ function StoresTable() {
   };
 
   const onUpdatePublish = async (store: StoreType, isPublished: boolean) => {
-    const updatedSettingsStores = currentSettings?.stores.map(
+    const updatedSettingsStores = currentSettings?.stores?.map(
       (item: StoreType) =>
         item.id === store.id ? { ...item, isPublished: isPublished } : item
     );

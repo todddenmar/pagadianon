@@ -24,9 +24,10 @@ function HomePageSlices() {
       </div>
     );
 
-  const publishedStores = currentSettings?.stores.filter(
+  const publishedStores = currentSettings?.stores?.filter(
     (item: StoreType) => item.isPublished
   );
+  if (!publishedStores) return null;
   return (
     <div>
       <div className="py-5">

@@ -47,7 +47,7 @@ function UpdateStoreForm({
       state.setCurrentSettings,
     ]
   );
-  const settingsStoreData = currentSettings?.stores.find(
+  const settingsStoreData = currentSettings?.stores?.find(
     (item: StoreType) => item.id === store.id
   );
   const formSchema = z.object({
@@ -116,7 +116,7 @@ function UpdateStoreForm({
     const res = await dbUpdateStore(newData);
     if (res.status === 'success') {
       updateStore(newData);
-      const updatedStores = currentSettings?.stores.map((item: StoreType) =>
+      const updatedStores = currentSettings?.stores?.map((item: StoreType) =>
         item.id === newData.id ? newData : item
       );
       const updatedSettings = {

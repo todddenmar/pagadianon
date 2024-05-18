@@ -1,6 +1,4 @@
-import DashboardCards from '@/components/admin/dashboard/DashboardCards';
-import DashboardChart from '@/components/admin/dashboard/DashboardChart';
-import DashboardRecentList from '@/components/admin/dashboard/DashboardRecentList';
+import DashboardSection from '@/components/admin/dashboard/DashboardSection';
 import NoDataSection from '@/components/error/NoDataSection';
 import { auth } from '@clerk/nextjs/server';
 import React from 'react';
@@ -16,15 +14,7 @@ function AdminPage() {
 
   return (
     <div>
-      <section className="mt-2 md:mt-5 flex flex-col">
-        {/* <DashboardCards /> */}
-        <div className="mt-2 md:mt-5">
-          <div className="grid grid-cols-1 lg:flex gap-2 md:gap-5">
-            <DashboardChart />
-            <DashboardRecentList />
-          </div>
-        </div>
-      </section>
+      <DashboardSection />
     </div>
   );
 }

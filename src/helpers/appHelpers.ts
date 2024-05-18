@@ -346,3 +346,36 @@ export const getMonthlyChartDataByOrders = ({
   // }));
   return chartData;
 };
+
+
+
+export const sendEmail = async ({
+  email,
+  orderLink,
+}: {
+  email: string;
+  orderLink: string;
+}) => {
+  const url = '/api/order/email_customer';
+
+  let data = {
+    email,
+    orderLink,
+  };
+
+  const response = await fetch(url, {
+    method: 'POST',
+    body: JSON.stringify(data),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  const results = await response.json();
+  return results;
+};
+

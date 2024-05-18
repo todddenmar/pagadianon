@@ -53,25 +53,25 @@ function StoreDashboardSection() {
   const dashboardCards = [
     {
       label: 'Total Products',
-      icon: <BoxesIcon className="h-4" />,
+      icon: <BoxesIcon />,
       value: `${totalProducts}`,
       description: 'Products added',
     },
     {
       label: 'Monthly Orders',
-      icon: <CalendarIcon className="h-4" />,
+      icon: <CalendarIcon />,
       value: `${totalOrdersThisMonth}`,
       description: 'Orders this month',
     },
     {
       label: 'Daily Orders',
-      icon: <CalendarDaysIcon className="h-4" />,
+      icon: <CalendarDaysIcon />,
       value: `${totalOrdersToday}`,
       description: 'Orders this day',
     },
     {
       label: 'Total Customers',
-      icon: <UsersIcon className="h-4" />,
+      icon: <UsersIcon />,
       value: `${totalCustomers}`,
       description: "Unique for this month's orders",
     },

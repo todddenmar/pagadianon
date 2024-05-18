@@ -54,7 +54,7 @@ function StoreSidebar({
       uniqueStoreCategories.push(categoryItem);
     }
   });
-  const isAdmin = currentUserData?.stores.includes(storeData.id);
+  const isAdmin = currentUserData?.stores?.includes(storeData.id);
   const facebookUsername = currentStoreData?.settings?.facebookUsername;
   const instagramUsername = currentStoreData?.settings?.instagramUsername;
   const address = currentStoreData?.settings?.address || 'Pagadian City';

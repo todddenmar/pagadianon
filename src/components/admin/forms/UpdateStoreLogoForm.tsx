@@ -60,7 +60,7 @@ function UpdateStoreLogoForm({
     setImages(res.data || []);
   };
 
-  const settingStore = currentSettings?.stores.find(
+  const settingStore = currentSettings?.stores?.find(
     (item: StoreType) => item.id === store.id
   );
   const [imageSelected, setImageSelected] = useState<string | null>(
