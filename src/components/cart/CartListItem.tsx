@@ -55,8 +55,8 @@ function CartListItem({
   };
   const qty = cartItem.quantity;
   return (
-    <div className="flex justify-between items-center  px-2 pl-1 py-1 rounded-2xl bg-neutral-50 dark:bg-neutral-900">
-      <div className="relative h-[60px] aspect-square rounded-2xl overflow-hidden">
+    <div className="flex justify-between items-center  px-2  py-1 rounded-2xl bg-neutral-50 dark:bg-neutral-900">
+      <div className="relative h-[60px] bg-neutral-950 aspect-square rounded-2xl overflow-hidden flex flex-col items-center justify-center">
         {cartItem.imageURL ? (
           <Image
             src={cartItem.imageURL}
@@ -70,9 +70,7 @@ function CartListItem({
         )}
       </div>
       <div className="p-1 md:p-3 flex-1">
-        <div className="font-semibold text-sm md:text-base">
-          {cartItem.name}
-        </div>
+        <div className="font-semibold text-sm ">{cartItem.name}</div>
         {isAllowingUpdate && (
           <div className="flex items-center gap-2 mt-2 text-sm">
             <div className="flex items-center gap-2 p-1  rounded-full dark:bg-neutral-900 bg-neutral-100">

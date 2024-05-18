@@ -56,7 +56,6 @@ function StoreProductVariantCard({ variant }: { variant: VariantType }) {
   const categoryIcon = kStoreProductCategories.find(
     (item) => item.value === productData.category
   )?.icon;
-  console.log({ variant });
   const onAddToCart = ({ isMobile }: { isMobile: boolean }) => {
     const newData = {
       variantID: variant.id,
@@ -189,7 +188,7 @@ function StoreProductVariantCard({ variant }: { variant: VariantType }) {
                 <CarouselNext className="mr-8 md:mr-0" />
               </Carousel>
             ) : (
-              <div className="mx-auto max-w-[300px] aspect-square flex flex-col relative items-center justify-center bg-neutral-900 rounded-md overflow-hidden">
+              <div className="mx-auto w-full max-w-[300px] sm:w-[300px] aspect-square flex flex-col relative items-center justify-center bg-neutral-900 rounded-md overflow-hidden">
                 {firstImage ? (
                   <Image
                     src={firstImage}

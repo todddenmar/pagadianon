@@ -12,6 +12,11 @@ function CustomVariantsSlider({
   value: string;
   onChange: (val: string) => void;
 }) {
+  const uniqueObject: any = {};
+  variants.forEach((item: VariantType) => {
+    uniqueObject[item.name] = { name: item.name };
+  });
+  const uniqueVariants = Object.keys(uniqueObject);
   return (
     <div className="inline-flex flex-wrap gap-2 capitalize">
       <Badge
@@ -21,21 +26,19 @@ function CustomVariantsSlider({
       >
         all
       </Badge>
-      {variants
+      {uniqueVariants
         .sort((a, b) => (a < b ? -1 : 1))
-        ?.map((variant: VariantType, idx: number) => {
-          return variant.name === 'default' ? null : (
+        ?.map((variant: string, idx: number) => {
+          return variant === 'default' ? null : (
             <Badge
               className="cursor-pointer"
-              onClick={() => onChange(variant.name)}
+              onClick={() => onChange(variant)}
               key={`variant-type-tag-${idx}`}
               variant={
-                compareEqualStrings(value, variant.name)
-                  ? 'default'
-                  : 'secondary'
+                compareEqualStrings(value, variant) ? 'default' : 'secondary'
               }
             >
-              {variant.name}
+              {variant}
             </Badge>
           );
         })}

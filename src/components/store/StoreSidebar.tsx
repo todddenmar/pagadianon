@@ -2,7 +2,7 @@
 import { kStoreProductCategories } from '@/constants';
 import { useAppStore } from '@/lib/store';
 import { cn } from '@/lib/utils';
-import { StoreType } from '@/typings';
+import { ProductType, StoreType } from '@/typings';
 import {
   ClipboardListIcon,
   LayoutListIcon,
@@ -19,6 +19,8 @@ import CustomInstagramIcon from '../icons/CustomInstagramIcon';
 import StoreSidebarTitle from './StoreSidebarTitle';
 import StoreSidebarItem from './StoreSidebarItem';
 import StoreSidebarLinkItem from './StoreSidebarLinkItem';
+import { kebabCase } from 'lodash';
+import { compareEqualStrings } from '@/helpers/appHelpers';
 
 function StoreSidebar({
   value,
@@ -45,15 +47,7 @@ function StoreSidebar({
   const storeData = currentSettings.stores.find(
     (item: StoreType) => item.slug === params.slug
   );
-  let uniqueStoreCategories: any[] = [];
-  currentStoreProducts?.forEach((item) => {
-    if (!uniqueStoreCategories.includes(item.category)) {
-      const categoryItem = kStoreProductCategories.find(
-        (catItem) => catItem.value === item.category
-      );
-      uniqueStoreCategories.push(categoryItem);
-    }
-  });
+
   const isAdmin = currentUserData?.stores?.includes(storeData.id);
   const facebookUsername = currentStoreData?.settings?.facebookUsername;
   const instagramUsername = currentStoreData?.settings?.instagramUsername;
@@ -62,6 +56,25 @@ function StoreSidebar({
 
   const latitude = coordinates?.split(',')[0].replaceAll(' ', '');
   const longitude = coordinates?.split(',')[1].replaceAll(' ', '');
+
+  function getTotalItemsByCategory(category: string) {
+    let totalVariants = 0;
+    currentStoreProducts.forEach((product: ProductType) => {
+      if (compareEqualStrings(product.category, category)) {
+        const length = product.variants ? product.variants?.length : 0;
+        totalVariants = totalVariants + length;
+      }
+    });
+    return totalVariants;
+  }
+  function getTotalVariants() {
+    let totalVariants = 0;
+    currentStoreProducts.forEach((product: ProductType) => {
+      const length = product.variants ? product.variants?.length : 0;
+      totalVariants = totalVariants + length;
+    });
+    return totalVariants;
+  }
   return (
     <div className="flex flex-col justify-between h-full">
       <div className="flex flex-col space-y-3">
@@ -70,16 +83,19 @@ function StoreSidebar({
           <ul className="grid grid-cols-1 gap-1">
             <li>
               <StoreSidebarItem
+                totalItems={getTotalVariants()}
                 isActive={value === 'all'}
                 onClick={() => onChange('all')}
                 text={'all'}
                 icon={<LayoutListIcon className="h-[16px] w-[16px]" />}
               />
             </li>
-            {uniqueStoreCategories.map((item, idx) => {
+            {kStoreProductCategories.map((item, idx) => {
+              const totalItems = getTotalItemsByCategory(item.value) || 0;
               return (
                 <li key={`category-item-${idx}`}>
                   <StoreSidebarItem
+                    totalItems={totalItems}
                     isActive={value === item.value}
                     onClick={() => onChange(item.value)}
                     text={item.value}
