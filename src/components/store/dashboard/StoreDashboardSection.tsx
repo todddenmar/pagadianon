@@ -29,6 +29,7 @@ import StoreBanner from '../StoreBanner';
 import { useUser } from '@clerk/nextjs';
 import NoDataSection from '@/components/error/NoDataSection';
 import StoreOrdersTable from '../store-orders/StoreOrdersTable';
+import StoreStocksTable from '../tables/StoreStocksTable';
 
 function StoreDashboardSection() {
   const [currentStoreProducts, currentStoreData, currentStoreOrders] =
@@ -113,6 +114,9 @@ function StoreDashboardSection() {
                 </TabsContent>
                 <TabsContent value="products">
                   <StoreProductsTable />
+                </TabsContent>
+                <TabsContent value="stocks">
+                  <StoreStocksTable />
                 </TabsContent>
                 <TabsContent value="orders">
                   <StoreOrdersTable orders={currentStoreOrders} />

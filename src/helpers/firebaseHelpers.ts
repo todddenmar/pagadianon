@@ -699,3 +699,30 @@ export const dbGetRootSettingsImages = async () => {
     return { status: 'error', error };
   }
 };
+
+
+export const dbUpdateProductVariantStock = async ({
+  storeID,
+  productID,
+  data,
+}: {
+  storeID: string;
+  productID: string;
+  data: VariantType[];
+}) => {
+  const userRef = doc(
+    db,
+    'stores',
+    String(storeID),
+    'products',
+    String(productID)
+  );
+  try {
+    await updateDoc(userRef, {
+      variants: data,
+    });
+    return { status: 'success' };
+  } catch (error) {
+    return { status: 'error', error };
+  }
+};

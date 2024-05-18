@@ -56,9 +56,8 @@ function StoreProductVariantCard({ variant }: { variant: VariantType }) {
   const categoryIcon = kStoreProductCategories.find(
     (item) => item.value === productData.category
   )?.icon;
-
+  console.log({ variant });
   const onAddToCart = ({ isMobile }: { isMobile: boolean }) => {
-   
     const newData = {
       variantID: variant.id,
       imageURL: firstImage,
@@ -218,25 +217,28 @@ function StoreProductVariantCard({ variant }: { variant: VariantType }) {
               )}
             </div>
 
-            <div className="flex items-center gap-5">
-              <ProductQuantitySelector
-                value={quantity}
-                onChange={(val) => setQuantity(val)}
-              />
+            {variant.isAllowingOrder &&
+              (variant.stock.quantity > 0 || variant.isContinueSelling) && (
+                <div className="flex items-center gap-5">
+                  <ProductQuantitySelector
+                    value={quantity}
+                    onChange={(val) => setQuantity(val)}
+                  />
 
-              <Button
-                className="hidden md:block bg-highlight hover:bg-highlight_hover text-neutral-950 transition-colors"
-                onClick={() => onAddToCart({ isMobile: false })}
-              >
-                Add To Cart
-              </Button>
-              <Button
-                className="block md:hidden bg-highlight hover:bg-highlight_hover text-neutral-950 transition-colors"
-                onClick={() => onAddToCart({ isMobile: true })}
-              >
-                Add To Cart
-              </Button>
-            </div>
+                  <Button
+                    className="hidden md:block bg-highlight hover:bg-highlight_hover text-neutral-950 transition-colors"
+                    onClick={() => onAddToCart({ isMobile: false })}
+                  >
+                    Add To Cart
+                  </Button>
+                  <Button
+                    className="block md:hidden bg-highlight hover:bg-highlight_hover text-neutral-950 transition-colors"
+                    onClick={() => onAddToCart({ isMobile: true })}
+                  >
+                    Add To Cart
+                  </Button>
+                </div>
+              )}
           </div>
         </DrawerContent>
       </Drawer>

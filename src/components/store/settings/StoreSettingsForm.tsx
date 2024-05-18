@@ -33,7 +33,8 @@ import CustomImagePicker from '../../CustomComponents/CustomImagePicker';
 const userFormSchema = z.object({
   mobileNumber: z
     .string()
-    .length(10, { message: 'Mobile number must have 10 digits after +63' }),
+    .length(10, { message: 'Mobile number must have 10 digits after +63' })
+    .optional(),
   email: z
     .string()
     .min(2, {

@@ -20,7 +20,11 @@ import { useAppStore } from '@/lib/store';
 import Link from 'next/link';
 import { useAuth } from '@clerk/nextjs';
 import LoadingComponent from './admin/LoadingComponent.';
-import { LoaderIcon } from 'lucide-react';
+import {
+  ExternalLinkIcon,
+  LayoutDashboardIcon,
+  LoaderIcon,
+} from 'lucide-react';
 import { Separator } from './ui/separator';
 import { Button } from './ui/button';
 function AppButtonDropdown() {
@@ -87,7 +91,7 @@ function AppButtonDropdown() {
             <DialogDescription>A list of stores you manage.</DialogDescription>
           </DialogHeader>
 
-          <ScrollArea className="h-[300px] w-full rounded-md px-4">
+          <ScrollArea className="h-[300px] w-full rounded-md ">
             <div className="grid grid-cols-1 gap-2">
               {myStores
                 ?.sort((a: StoreType, b: StoreType) =>
@@ -97,20 +101,36 @@ function AppButtonDropdown() {
                   return (
                     <div
                       key={`stores-${idx}`}
-                      className="grid grid-cols-1 p-3 rounded-md border bg-neutral-900"
+                      className="grid grid-cols-2 p-3 rounded-md border items-center bg-neutral-900"
                     >
-                      <div className="font-semibold text-base">
+                      <div className="font-semibold text-sm flex-1">
                         {store?.name}
                       </div>
-                      <div className="grid grid-cols-2 gap-2 mt-2">
-                        <Button asChild onClick={() => setIsOpenMyApps(false)}>
-                          <Link href={`/store/${store?.slug}`}>Store Page</Link>
-                        </Button>
-                        <Button onClick={() => setIsOpenMyApps(false)}>
-                          <Link href={`/store/${store?.slug}/dashboard`}>
-                            Dashboard
+                      <div className="flex items-center justify-around gap-2 mt-2">
+                        <button
+                          onClick={() => setIsOpenMyApps(false)}
+                          className="border-l px-3"
+                        >
+                          <Link
+                            href={`/store/${store?.slug}`}
+                            className="flex items-center gap-2 text-sm text-highlight"
+                          >
+                            <ExternalLinkIcon className="h-4" />
+                            <span>Page</span>
                           </Link>
-                        </Button>
+                        </button>
+                        <button
+                          onClick={() => setIsOpenMyApps(false)}
+                          className="border-l px-3"
+                        >
+                          <Link
+                            href={`/store/${store?.slug}/dashboard`}
+                            className="flex items-center gap-2 text-sm text-highlight"
+                          >
+                            <LayoutDashboardIcon className="h-4" />
+                            <span>Dashboard</span>
+                          </Link>
+                        </button>
                       </div>
                     </div>
                   );

@@ -57,14 +57,24 @@ export type VariantType = {
   name: string;
   description?: string;
   productID: string;
-  isAlwaysAvailable: true;
-  stocks: number;
   price: string;
   compareAtPrice?: string;
   createdAt: any;
   updatedAt?: any;
+  stock?: any;
   isAllowingOrder?: boolean;
+  isContinueSelling?: boolean;
   images?: string[];
+};
+
+export type VariantStockItemType = {
+  productID: string;
+  variantID: string;
+  productName: string;
+  variantName: string;
+  isAllowingOrder: boolean;
+  isContinueSelling: boolean;
+  stock?: any;
 };
 
 export type ProductType = {

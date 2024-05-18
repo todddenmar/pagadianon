@@ -9,8 +9,6 @@ import {
   NotebookIcon,
   ShoppingBagIcon,
 } from 'lucide-react';
-import Link from 'next/link';
-import { useParams } from 'next/navigation';
 import React from 'react';
 
 function StoreSettingSidebar({
@@ -34,6 +32,13 @@ function StoreSettingSidebar({
       isActive: value === 'products',
       onClick: () => onValueChange('products'),
       icon: <BoxesIcon className="h-[16px]" />,
+    },
+    {
+      value: 'stocks',
+      text: 'stocks',
+      isActive: value === 'stocks',
+      onClick: () => onValueChange('stocks'),
+      icon: <ClipboardListIcon className="h-[16px]" />,
     },
     {
       value: 'orders',

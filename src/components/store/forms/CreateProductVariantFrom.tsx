@@ -138,6 +138,11 @@ function CreateProductVariantForm({
       ...values,
       productID: product.id,
       images: selectedImages,
+      isAllowingOrder: false,
+      stock: {
+        quantity: 0,
+        updatedAt: dateTime,
+      },
       createdAt: dateTime,
     };
 
@@ -147,8 +152,13 @@ function CreateProductVariantForm({
           ? {
               ...toEditVariant,
               ...values,
-              updatedAt: dateTime,
+              isAllowingOrder: false,
               images: selectedImages,
+              stock: {
+                quantity: 0,
+                updatedAt: dateTime,
+              },
+              updatedAt: dateTime,
             }
           : item
       );
