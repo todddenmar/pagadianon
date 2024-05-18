@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { z } from 'zod';
 
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -39,16 +39,13 @@ import {
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { LoaderCircleIcon, NavigationIcon } from 'lucide-react';
-import { CustomerType, DeliveryServiceType, OrderType } from '@/typings';
+import { DeliveryServiceType } from '@/typings';
 import {
   convertStringCoordinatesToObject,
   getDirectionByCoordinates,
   getStoreIDsByCart,
-  getStoresByCart,
-  sendEmail,
 } from '@/helpers/appHelpers';
 import CustomerCheckoutCart from './CustomerCheckoutCart';
-import { ScrollArea } from '../ui/scroll-area';
 import Image from 'next/image';
 import { setLocalStorageItem } from '@/helpers/localStorageHelpers';
 import { useUser } from '@clerk/nextjs';
@@ -278,15 +275,6 @@ function CheckoutCustomerDetailsForm() {
     const year = moment(dateTime).format('YYYY');
     const month = moment(dateTime).format('MM');
     const orderPath = `/order/${id}?year=${year}&month=${month}`;
-    // try {
-    //   const emailResult = await sendEmail({
-    //     email: email,
-    //     orderLink: `https://pagadianon.vercel.app${orderPath}`,
-    //   });
-    //   console.log({ emailResult });
-    // } catch (error) {
-    //   console.log({ error });
-    // }
     router.push(orderPath);
     setCurrentUserCart([]);
     setLocalStorageItem('cart', []);

@@ -38,9 +38,6 @@ interface AppState {
   currentStoreOrders: any[];
   setCurrentStoreOrders: (currentStoreOrders: any[]) => void;
 
-  currentStoreSanityImages: any[];
-  setCurrentStoreSanityImages: (currentStoreSanityImages: any[]) => void;
-
   currentStores: any[];
   setCurrentStores: (currentStores: any[]) => void;
   addStore: (data: any) => void;
@@ -97,10 +94,6 @@ export const useAppStore = create<AppState>((set) => ({
   currentStoreOrders: [],
   setCurrentStoreOrders: (data: any[]) =>
     set(() => ({ currentStoreOrders: data })),
-
-  currentStoreSanityImages: [],
-  setCurrentStoreSanityImages: (data: any[]) =>
-    set(() => ({ currentStoreSanityImages: data })),
 
   currentStores: [],
   setCurrentStores: (data: any[]) => set(() => ({ currentStores: data })),

@@ -1,20 +1,15 @@
-import { AdminStoreContext } from '@/components/providers/AdminStoreContextProvider';
 import { Button } from '@/components/ui/button';
 import {
   dbGetRootSettingsImages,
   dbUpdateSettings,
 } from '@/helpers/firebaseHelpers';
-import { urlFor } from '@/lib/client';
 import { useAppStore } from '@/lib/store';
-import { cn } from '@/lib/utils';
 import { StoreType } from '@/typings';
 import { LoaderCircleIcon } from 'lucide-react';
-import Image from 'next/image';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import UploadAdminImageFiles from './UploadAdminImageFiles';
 import { collection, onSnapshot } from 'firebase/firestore';
 import { db } from '@/firebase';
-import { Skeleton } from '@/components/ui/skeleton';
 import CustomImageSelectionItem from '@/components/CustomComponents/CustomImageSelectionItem';
 
 function UpdateStoreLogoForm({

@@ -1,4 +1,3 @@
-import { urlFor } from '@/lib/client';
 import {
   CartItemType,
   CustomerType,
@@ -56,24 +55,6 @@ export const checkSlugExistsOnOtherList = ({
   } else {
     return false;
   }
-};
-
-export const getImageURLsFromSanityStoreBySlug = ({
-  sanityStores,
-  slug,
-}: {
-  sanityStores: any;
-  slug: string;
-}) => {
-  const sanityStore = sanityStores.data.find(
-    (item: any) => item.slug.current === slug
-  );
-  let images: string[] | null = [];
-  sanityStore?.images?.forEach((item: any) => {
-    const src = urlFor(item).url();
-    images.push(src);
-  });
-  return images;
 };
 
 export const getAllUniqueTagsFromItems = (
@@ -346,36 +327,3 @@ export const getMonthlyChartDataByOrders = ({
   // }));
   return chartData;
 };
-
-
-
-export const sendEmail = async ({
-  email,
-  orderLink,
-}: {
-  email: string;
-  orderLink: string;
-}) => {
-  const url = '/api/order/email_customer';
-
-  let data = {
-    email,
-    orderLink,
-  };
-
-  const response = await fetch(url, {
-    method: 'POST',
-    body: JSON.stringify(data),
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
-  }
-
-  const results = await response.json();
-  return results;
-};
-

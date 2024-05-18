@@ -20,7 +20,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { CheckIcon, LoaderIcon, MoreHorizontalIcon, XIcon } from 'lucide-react';
+import { CheckIcon, MoreHorizontalIcon, XIcon } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -32,13 +32,8 @@ import { StoreType } from '@/typings';
 import UpdateStoreForm from '../forms/UpdateStoreForm';
 import { Badge } from '@/components/ui/badge';
 import UpdateStoreLogoForm from '../forms/UpdateStoreLogoForm';
-import { AdminStoreContext } from '@/components/providers/AdminStoreContextProvider';
-import { getImageURLsFromSanityStoreBySlug } from '@/helpers/appHelpers';
-import {
-  dbUpdateProductImages,
-} from '@/helpers/firebaseHelpers';
+
 import { toast } from 'sonner';
-import moment from 'moment';
 import { cn } from '@/lib/utils';
 import LoadingComponent from '../LoadingComponent.';
 import Link from 'next/link';
@@ -55,8 +50,6 @@ function StoresTable() {
   const [selectedStore, setSelectedStore] = useState<StoreType | null>(null);
   const [isEditingStore, setIsEditingStore] = useState(false);
   const [isEditingStoreLogo, setIsEditingStoreLogo] = useState(false);
-  const sanityStores = useContext(AdminStoreContext);
-  const [isSynching, setIsSynching] = useState(false);
 
   if (!currentSettings) return <LoadingComponent />;
   if (!currentStores) return <LoadingComponent />;
@@ -67,22 +60,6 @@ function StoresTable() {
   const onEditStoreLogo = (data: StoreType) => {
     setSelectedStore(data);
     setIsEditingStoreLogo(true);
-  };
-  const checkIfImagesSynced = (store: StoreType) => {
-    const images = getImageURLsFromSanityStoreBySlug({
-      sanityStores: sanityStores,
-      slug: store.slug,
-    });
-    let isNotEqual = true;
-    const selectedStoreData = currentStores.find(
-      (item) => item.id === store.id
-    );
-    images.forEach((item) => {
-      if (!selectedStoreData?.images?.includes(item)) {
-        isNotEqual = false;
-      }
-    });
-    return isNotEqual;
   };
 
   const onUpdatePublish = async (store: StoreType, isPublished: boolean) => {
