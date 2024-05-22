@@ -69,7 +69,7 @@ function CartListItem({
           <ImageIcon />
         )}
       </div>
-      <div className="p-1 md:p-3 flex-1">
+      <div className="p-1 md:px-3 flex-1">
         <div className="font-semibold text-sm ">{cartItem.name}</div>
         {isAllowingUpdate && (
           <div className="flex items-center gap-2 mt-2 text-sm">

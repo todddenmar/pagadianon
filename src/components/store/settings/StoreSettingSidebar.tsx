@@ -1,6 +1,8 @@
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
+import { useAuth } from '@clerk/nextjs';
 import {
+  BookImageIcon,
   BoxesIcon,
   CalendarCheckIcon,
   ClipboardListIcon,
@@ -18,6 +20,14 @@ function StoreSettingSidebar({
   value: string;
   onValueChange: (val: string) => void;
 }) {
+  const { userId, orgId, has } = useAuth();
+  if (!userId) {
+    return null;
+  }
+  let isAdmin = false;
+  if (orgId && has({ permission: 'org:admin:access' })) {
+    isAdmin = true;
+  }
   const sidebarItems = [
     {
       value: 'dashboard',
@@ -59,7 +69,7 @@ function StoreSettingSidebar({
       text: 'gallery',
       isActive: value === 'gallery',
       onClick: () => onValueChange('gallery'),
-      icon: <ImagesIcon className="h-[16px]" />,
+      icon: <BookImageIcon className="h-[16px]" />,
     },
     {
       value: 'hours',
@@ -85,6 +95,16 @@ function StoreSettingSidebar({
             />
           );
         })}
+
+        {isAdmin && (
+          <SettingSidebarItem
+            value={'images'}
+            text={'Images'}
+            isActive={value === 'images'}
+            onClick={() => onValueChange('images')}
+            icon={<ImagesIcon className="h-[16px]" />}
+          />
+        )}
       </ul>
       <ScrollArea className="w-full py-4 md:hidden">
         <ul className="flex  flex-nowrap">
@@ -100,6 +120,16 @@ function StoreSettingSidebar({
               />
             );
           })}
+
+          {isAdmin && (
+            <SettingSidebarItem
+              value={'images'}
+              text={'Images'}
+              isActive={value === 'images'}
+              onClick={() => onValueChange('images')}
+              icon={<ImagesIcon className="h-[16px]" />}
+            />
+          )}
         </ul>
         <ScrollBar orientation="horizontal" />
       </ScrollArea>

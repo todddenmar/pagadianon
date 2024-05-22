@@ -20,7 +20,7 @@ import { collection, query, where, onSnapshot } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
 import CustomImageSelectionItem from '@/components/CustomComponents/CustomImageSelectionItem';
 
-function StoreImagesUploader({ setClose }: { setClose: () => void }) {
+function StoreGallerySelector({ setClose }: { setClose: () => void }) {
   const [isLoading, setIsLoading] = useState(false);
   const [currentStoreData, setCurrentStoreData] = useAppStore(
     useShallow((state) => [state.currentStoreData, state.setCurrentStoreData])
@@ -31,19 +31,6 @@ function StoreImagesUploader({ setClose }: { setClose: () => void }) {
     getStoreImages();
     setSelectedImages(currentStoreData?.galleryImages);
   }, [currentStoreData]);
-
-  useEffect(() => {
-    const unsubscribe = onSnapshot(
-      collection(db, 'stores', String(currentStoreData?.id), 'images'),
-      (snap) => {
-        const images = snap.docs.map((item) => item.data());
-        setStoreImages(images);
-      }
-    );
-
-    return () => unsubscribe();
-  }, []);
-  if (!currentStoreData) return <LoadingComponent />;
 
   const getStoreImages = async () => {
     const res = await dbGetStoreImages({ storeID: currentStoreData.id });
@@ -73,9 +60,6 @@ function StoreImagesUploader({ setClose }: { setClose: () => void }) {
 
   return (
     <div className="grid grid-cols-1 gap-5 p-2">
-      <div>
-        <CustomDropzone storeID={currentStoreData?.id} />
-      </div>
       <ScrollArea className="h-[300px] w-full rounded-md border p-4 overflow-auto ">
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4  gap-2 w-fit">
           {storeImages
@@ -123,4 +107,4 @@ function StoreImagesUploader({ setClose }: { setClose: () => void }) {
   );
 }
 
-export default StoreImagesUploader;
+export default StoreGallerySelector;
