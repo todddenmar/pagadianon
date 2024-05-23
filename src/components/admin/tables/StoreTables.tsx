@@ -37,6 +37,7 @@ import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import LoadingComponent from '../LoadingComponent.';
 import Link from 'next/link';
+import UpdateStoreHoursForm from '../forms/UpdateStoreHoursForm';
 
 function StoresTable() {
   const [currentStores, currentSettings, setCurrentSettings, setCurrentStores] =
@@ -50,9 +51,12 @@ function StoresTable() {
   const [selectedStore, setSelectedStore] = useState<StoreType | null>(null);
   const [isEditingStore, setIsEditingStore] = useState(false);
   const [isEditingStoreLogo, setIsEditingStoreLogo] = useState(false);
+  const [isEditingHours, setIsEditingHours] = useState(false);
 
   if (!currentSettings) return <LoadingComponent />;
   if (!currentStores) return <LoadingComponent />;
+
+  console.log({ currentSettings });
   const onEditStore = (data: StoreType) => {
     setSelectedStore(data);
     setIsEditingStore(true);
@@ -60,6 +64,29 @@ function StoresTable() {
   const onEditStoreLogo = (data: StoreType) => {
     setSelectedStore(data);
     setIsEditingStoreLogo(true);
+  };
+
+  const onEditHours = (data: StoreType) => {
+    setSelectedStore(data);
+    setIsEditingHours(true);
+  };
+
+  const onSaveStoreHours = (data: any) => {
+    if (!selectedStore) return;
+    const updatedStore = {
+      ...selectedStore,
+      schedules: data,
+    };
+    const updatedStores = currentSettings?.stores.map((item: StoreType) =>
+      item.id === selectedStore.id ? updatedStore : item
+    );
+    const updatedSettings = {
+      ...currentSettings,
+      stores: updatedStores,
+      isPublished: false,
+    };
+    setCurrentSettings(updatedSettings);
+    setIsEditingHours(false);
   };
 
   const onUpdatePublish = async (store: StoreType, isPublished: boolean) => {
@@ -144,6 +171,9 @@ function StoresTable() {
                       <DropdownMenuItem onClick={() => onEditStoreLogo(item)}>
                         Select Logo
                       </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => onEditHours(item)}>
+                        Business Hours
+                      </DropdownMenuItem>
                       {item.isPublished ? (
                         <DropdownMenuItem
                           onClick={() => onUpdatePublish(item, false)}
@@ -170,7 +200,7 @@ function StoresTable() {
           <DialogContent>
             <DialogHeader>
               <DialogTitle>Edit Store: {`${selectedStore.name}`}</DialogTitle>
-              <DialogDescription>Please fill in the blank.</DialogDescription>
+              <DialogDescription>Please fill in the blanks.</DialogDescription>
             </DialogHeader>
             <UpdateStoreForm
               store={selectedStore}
@@ -184,11 +214,28 @@ function StoresTable() {
           <DialogContent>
             <DialogHeader>
               <DialogTitle>Edit Store: {`${selectedStore.name}`}</DialogTitle>
-              <DialogDescription>Please fill in the blank.</DialogDescription>
+              <DialogDescription>Please fill in the blanks.</DialogDescription>
             </DialogHeader>
             <UpdateStoreLogoForm
               store={selectedStore}
               setClose={() => setIsEditingStoreLogo(false)}
+            />
+          </DialogContent>
+        )}
+      </Dialog>
+
+      <Dialog open={isEditingHours} onOpenChange={setIsEditingHours}>
+        {selectedStore && (
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>
+                Edit Store Hours: {`${selectedStore.name}`}
+              </DialogTitle>
+              <DialogDescription>Please fill in the blanks.</DialogDescription>
+            </DialogHeader>
+            <UpdateStoreHoursForm
+              store={selectedStore}
+              onChange={(val: any) => onSaveStoreHours(val)}
             />
           </DialogContent>
         )}

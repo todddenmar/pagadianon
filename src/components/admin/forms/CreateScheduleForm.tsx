@@ -4,15 +4,16 @@ import { Button } from '@/components/ui/button';
 import { kDaysArrayData } from '@/constants';
 import { useAppStore } from '@/lib/store';
 import { cn } from '@/lib/utils';
-import { DaysSchedType } from '@/typings';
+import { DaysSchedType, StoreType } from '@/typings';
 import React, { useState } from 'react';
 
-function CreateScheduleForm({ setClose }: { setClose: () => void }) {
-  const [currentStoreData, setCurrentStoreData] = useAppStore((state) => [
-    state.currentStoreData,
-    state.setCurrentStoreData,
-  ]);
-
+function CreateScheduleForm({
+  onChange,
+  setClose,
+}: {
+  onChange: (val: any) => void;
+  setClose: () => void;
+}) {
   const [opensAt, setOpensAt] = useState<Date | null>(null);
   const [closesAt, setClosesAt] = useState<Date | null>(null);
   const [days, setDays] = useState<DaysSchedType>({
@@ -39,12 +40,7 @@ function CreateScheduleForm({ setClose }: { setClose: () => void }) {
       daySchedules[item] = days[item] ? { opensAt, closesAt } : null;
     });
 
-    const updatedStoreData = {
-      ...currentStoreData,
-      schedules: daySchedules,
-      isPublished: false,
-    };
-    setCurrentStoreData(updatedStoreData);
+    onChange(daySchedules);
     setClose();
   };
   return (

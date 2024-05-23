@@ -6,11 +6,9 @@ import {
   BoxesIcon,
   CalendarDaysIcon,
   CalendarIcon,
-  ShoppingCartIcon,
   UsersIcon,
 } from 'lucide-react';
-import React, { useContext, useEffect, useState } from 'react';
-import { AppWindowIcon, DollarSignIcon, StoreIcon } from 'lucide-react';
+import React, { useState } from 'react';
 import {
   getMonthlyChartDataByOrders,
   getOrdersToday,
@@ -19,10 +17,9 @@ import {
 import StoreDashboardChart from './StoreDashboardChart';
 import StoreDashboardRecentOrders from './StoreDashboardRecentOrders';
 import StoreSettingSidebar from '../settings/StoreSettingSidebar';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsContent } from '@/components/ui/tabs';
 import StoreSettingsForm from '../settings/StoreSettingsForm';
 import StoreSettingsGallery from '../settings/StoreSettingsGallery';
-import StoreBusinessHoursListCard from '../StoreBusinessHoursListCard';
 import StoreProductsTable from '../StoreProductsTable';
 import { useAppStore } from '@/lib/store';
 import StoreBanner from '../StoreBanner';
@@ -127,9 +124,6 @@ function StoreDashboardSection() {
                 </TabsContent>
                 <TabsContent value="gallery">
                   <StoreSettingsGallery />
-                </TabsContent>
-                <TabsContent value="hours">
-                  <StoreBusinessHoursListCard />
                 </TabsContent>
                 <TabsContent value="images">
                   <StoreSettingImages />

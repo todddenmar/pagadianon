@@ -71,13 +71,6 @@ function StoreSettingSidebar({
       onClick: () => onValueChange('gallery'),
       icon: <BookImageIcon className="h-[16px]" />,
     },
-    {
-      value: 'hours',
-      text: 'business hours',
-      isActive: value === 'hours',
-      onClick: () => onValueChange('hours'),
-      icon: <CalendarCheckIcon className="h-[16px]" />,
-    },
   ];
 
   return (

@@ -1,5 +1,5 @@
 import { useAppStore } from '@/lib/store';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Card,
   CardContent,
@@ -19,49 +19,34 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { kDaysArrayData } from '@/constants';
-import CreateScheduleForm from '../admin/forms/CreateScheduleForm';
-import { useShallow } from 'zustand/react/shallow';
-import CustomDayTimePicker from '../CustomComponents/CustomDayTimePicker';
-import { dbUpdateStoreSchedules } from '@/helpers/firebaseHelpers';
-import { toast } from 'sonner';
-import moment from 'moment';
+import CreateScheduleForm from './CreateScheduleForm';
+import CustomDayTimePicker from '@/components/CustomComponents/CustomDayTimePicker';
+import { StoreType } from '@/typings';
 
-function StoreBusinessHoursListCard() {
-  const [currentStoreData, setCurrentStoreData] = useAppStore(
-    useShallow((state) => [state.currentStoreData, state.setCurrentStoreData])
-  );
-  const schedules = currentStoreData?.schedules;
+function UpdateStoreHoursForm({
+  store,
+  onChange,
+}: {
+  store: StoreType;
+  onChange: (val: any) => void;
+}) {
   const [isAdding, setIsAdding] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [daySelected, setDaySelected] = useState<any | null>(null);
   const [dayTime, setDayTime] = useState<any | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [schedules, setSchedules] = useState<any>(null);
+
+  useEffect(() => {
+    setSchedules(store?.schedules);
+  }, [store]);
+
   const onUpdate = () => {
+    if (!schedules) return;
     const updatedSchedule = { ...schedules, [daySelected]: dayTime };
-    setCurrentStoreData({
-      ...currentStoreData,
-      schedules: updatedSchedule,
-      isPublished: false,
-    });
+    setSchedules(updatedSchedule);
     setDayTime(null);
     setDaySelected(null);
     setIsEditing(false);
-  };
-
-  const onSave = async () => {
-    setIsLoading(true);
-    const res = await dbUpdateStoreSchedules({
-      id: currentStoreData.id,
-      data: currentStoreData.schedules,
-    });
-    if (res.status === 'error') {
-      console.log(res.error);
-      return;
-    }
-    toast.success('Business hours updated successfully', {
-      description: moment(new Date()).format('LLL'),
-    });
-    setIsLoading(false);
   };
 
   return (
@@ -88,7 +73,10 @@ function StoreBusinessHoursListCard() {
                     A type of schedule to assign on the days of the week.
                   </DialogDescription>
                 </DialogHeader>
-                <CreateScheduleForm setClose={() => setIsAdding(false)} />
+                <CreateScheduleForm
+                  onChange={(val) => setSchedules(val)}
+                  setClose={() => setIsAdding(false)}
+                />
               </DialogContent>
             </Dialog>
           </div>
@@ -151,21 +139,15 @@ function StoreBusinessHoursListCard() {
               })}
             </div>
           )}
-          {isLoading ? (
-            <div className="w-full h-[50px] flex flex-col items-center justify-center pt-5">
-              <span>
-                <LoaderCircleIcon className="animate-spin" />
-              </span>
-            </div>
-          ) : (
-            <div className="mt-5">
-              <Button onClick={onSave}>Save Business Hours</Button>
-            </div>
-          )}
+          <div className="mt-5">
+            <Button onClick={() => onChange(schedules)}>
+              Save Business Hours
+            </Button>
+          </div>
         </CardContent>
       </Card>
       <Dialog open={isEditing} onOpenChange={setIsEditing}>
-        <DialogContent className="max-w-fit">
+        <DialogContent className="max-w-sm">
           <DialogHeader>
             <DialogTitle>Edit Time</DialogTitle>
             <DialogDescription>
@@ -180,4 +162,4 @@ function StoreBusinessHoursListCard() {
   );
 }
 
-export default StoreBusinessHoursListCard;
+export default UpdateStoreHoursForm;
