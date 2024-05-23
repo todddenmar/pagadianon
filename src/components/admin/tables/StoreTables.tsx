@@ -52,11 +52,11 @@ function StoresTable() {
   const [isEditingStore, setIsEditingStore] = useState(false);
   const [isEditingStoreLogo, setIsEditingStoreLogo] = useState(false);
   const [isEditingHours, setIsEditingHours] = useState(false);
+  const [isEditingMapEmbed, setIsEditingMapEmbed] = useState(false);
 
   if (!currentSettings) return <LoadingComponent />;
   if (!currentStores) return <LoadingComponent />;
 
-  console.log({ currentSettings });
   const onEditStore = (data: StoreType) => {
     setSelectedStore(data);
     setIsEditingStore(true);
@@ -69,6 +69,11 @@ function StoresTable() {
   const onEditHours = (data: StoreType) => {
     setSelectedStore(data);
     setIsEditingHours(true);
+  };
+
+  const onEditMapEmbed = (data: StoreType) => {
+    setSelectedStore(data);
+    setIsEditingMapEmbed(true);
   };
 
   const onSaveStoreHours = (data: any) => {
@@ -173,6 +178,9 @@ function StoresTable() {
                       </DropdownMenuItem>
                       <DropdownMenuItem onClick={() => onEditHours(item)}>
                         Business Hours
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => onEditMapEmbed(item)}>
+                        Map Embed
                       </DropdownMenuItem>
                       {item.isPublished ? (
                         <DropdownMenuItem

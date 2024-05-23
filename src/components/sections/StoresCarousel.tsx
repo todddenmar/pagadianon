@@ -34,7 +34,7 @@ function StoresCarousel({
               return (
                 <CarouselItem
                   key={`store-carousel-item-${idx}`}
-                  className="md:basis-1/2 xl:basis-1/3"
+                  className="md:basis-1/2 xl:basis-1/3 cursor-grab"
                 >
                   <StoreCard store={item} />
                 </CarouselItem>

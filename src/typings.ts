@@ -16,6 +16,9 @@ export type StoreType = {
   slug: string;
   name: string;
   description?: string | null;
+  branchName: string;
+  address: string;
+  mapEmbedAddress?: string | null;
   saasTypeSlug: string;
   createdAt: any;
   updatedAt?: any;

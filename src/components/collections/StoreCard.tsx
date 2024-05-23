@@ -7,9 +7,10 @@ import { Badge } from '../ui/badge';
 import Link from 'next/link';
 
 function StoreCard({ store }: { store: StoreType }) {
-  const tags = store.tags?.split(',');
+  const tags = store?.tags?.split(',');
+  if (!store) return <div>not found</div>;
   return (
-    <div className="border rounded-xl overflow-hidden group bg-neutral-100 dark:bg-neutral-900 flex">
+    <div className="border rounded-xl overflow-hidden group bg-neutral-100 dark:bg-neutral-900 flex select-none relative">
       <div className="p-3 w-full flex-1">
         <div className="flex gap-3 relative">
           <div className="flex flex-col items-center justify-center relative h-[120px] sm:h-[150px] md:h-[120px] lg:h-[150px] xl:h-[150px] 2xl:h-[150px] aspect-square ">
@@ -46,8 +47,11 @@ function StoreCard({ store }: { store: StoreType }) {
           </div>
         </div>
       </div>
-      <Link href={`/store/${store.slug}`}>
-        <div className="flex w-[40px] h-full border-l transition-all  flex-col justify-center items-center hover:bg-highlight_hover bg-highlight text-neutral-900 font-bold ">
+      <Link
+        href={`/store/${store.slug}`}
+        className="md:absolute md:-right-full md:group-hover:right-0 transition-all duration-300 md:h-full"
+      >
+        <div className=" w-[40px] h-full flex  border-l transition-all  flex-col justify-center items-center hover:bg-highlight_hover bg-highlight text-neutral-900 font-bold ">
           <span className="[writing-mode:vertical-lr] rotate-180 text-center flex text-sm">
             View Store
           </span>

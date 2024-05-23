@@ -61,6 +61,18 @@ function UpdateStoreForm({
       })
       .max(50),
     description: z.string().optional().or(z.literal('')),
+    branchName: z
+      .string()
+      .min(2, {
+        message: 'Branch name must be at least 2 characters.',
+      })
+      .max(50),
+    address: z
+      .string()
+      .min(2, {
+        message: 'Branch address must be at least 2 characters.',
+      })
+      .max(100),
     slug: z
       .string()
       .min(2, {
@@ -91,6 +103,8 @@ function UpdateStoreForm({
     defaultValues: {
       name: store.name,
       description: store.description || '',
+      branchName: store.branchName || '',
+      address: store.address || '',
       slug: store.slug,
       saasTypeSlug: store.saasTypeSlug,
       tags: store.tags,
@@ -109,6 +123,8 @@ function UpdateStoreForm({
       name: values.name,
       slug: values.slug,
       description: values.description,
+      branchName: values.branchName,
+      address: values.address,
       saasTypeSlug: values.saasTypeSlug,
       tags: values.tags,
       updatedAt: dateTime,
@@ -214,7 +230,34 @@ function UpdateStoreForm({
             </FormItem>
           )}
         />
+        <FormField
+          control={form.control}
+          name="branchName"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Branch Name</FormLabel>
+              <FormControl>
+                <Input placeholder="Enter branch name here" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
+        <FormField
+          control={form.control}
+          name="address"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Address</FormLabel>
+              <FormControl>
+                <Textarea {...field} className="resize-none" />
+              </FormControl>
+
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <FormField
           control={form.control}
           name="slug"

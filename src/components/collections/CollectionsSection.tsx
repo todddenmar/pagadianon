@@ -30,10 +30,13 @@ function CollectionsSection() {
   const stores: StoreType[] = [];
   collection?.stores.forEach((item: string) => {
     const res = currentSettings.stores.find(
-      (storeItem: StoreType) => storeItem.id === item
+      (storeItem: StoreType) =>
+        storeItem.id === item && storeItem.isPublished === true
     );
-    stores.push(res);
+    if (res) stores.push(res);
   });
+
+  console.log({ stores });
 
   useEffect(() => {
     if (searchInput.length > 2) {
@@ -55,8 +58,8 @@ function CollectionsSection() {
       setFilteredStores(stores);
     } else {
       let productResults: StoreType[] = [];
-      stores.forEach((item) => {
-        item.tags?.split(',').forEach((tag: string) => {
+      stores?.forEach((item) => {
+        item?.tags?.split(',').forEach((tag: string) => {
           if (compareEqualStrings(tag, tagSelected)) {
             productResults.push(item);
           }
@@ -64,7 +67,7 @@ function CollectionsSection() {
       });
       setFilteredStores(productResults);
     }
-  }, [tagSelected]);
+  }, [tagSelected, currentSettings]);
   if (!currentSettings) return <LoadingComponent />;
 
   const tags = getAllUniqueTagsFromItems(stores);

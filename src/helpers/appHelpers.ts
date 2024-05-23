@@ -62,7 +62,7 @@ export const getAllUniqueTagsFromItems = (
 ) => {
   let tags: string[] = [];
   items.forEach((item) => {
-    item.tags?.split(',').forEach((tag: string) => {
+    item?.tags?.split(',').forEach((tag: string) => {
       if (!tags.includes(tag)) {
         tags.push(tag.trim());
       }
