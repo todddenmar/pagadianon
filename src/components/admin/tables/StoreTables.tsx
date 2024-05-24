@@ -248,6 +248,20 @@ function StoresTable() {
           </DialogContent>
         )}
       </Dialog>
+
+      <Dialog open={isEditingMapEmbed} onOpenChange={setIsEditingMapEmbed}>
+        {selectedStore && (
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>
+                Edit Store Map Embed: {`${selectedStore.name}`}
+              </DialogTitle>
+              <DialogDescription>Please fill in the blanks.</DialogDescription>
+            </DialogHeader>
+            
+          </DialogContent>
+        )}
+      </Dialog>
     </Card>
   );
 }
