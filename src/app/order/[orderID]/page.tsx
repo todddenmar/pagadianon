@@ -80,13 +80,7 @@ async function OrderPage({ params, searchParams }: Props) {
               description="Customer order page"
             />
 
-            {orderData.status === kOrderProgress.RECEIVED ? (
-              <div className="capitalize text-green-500 text-sm">
-                {orderData.orderReceivedNote}
-              </div>
-            ) : (
-              <OrderReceivedButton />
-            )}
+            <OrderReceivedButton />
           </div>
 
           {orderData ? (

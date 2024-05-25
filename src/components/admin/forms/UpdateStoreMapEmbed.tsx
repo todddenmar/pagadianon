@@ -16,6 +16,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { useAppStore } from '@/lib/store';
 import CustomMapLocation from '@/components/CustomComponents/CustomMapLocation';
+import { Input } from '@/components/ui/input';
 
 function UpdateStoreMapEmbed({
   store,
@@ -41,12 +42,19 @@ function UpdateStoreMapEmbed({
         message: 'Google map embed address must be at least 2 characters.',
       })
       .max(200),
+    coordinates: z
+      .string()
+      .min(2, {
+        message: 'Coordinates must be at least 2 characters.',
+      })
+      .max(200),
   });
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       mapEmbedAddress: store.mapEmbedAddress || '',
+      coordinates: store.coordinates || '',
     },
   });
 
@@ -54,6 +62,7 @@ function UpdateStoreMapEmbed({
     const updatedStore: StoreType = {
       ...store,
       mapEmbedAddress: values.mapEmbedAddress,
+      coordinates: values.coordinates,
     };
     const updatedSettingsStores = currentSettings?.stores.map(
       (item: StoreType) => (item.id === store.id ? updatedStore : item)
@@ -83,6 +92,20 @@ function UpdateStoreMapEmbed({
                     <Textarea {...field} className="resize-none" />
                   </FormControl>
 
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="coordinates"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Coordinates</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter coordinates here" {...field} />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}

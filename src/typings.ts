@@ -11,6 +11,10 @@ export type SoftwareServiceType = {
   description: string;
 };
 
+export type SettingsType = {
+  stores: StoreType[];
+};
+
 export type StoreType = {
   id: string;
   slug: string;
@@ -19,6 +23,7 @@ export type StoreType = {
   branchName: string;
   address: string;
   mapEmbedAddress?: string | null;
+  coordinates?: string | null;
   saasTypeSlug: string;
   createdAt: any;
   updatedAt?: any;

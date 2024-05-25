@@ -51,11 +51,9 @@ function StoreSidebar({
     (item: StoreType) => item.slug === params.slug
   );
 
-  const isAdmin = currentUserData?.stores?.includes(storeData.id);
   const facebookUsername = currentStoreData?.settings?.facebookUsername;
   const instagramUsername = currentStoreData?.settings?.instagramUsername;
-  const address = currentStoreData?.settings?.address || 'Pagadian City';
-  const coordinates = currentStoreData?.settings?.coordinates;
+  const coordinates = storeData?.coordinates;
 
   const latitude = coordinates?.split(',')[0].replaceAll(' ', '');
   const longitude = coordinates?.split(',')[1].replaceAll(' ', '');

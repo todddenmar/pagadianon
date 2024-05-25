@@ -57,6 +57,10 @@ function OrderReceivedButton() {
       <div className="h-[40px] flex flex-col items-center justify-center w-[100px]">
         <LoaderIcon className="animate-spin" />
       </div>
+    ) : orderData.status === kOrderProgress.RECEIVED ? (
+      <div className="capitalize text-green-500 text-sm">
+        {orderData.orderReceivedNote}
+      </div>
     ) : (
       <Button
         onClick={onConfirmReceived}

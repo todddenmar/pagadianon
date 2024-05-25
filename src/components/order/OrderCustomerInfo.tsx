@@ -12,6 +12,7 @@ function OrderCustomerInfo() {
   if (!orderData) return <LoadingComponent />;
   const customer = orderData.customer;
   const coordinates = customer.coordinates;
+
   return (
     <div>
       <OrderSectionTitle text="Customer Info" />

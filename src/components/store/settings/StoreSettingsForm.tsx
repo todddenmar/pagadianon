@@ -73,8 +73,6 @@ function StoreSettingsForm() {
     defaultValues: {
       mobileNumber: currentStoreData.settings?.mobileNumber || '',
       email: currentStoreData.settings?.email || '',
-      address: currentStoreData.settings?.address || '',
-      coordinates: currentStoreData.settings?.coordinates || '',
       facebookUsername: currentStoreData.settings?.facebookUsername || '',
       instagramUsername: currentStoreData.settings?.instagramUsername || '',
     },
@@ -89,8 +87,6 @@ function StoreSettingsForm() {
       ...currentStoreData.settings,
       mobileNumber: values.mobileNumber,
       email: values.email,
-      address: values.address,
-      coordinates: values.coordinates,
       facebookUsername: values.facebookUsername,
       instagramUsername: values.instagramUsername,
       storefrontURL: storefrontURL,
@@ -160,32 +156,7 @@ function StoreSettingsForm() {
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="address"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Address </FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter address here" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="coordinates"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Map Coordinates</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Coordinates here" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-5">
                 <FormField
                   control={form.control}

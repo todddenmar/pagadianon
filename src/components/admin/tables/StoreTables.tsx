@@ -181,7 +181,7 @@ function StoresTable() {
                         Business Hours
                       </DropdownMenuItem>
                       <DropdownMenuItem onClick={() => onEditMapEmbed(item)}>
-                        Map Embed
+                        Location Details
                       </DropdownMenuItem>
                       {item.isPublished ? (
                         <DropdownMenuItem
@@ -255,7 +255,7 @@ function StoresTable() {
           <DialogContent>
             <DialogHeader>
               <DialogTitle>
-                Edit Store Map Embed: {`${selectedStore.name}`}
+                Edit Store Location Details: {`${selectedStore.name}`}
               </DialogTitle>
               <DialogDescription>Please fill in the blanks.</DialogDescription>
             </DialogHeader>

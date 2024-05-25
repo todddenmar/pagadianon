@@ -46,10 +46,13 @@ function OrderStoreCartItem({ item }: { item: any }) {
     useContext(OrderContext);
   if (!orderData) return <LoadingComponent />;
   if (!currentSettings) return <LoadingComponent />;
-
   const currentDeliveryService = currentSettings?.delivery_services?.find(
     (delItem: DeliveryServiceType) => delItem.id === orderData.deliveryServiceID
   );
+  const storeData = currentSettings?.stores?.find(
+    (storeItem: DeliveryServiceType) => storeItem.id === item.storeID
+  );
+
   const isForDelivery =
     orderData.fulfillmentMethod === kFulfillmentMethod.DELIVERY;
 
@@ -57,15 +60,6 @@ function OrderStoreCartItem({ item }: { item: any }) {
   let isStoreManager: boolean = checkIfStoreManager();
   let isRider: boolean = checkIfRider();
   let isCustomer: boolean = false;
-
-  console.log({
-    isDeliveryServiceManager,
-    isStoreManager,
-    isRider,
-    isCustomer,
-    currentDeliveryService,
-    currentUserEmail,
-  });
 
   const isStoreConfirmed = orderData.storesInvolved?.find(
     (storeStatusItem) => storeStatusItem?.storeID === item.storeID
@@ -80,9 +74,7 @@ function OrderStoreCartItem({ item }: { item: any }) {
   )?.isReadyForPickUp;
 
   const isDeliveryConfirmed = orderData?.deliveryServiceInfo?.isConfirmed;
-  const coordinates = convertStringCoordinatesToObject(
-    item.contactInfo.coordinates
-  );
+  const coordinates = convertStringCoordinatesToObject(storeData.coordinates);
 
   function checkIfDSManager() {
     const userFound = currentDeliveryService?.users?.find(
