@@ -38,6 +38,7 @@ import { cn } from '@/lib/utils';
 import LoadingComponent from '../LoadingComponent.';
 import Link from 'next/link';
 import UpdateStoreHoursForm from '../forms/UpdateStoreHoursForm';
+import UpdateStoreMapEmbed from '../forms/UpdateStoreMapEmbed';
 
 function StoresTable() {
   const [currentStores, currentSettings, setCurrentSettings, setCurrentStores] =
@@ -258,7 +259,10 @@ function StoresTable() {
               </DialogTitle>
               <DialogDescription>Please fill in the blanks.</DialogDescription>
             </DialogHeader>
-            
+            <UpdateStoreMapEmbed
+              store={selectedStore}
+              setClose={() => setIsEditingMapEmbed(false)}
+            />
           </DialogContent>
         )}
       </Dialog>

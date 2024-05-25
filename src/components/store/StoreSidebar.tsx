@@ -20,7 +20,10 @@ import StoreSidebarTitle from './StoreSidebarTitle';
 import StoreSidebarItem from './StoreSidebarItem';
 import StoreSidebarLinkItem from './StoreSidebarLinkItem';
 import { kebabCase } from 'lodash';
-import { compareEqualStrings } from '@/helpers/appHelpers';
+import {
+  compareEqualStrings,
+  getAllUniqueProductCategory,
+} from '@/helpers/appHelpers';
 
 function StoreSidebar({
   value,
@@ -57,6 +60,10 @@ function StoreSidebar({
   const latitude = coordinates?.split(',')[0].replaceAll(' ', '');
   const longitude = coordinates?.split(',')[1].replaceAll(' ', '');
 
+  const uniqueCategories = getAllUniqueProductCategory({
+    products: currentStoreProducts,
+  });
+
   function getTotalItemsByCategory(category: string) {
     let totalVariants = 0;
     currentStoreProducts.forEach((product: ProductType) => {
@@ -75,6 +82,7 @@ function StoreSidebar({
     });
     return totalVariants;
   }
+
   return (
     <div className="flex flex-col justify-between h-full">
       <div className="flex flex-col space-y-3">
@@ -90,16 +98,19 @@ function StoreSidebar({
                 icon={<LayoutListIcon className="h-[16px] w-[16px]" />}
               />
             </li>
-            {kStoreProductCategories.map((item, idx) => {
-              const totalItems = getTotalItemsByCategory(item.value) || 0;
+            {uniqueCategories.map((item, idx) => {
+              const totalItems = getTotalItemsByCategory(item) || 0;
+              const icon = kStoreProductCategories.find(
+                (cat) => cat.value === item
+              )?.icon;
               return (
                 <li key={`category-item-${idx}`}>
                   <StoreSidebarItem
                     totalItems={totalItems}
-                    isActive={value === item.value}
-                    onClick={() => onChange(item.value)}
-                    text={item.value}
-                    icon={item.icon}
+                    isActive={value === item}
+                    onClick={() => onChange(item)}
+                    text={item}
+                    icon={icon}
                   />
                 </li>
               );

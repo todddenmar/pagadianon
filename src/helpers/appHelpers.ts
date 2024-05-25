@@ -327,3 +327,19 @@ export const getMonthlyChartDataByOrders = ({
   // }));
   return chartData;
 };
+
+
+export const getAllUniqueProductCategory = ({
+  products,
+}: {
+  products: ProductType[];
+}) => {
+  let categories: string[] = [];
+  products?.forEach((item) => {
+    const cat = _.kebabCase(item.category.trim());
+    if (!categories.includes(cat)) {
+      categories.push(item.category);
+    }
+  });
+  return categories;
+};
