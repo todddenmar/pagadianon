@@ -115,6 +115,26 @@ function StoresTable() {
       }
     );
   };
+  const onUpdateFeature = async (store: StoreType, isFeatured: boolean) => {
+    const updatedSettingsStores = currentSettings?.stores?.map(
+      (item: StoreType) =>
+        item.id === store.id ? { ...item, isFeatured: isFeatured } : item
+    );
+    const updatedSettings = {
+      ...currentSettings,
+      stores: updatedSettingsStores,
+      isPublished: false,
+    };
+    setCurrentSettings(updatedSettings);
+    toast.success(
+      isFeatured
+        ? 'Store featured successfully'
+        : 'Store removed to featured list successfully',
+      {
+        description: 'Publish settings to save updates',
+      }
+    );
+  };
   return (
     <Card>
       <Table>
@@ -128,6 +148,7 @@ function StoresTable() {
             <TableHead>Slug</TableHead>
             <TableHead>Tags</TableHead>
             <TableHead>SaaS Type</TableHead>
+            <TableHead className="text-center">Is Featured</TableHead>
             <TableHead className="text-center">Is Published</TableHead>
             <TableHead className="text-right"></TableHead>
           </TableRow>
@@ -151,14 +172,32 @@ function StoresTable() {
                   ))}
                 </TableCell>
                 <TableCell>{saas?.title}</TableCell>
-
-                <TableCell className="flex justify-center">
-                  {item.isPublished ? (
-                    <div className="flex space-x-2 items-center">
+                <TableCell className="text-center">
+                  {item.isFeatured ? (
+                    <div className="flex space-x-2 items-center text-center justify-center">
                       <CheckIcon className="h-5 text-green-500" />
                     </div>
                   ) : (
-                    <div className={cn('flex space-x-2 items-center')}>
+                    <div
+                      className={cn(
+                        'flex space-x-2 items-center text-center justify-center'
+                      )}
+                    >
+                      <XIcon className="h-5 text-red-500" />
+                    </div>
+                  )}
+                </TableCell>
+                <TableCell className="text-center">
+                  {item.isPublished ? (
+                    <div className="flex space-x-2 items-center text-center justify-center">
+                      <CheckIcon className="h-5 text-green-500" />
+                    </div>
+                  ) : (
+                    <div
+                      className={cn(
+                        'flex space-x-2 items-center text-center justify-center'
+                      )}
+                    >
                       <XIcon className="h-5 text-red-500" />
                     </div>
                   )}
@@ -183,6 +222,19 @@ function StoresTable() {
                       <DropdownMenuItem onClick={() => onEditMapEmbed(item)}>
                         Location Details
                       </DropdownMenuItem>
+                      {item.isFeatured ? (
+                        <DropdownMenuItem
+                          onClick={() => onUpdateFeature(item, false)}
+                        >
+                          Remove from Featured
+                        </DropdownMenuItem>
+                      ) : (
+                        <DropdownMenuItem
+                          onClick={() => onUpdateFeature(item, true)}
+                        >
+                          Feature Store
+                        </DropdownMenuItem>
+                      )}
                       {item.isPublished ? (
                         <DropdownMenuItem
                           onClick={() => onUpdatePublish(item, false)}

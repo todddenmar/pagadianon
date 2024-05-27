@@ -31,6 +31,7 @@ export type StoreType = {
   tags: string;
   logoURL?: string;
   isPublished?: boolean;
+  isFeatured?: boolean;
   settings?: any;
   schedules?: any;
   galleryImages?: string[];

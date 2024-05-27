@@ -25,7 +25,7 @@ function HomePageSlices() {
     );
 
   const publishedStores = currentSettings?.stores?.filter(
-    (item: StoreType) => item.isPublished
+    (item: StoreType) => item.isFeatured
   );
   if (!publishedStores) return null;
   return (

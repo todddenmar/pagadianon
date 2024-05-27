@@ -28,7 +28,7 @@ function CollectionsSection() {
     (item: CollectionType) => item.slug === slug
   );
   const stores: StoreType[] = [];
-  collection?.stores.forEach((item: string) => {
+  collection?.stores?.forEach((item: string) => {
     const res = currentSettings.stores.find(
       (storeItem: StoreType) =>
         storeItem.id === item && storeItem.isPublished === true

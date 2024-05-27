@@ -1,13 +1,58 @@
 import { cn } from '@/lib/utils';
 import { StoreType } from '@/typings';
-import { ImageIcon } from 'lucide-react';
+import { CalendarXIcon, ClockIcon, ImageIcon } from 'lucide-react';
 import Image from 'next/image';
 import React from 'react';
 import { Badge } from '../ui/badge';
 import Link from 'next/link';
+import { kDaysArrayData } from '@/constants';
+import moment from 'moment';
 
 function StoreCard({ store }: { store: StoreType }) {
+  console.log({ store });
   const tags = store?.tags?.split(',');
+
+  const schedToday = getTimeSchedText();
+
+  function getTimeSchedText() {
+    const dateToday = new Date();
+    const day = dateToday.getDay();
+    if (!store.schedules) {
+      console.log('no sched');
+      return null;
+    }
+    const dayString = kDaysArrayData[day];
+    const storeSched = store.schedules ? store.schedules[dayString] : null;
+    if (!storeSched) {
+      return null;
+    }
+    console.log({ storeSched });
+    if (!storeSched.opensAt || !storeSched.closesAt) {
+      return null;
+    }
+    const opensAt = `${storeSched.opensAt.hour}:${storeSched.opensAt.minute} ${storeSched.opensAt.period}`;
+    const closesAt = `${storeSched.closesAt.hour}:${storeSched.closesAt.minute} ${storeSched.closesAt.period}`;
+    console.log({ closesAt });
+
+    const currentTime = dateToday.getTime();
+    const closingDate = `${moment(dateToday).format(`MM/DD/YYYY`)} ${closesAt}`;
+    const closeDateTime = new Date(closingDate).getTime();
+    const timeUntilClose = closeDateTime - currentTime;
+    const seconds = timeUntilClose / 1000;
+    const minutes = seconds / 60;
+    const hours = minutes / 60;
+
+    console.log({
+      closeDateTime,
+      currentTime,
+      timeUntilClose,
+      seconds,
+      minutes,
+      hours,
+    });
+    return { opensAt, closesAt };
+  }
+
   if (!store) return <div>not found</div>;
   return (
     <div className="border rounded-xl overflow-hidden group bg-neutral-100 dark:bg-neutral-900 flex select-none relative">
@@ -26,23 +71,44 @@ function StoreCard({ store }: { store: StoreType }) {
               <ImageIcon />
             )}
           </div>
-          <div className="flex flex-col flex-1 w-full border-l px-3">
-            <div
-              className={cn(
-                'text-xs sm:text-lg md:text-sm lg:text-lg xl:text-base 2xl:text-lg font-semibold '
+          <div className="flex flex-col justify-between flex-1 w-full border-l px-3">
+            <div>
+              <div
+                className={cn(
+                  'text-xs sm:text-lg md:text-sm lg:text-lg xl:text-base 2xl:text-lg font-semibold '
+                )}
+              >
+                {store.name}
+              </div>
+              <div className="text-xs sm:text-sm dark:text-neutral-400 line-clamp-2 md:line-clamp-2 lg:line-clamp-3">
+                {store.description}
+              </div>
+            </div>
+            <div className="  grid grid-cols-1 gap-2">
+              {schedToday ? (
+                <div className="text-sm text-highlight gap-1 flex items-center">
+                  <ClockIcon className="h-[16px]" />
+                  <span>
+                    {' '}
+                    {`${schedToday?.opensAt} - ${schedToday?.closesAt}`}
+                  </span>
+                </div>
+              ) : (
+                <div className="text-sm text-red-500 gap-1 flex items-center">
+                  <CalendarXIcon className="h-[16px]" />
+                  <span>Closed Today</span>
+                </div>
               )}
-            >
-              {store.name}
-            </div>
-            <div className="text-xs sm:text-sm dark:text-neutral-400 line-clamp-2 md:line-clamp-2 lg:line-clamp-3">
-              {store.description}
-            </div>
-            <div className="inline-flex flex-wrap gap-2 mt-5 bottom-0 absolute">
-              {tags.map((tag, idx) => (
-                <Badge key={`${store.slug}-tag-${idx}`} className="capitalize">
-                  {tag}
-                </Badge>
-              ))}
+              <div className="inline-flex flex-wrap gap-2">
+                {tags.map((tag, idx) => (
+                  <Badge
+                    key={`${store.slug}-tag-${idx}`}
+                    className="capitalize"
+                  >
+                    {tag}
+                  </Badge>
+                ))}
+              </div>
             </div>
           </div>
         </div>

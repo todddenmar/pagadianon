@@ -4,12 +4,20 @@ import { MinusIcon, MoonIcon } from 'lucide-react';
 import React from 'react';
 import LoadingComponent from '../admin/LoadingComponent.';
 import { cn } from '@/lib/utils';
+import { StoreType } from '@/typings';
 
 function StoreBusinessHoursSection() {
-  const [currentStoreData] = useAppStore((state) => [state.currentStoreData]);
-  const schedules = currentStoreData?.schedules;
+  const [currentStoreData, currentSettings] = useAppStore((state) => [
+    state.currentStoreData,
+    state.currentSettings,
+  ]);
   const dayToday = new Date();
   const dayNumber = dayToday.getDay();
+  const storeSettings = currentSettings?.stores?.find(
+    (store: StoreType) => store.id === currentStoreData.id
+  );
+  const schedules = storeSettings?.schedules;
+
   if (!currentStoreData) return <LoadingComponent />;
   return (
     <div>
