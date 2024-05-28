@@ -39,13 +39,13 @@ function StoreBanner({
       <ContainerLayout>
         <div className="h-auto md:h-[300px] py-5 flex flex-col justify-center text-center md:text-start">
           <div className="flex flex-col items-center md:flex-row gap-5">
-            <div className="flex flex-col items-center justify-center relative h-[100px] border rounded-md overflow-hidden aspect-square">
+            <div className="flex flex-col items-center justify-center relative h-[150px] border rounded-md overflow-hidden aspect-square">
               {logoURL ? (
                 <Image
                   src={logoURL}
                   alt={title}
-                  width={100}
-                  height={100}
+                  width={150}
+                  height={150}
                   className="object-cover h-full w-full group-hover:scale-105 transition-all"
                 />
               ) : (

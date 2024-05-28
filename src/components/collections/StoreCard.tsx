@@ -1,8 +1,14 @@
 import { cn } from '@/lib/utils';
 import { StoreType } from '@/typings';
-import { CalendarXIcon, ClockIcon, ImageIcon } from 'lucide-react';
+import {
+  CalendarXIcon,
+  ClockIcon,
+  ImageIcon,
+  LoaderCircleIcon,
+  LoaderIcon,
+} from 'lucide-react';
 import Image from 'next/image';
-import React from 'react';
+import React, { useState } from 'react';
 import { Badge } from '../ui/badge';
 import Link from 'next/link';
 import { kDaysArrayData } from '@/constants';
@@ -10,6 +16,7 @@ import moment from 'moment';
 
 function StoreCard({ store }: { store: StoreType }) {
   console.log({ store });
+  const [isclicked, setIsClicked] = useState(false);
   const tags = store?.tags?.split(',');
 
   const schedToday = getTimeSchedText();
@@ -75,7 +82,7 @@ function StoreCard({ store }: { store: StoreType }) {
             <div>
               <div
                 className={cn(
-                  'text-xs sm:text-lg md:text-sm lg:text-lg xl:text-base 2xl:text-lg font-semibold '
+                  'text-sm sm:text-lg md:text-sm lg:text-lg xl:text-base 2xl:text-lg font-semibold '
                 )}
               >
                 {store.name}
@@ -86,7 +93,7 @@ function StoreCard({ store }: { store: StoreType }) {
             </div>
             <div className="  grid grid-cols-1 gap-2">
               {schedToday ? (
-                <div className="text-sm text-highlight gap-1 flex items-center">
+                <div className="text-xs sm:text-sm text-highlight gap-1 flex items-center">
                   <ClockIcon className="h-[16px]" />
                   <span>
                     {' '}
@@ -99,11 +106,11 @@ function StoreCard({ store }: { store: StoreType }) {
                   <span>Closed Today</span>
                 </div>
               )}
-              <div className="inline-flex flex-wrap gap-2">
+              <div className="inline-flex flex-nowrap gap-2 relative z-0">
                 {tags.map((tag, idx) => (
                   <Badge
                     key={`${store.slug}-tag-${idx}`}
-                    className="capitalize"
+                    className="capitalize text-nowrap"
                   >
                     {tag}
                   </Badge>
@@ -113,11 +120,16 @@ function StoreCard({ store }: { store: StoreType }) {
           </div>
         </div>
       </div>
-      <Link href={`/store/${store.slug}`}>
-        <div className=" w-[40px] h-full flex  border-l transition-all  flex-col justify-center items-center hover:bg-highlight_hover bg-highlight text-neutral-900 font-bold ">
-          <span className="[writing-mode:vertical-lr] rotate-180 text-center flex text-sm">
-            View Store
-          </span>
+
+      <Link href={`/store/${store.slug}`} onClick={() => setIsClicked(true)}>
+        <div className=" w-[40px] h-full flex relative z-10  border-l transition-all  flex-col justify-center items-center hover:bg-highlight_hover bg-highlight text-neutral-900 font-bold ">
+          {isclicked ? (
+            <LoaderCircleIcon className="animate-spin" />
+          ) : (
+            <span className="[writing-mode:vertical-lr] rotate-180 text-center flex text-sm">
+              View Store
+            </span>
+          )}
         </div>
       </Link>
     </div>
