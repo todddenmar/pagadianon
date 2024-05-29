@@ -72,8 +72,8 @@ function AllCollectionsSection() {
                     <div className="rounded-xl bg-neutral-100 dark:bg-neutral-700 w-[100px] h-full"></div>
                     <div className="flex flex-1 flex-col gap-5 justify-between h-full">
                       <div className="text-start">
-                        <div className="text-sm lg:text-base">{item.name}</div>
-                        <p className="text-xs lg:text-sm text-neutral-500 h-[32px] lg:h-[40px]">
+                        <div className="text-lg">{item.name}</div>
+                        <p className="text-xs lg:text-base text-neutral-500 h-[32px] lg:h-[40px]">
                           {item.description}
                         </p>
                       </div>
