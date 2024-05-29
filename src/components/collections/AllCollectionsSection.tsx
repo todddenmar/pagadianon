@@ -97,6 +97,7 @@ function AllCollectionsSection() {
                 {selectedCollection?.stores?.map((item, idx) => {
                   return (
                     <StoreCard
+                      key={`store-item-${idx}`}
                       store={currentSettings?.stores?.find(
                         (store: StoreType) => store.id === item
                       )}
