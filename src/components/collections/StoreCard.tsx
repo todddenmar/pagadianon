@@ -15,10 +15,9 @@ import { kDaysArrayData } from '@/constants';
 import moment from 'moment';
 
 function StoreCard({ store }: { store: StoreType }) {
-  console.log({ store });
   const [isclicked, setIsClicked] = useState(false);
   const tags = store?.tags?.split(',');
-
+  if (!store) return null;
   const schedToday = getTimeSchedText();
 
   function getTimeSchedText() {
@@ -33,13 +32,11 @@ function StoreCard({ store }: { store: StoreType }) {
     if (!storeSched) {
       return null;
     }
-    console.log({ storeSched });
     if (!storeSched.opensAt || !storeSched.closesAt) {
       return null;
     }
     const opensAt = `${storeSched.opensAt.hour}:${storeSched.opensAt.minute} ${storeSched.opensAt.period}`;
     const closesAt = `${storeSched.closesAt.hour}:${storeSched.closesAt.minute} ${storeSched.closesAt.period}`;
-    console.log({ closesAt });
 
     const currentTime = dateToday.getTime();
     const closingDate = `${moment(dateToday).format(`MM/DD/YYYY`)} ${closesAt}`;
@@ -49,14 +46,6 @@ function StoreCard({ store }: { store: StoreType }) {
     const minutes = seconds / 60;
     const hours = minutes / 60;
 
-    console.log({
-      closeDateTime,
-      currentTime,
-      timeUntilClose,
-      seconds,
-      minutes,
-      hours,
-    });
     return { opensAt, closesAt };
   }
 
@@ -126,7 +115,7 @@ function StoreCard({ store }: { store: StoreType }) {
           {isclicked ? (
             <LoaderCircleIcon className="animate-spin" />
           ) : (
-            <span className="[writing-mode:vertical-lr] rotate-180 text-center flex text-sm">
+            <span className="[writing-mode:vertical-lr] rotate-180 text-center flex text-sm uppercase">
               View Store
             </span>
           )}

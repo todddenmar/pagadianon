@@ -1,6 +1,49 @@
 @tailwind base;
-  @tailwind components;
-  @tailwind utilities;
+@tailwind components;
+@tailwind utilities;
+
+  @font-face {
+    font-family: 'marmalade';
+    src: url('/fonts/ut-marmalade-printed.ttf');
+  }
+  @font-face {
+    font-family: 'bignoodle';
+    src: url('/fonts/big_noodle_titling.ttf');
+  }
+  
+  @font-face {
+    font-family: 'din2014';
+    font-weight: 'normal';
+    src: url('/fonts/DIN2014-Regular.ttf');
+  }
+  
+  @font-face {
+    font-family: 'din2014';
+    font-weight: 600;
+    src: url('/fonts/DIN2014-DemiBold.ttf');
+  }
+  
+  @font-face {
+    font-family: 'din2014';
+    font-weight: 700;
+    src: url('/fonts/DIN2014-Bold.ttf');
+  }
+  
+  @font-face {
+    font-family: 'kalam';
+    font-weight: normal;
+    src: url('/fonts/Kalam-Regular.ttf');
+  }
+  @font-face {
+    font-family: 'kalam';
+    font-weight: 300;
+    src: url('/fonts/Kalam-Light.ttf');
+  }
+  @font-face {
+    font-family: 'kalam';
+    font-weight: 700;
+    src: url('/fonts/Kalam-Bold.ttf');
+  }
 
   @layer base {
     :root {

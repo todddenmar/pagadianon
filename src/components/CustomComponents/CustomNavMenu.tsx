@@ -17,6 +17,7 @@ import { useAppStore } from '@/lib/store';
 import { CollectionType } from '@/typings';
 import { Button } from '../ui/button';
 import TrackOrderButton from '../order/TrackOrderButton';
+import { LoaderCircleIcon } from 'lucide-react';
 
 const components: {
   slug: string;
@@ -40,16 +41,27 @@ export function CustomNavMenu() {
             <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
               <li className="row-span-3">
                 <div className="flex h-full w-full select-none flex-col justify-center rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md">
-                  <div className="mb-2 mt-4 text-lg font-medium">
+                  <div className="mb-2 mt-4 text-lg font-medium ">
                     Marketplace
                   </div>
                   <p className="text-sm leading-tight text-muted-foreground">
                     We connect businesses and customers in this app.
                   </p>
+                  <Button
+                    className="mt-5"
+                    variant={'default'}
+                    size={'sm'}
+                    asChild
+                  >
+                    <NavigationMenuLink asChild>
+                      <Link href={'/collections'}>View All</Link>
+                    </NavigationMenuLink>
+                  </Button>
                 </div>
               </li>
-              {currentSettings?.collections?.map(
-                (item: CollectionType, idx: number) => {
+              {currentSettings?.collections
+                ?.slice(0, 3)
+                .map((item: CollectionType, idx: number) => {
                   return (
                     <Link
                       href={`/collections/${item.slug}`}
@@ -58,8 +70,7 @@ export function CustomNavMenu() {
                       <ListItem title={item.name}>{item.description}</ListItem>
                     </Link>
                   );
-                }
-              )}
+                })}
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>

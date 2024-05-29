@@ -55,7 +55,7 @@ export default async function RootLayout({
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1826892933379008"
           crossOrigin="anonymous"
         ></script>
-        <body className={inter.className}>
+        <body className="font-din2014">
           <ThemeProvider
             attribute="class"
             defaultTheme="dark"

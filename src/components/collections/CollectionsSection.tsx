@@ -36,8 +36,6 @@ function CollectionsSection() {
     if (res) stores.push(res);
   });
 
-  console.log({ stores });
-
   useEffect(() => {
     if (searchInput.length > 2) {
       let productResults: StoreType[] = [];

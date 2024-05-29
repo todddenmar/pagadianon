@@ -26,7 +26,9 @@ function Header() {
                 alt="pagadianon-light"
                 className="h-[30px] w-[30px] hidden md:block "
               />
-              <span className="hidden md:block font-bold">PAGADIANON</span>
+              <span className="hidden md:block text-xl tracking-wider font-bignoodle">
+                PAGADIANON
+              </span>
               <span className="block md:hidden">
                 <img
                   src="/images/pagadianon-light.svg"
@@ -44,7 +46,9 @@ function Header() {
                 alt="pagadianon-logo"
                 className="h-[30px] w-[30px] hidden md:block "
               />
-              <span className="hidden md:block font-bold">PAGADIANON</span>
+              <span className="hidden md:block text-xl tracking-wider font-bignoodle">
+                PAGADIANON
+              </span>
               <span className="block md:hidden">
                 <img
                   src="/images/pagadianon-logo.svg"

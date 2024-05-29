@@ -24,7 +24,7 @@ function StoresCarousel({
       <ContainerLayout>
         <div className="pb-5">
           <h3 className="text-lg md:text-2xl font-bold">{title}</h3>
-          <p className="text-sm text-neutral-600 dark:text-neutral-500">
+          <p className="text-sm md:text-base text-neutral-600 dark:text-neutral-500">
             {description}
           </p>
         </div>

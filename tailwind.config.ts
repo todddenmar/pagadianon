@@ -17,6 +17,12 @@ const config = {
         '2xl': '1400px',
       },
     },
+    fontFamily: {
+      marmalade: ['marmalade'],
+      bignoodle: ['bignoodle'],
+      din2014: ['din2014'],
+      kalam: ['kalam'],
+    },
     extend: {
       colors: {
         border: 'hsl(var(--border))',
