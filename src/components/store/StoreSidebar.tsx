@@ -47,13 +47,13 @@ function StoreSidebar({
   if (!currentSettings) {
     return <LoadingComponent />;
   }
-  const storeData = currentSettings.stores.find(
+  const storeSettings = currentSettings.stores.find(
     (item: StoreType) => item.slug === params.slug
   );
 
-  const facebookUsername = currentStoreData?.settings?.facebookUsername;
-  const instagramUsername = currentStoreData?.settings?.instagramUsername;
-  const coordinates = storeData?.coordinates;
+  const facebookUsername = storeSettings?.facebookUsername;
+  const instagramUsername = storeSettings?.instagramUsername;
+  const coordinates = storeSettings?.coordinates;
 
   const latitude = coordinates?.split(',')[0].replaceAll(' ', '');
   const longitude = coordinates?.split(',')[1].replaceAll(' ', '');

@@ -58,13 +58,6 @@ function StoreSettingSidebar({
       icon: <ShoppingBagIcon className="h-[16px]" />,
     },
     {
-      value: 'contact',
-      text: 'contact',
-      isActive: value === 'contact',
-      onClick: () => onValueChange('contact'),
-      icon: <NotebookIcon className="h-[16px]" />,
-    },
-    {
       value: 'gallery',
       text: 'gallery',
       isActive: value === 'gallery',

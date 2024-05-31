@@ -31,9 +31,11 @@ function StoreBanner({
   if (!currentStoreData || !currentSettings)
     return <Skeleton className="rounded-lg h-auto md:h-[300px] w-full" />;
 
-  const logoURL = currentSettings.stores.find(
+  const storeSettings = currentSettings.stores.find(
     (item: StoreType) => item.id === currentStoreData.id
-  ).logoURL;
+  );
+  const logoURL = storeSettings.logoURL;
+
   return (
     <div className="bg-neutral-100 dark:bg-neutral-900">
       <ContainerLayout>
@@ -65,14 +67,14 @@ function StoreBanner({
             ) : (
               <div className="grid grid-cols-1 sm:inline-flex justify-between gap-4 text-sm ">
                 <div className="flex justify-center gap-4">
-                  {currentStoreData?.settings?.email && (
-                    <CustomEmailLink email={currentStoreData?.settings?.email}>
+                  {storeSettings?.email && (
+                    <CustomEmailLink email={storeSettings?.email}>
                       <MailIcon className="h-[16px]" /> Email Us
                     </CustomEmailLink>
                   )}
-                  {currentStoreData?.settings?.mobileNumber && (
+                  {storeSettings?.mobileNumber && (
                     <CustomMobileLink
-                      mobileNumber={currentStoreData?.settings?.mobileNumber}
+                      mobileNumber={storeSettings?.mobileNumber}
                     >
                       <SmartphoneIcon className="h-[16px]" />
                       Call Us

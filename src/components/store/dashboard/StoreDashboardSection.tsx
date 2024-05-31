@@ -18,7 +18,6 @@ import StoreDashboardChart from './StoreDashboardChart';
 import StoreDashboardRecentOrders from './StoreDashboardRecentOrders';
 import StoreSettingSidebar from '../settings/StoreSettingSidebar';
 import { Tabs, TabsContent } from '@/components/ui/tabs';
-import StoreSettingsForm from '../settings/StoreSettingsForm';
 import StoreSettingsGallery from '../settings/StoreSettingsGallery';
 import StoreProductsTable from '../StoreProductsTable';
 import { useAppStore } from '@/lib/store';
@@ -118,9 +117,6 @@ function StoreDashboardSection() {
                 </TabsContent>
                 <TabsContent value="orders">
                   <StoreOrdersTable orders={currentStoreOrders} />
-                </TabsContent>
-                <TabsContent value="contact">
-                  <StoreSettingsForm />
                 </TabsContent>
                 <TabsContent value="gallery">
                   <StoreSettingsGallery />

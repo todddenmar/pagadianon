@@ -32,7 +32,10 @@ export type StoreType = {
   logoURL?: string;
   isPublished?: boolean;
   isFeatured?: boolean;
-  settings?: any;
+  mobileNumber?: string;
+  email?: string;
+  facebookUsername?: string;
+  instagramUsername?: string;
   schedules?: any;
   galleryImages?: string[];
 };

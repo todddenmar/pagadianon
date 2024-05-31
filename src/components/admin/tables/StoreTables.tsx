@@ -39,6 +39,7 @@ import LoadingComponent from '../LoadingComponent.';
 import Link from 'next/link';
 import UpdateStoreHoursForm from '../forms/UpdateStoreHoursForm';
 import UpdateStoreMapEmbed from '../forms/UpdateStoreMapEmbed';
+import UpdateStoreContactInfoForm from '../forms/UpdateStoreContactInfoForm';
 
 function StoresTable() {
   const [currentStores, currentSettings, setCurrentSettings, setCurrentStores] =
@@ -54,6 +55,7 @@ function StoresTable() {
   const [isEditingStoreLogo, setIsEditingStoreLogo] = useState(false);
   const [isEditingHours, setIsEditingHours] = useState(false);
   const [isEditingMapEmbed, setIsEditingMapEmbed] = useState(false);
+  const [isEditingContactInfo, setIsEditingContactInfo] = useState(false);
 
   if (!currentSettings) return <LoadingComponent />;
   if (!currentStores) return <LoadingComponent />;
@@ -61,6 +63,10 @@ function StoresTable() {
   const onEditStore = (data: StoreType) => {
     setSelectedStore(data);
     setIsEditingStore(true);
+  };
+  const onEditContactInfo = (data: StoreType) => {
+    setSelectedStore(data);
+    setIsEditingContactInfo(true);
   };
   const onEditStoreLogo = (data: StoreType) => {
     setSelectedStore(data);
@@ -213,6 +219,9 @@ function StoresTable() {
                       <DropdownMenuItem onClick={() => onEditStore(item)}>
                         Edit
                       </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => onEditContactInfo(item)}>
+                        Edit Contact Info
+                      </DropdownMenuItem>
                       <DropdownMenuItem onClick={() => onEditStoreLogo(item)}>
                         Select Logo
                       </DropdownMenuItem>
@@ -314,6 +323,26 @@ function StoresTable() {
             <UpdateStoreMapEmbed
               store={selectedStore}
               setClose={() => setIsEditingMapEmbed(false)}
+            />
+          </DialogContent>
+        )}
+      </Dialog>
+
+      <Dialog
+        open={isEditingContactInfo}
+        onOpenChange={setIsEditingContactInfo}
+      >
+        {selectedStore && (
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>
+                Edit Store Contact Info: {`${selectedStore.name}`}
+              </DialogTitle>
+              <DialogDescription>Please fill in the blanks.</DialogDescription>
+            </DialogHeader>
+            <UpdateStoreContactInfoForm
+              store={selectedStore}
+              setClose={() => setIsEditingContactInfo(false)}
             />
           </DialogContent>
         )}

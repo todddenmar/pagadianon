@@ -39,7 +39,7 @@ import {
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { LoaderCircleIcon, NavigationIcon } from 'lucide-react';
-import { DeliveryServiceType } from '@/typings';
+import { DeliveryServiceType, StoreType } from '@/typings';
 import {
   convertStringCoordinatesToObject,
   getDirectionByCoordinates,
@@ -200,24 +200,19 @@ function CheckoutCustomerDetailsForm() {
       stores: currentSettings.stores,
     });
 
-    const storesInvolvedContactInfo = await Promise.all(
-      storesInvolved.map(async (item) => {
-        const res = await dbGetOrderDataByID({ id: item.storeID });
-        if (res.status === 'error') {
-          console.log(res.error);
-          return;
-        }
-        const storeData = res.data!;
-        return {
-          ...item,
-          contactInfo: {
-            address: storeData.settings.address,
-            coordinates: storeData.settings.coordinates,
-            mobileNumber: storeData.settings.mobileNumber,
-          },
-        };
-      })
-    );
+    const storesInvolvedContactInfo = storesInvolved.map((item) => {
+      const storeSettings = currentSettings?.stores.find(
+        (storeSettingItem: StoreType) => storeSettingItem.id === item.storeID
+      );
+      return {
+        ...item,
+        contactInfo: {
+          address: storeSettings.address,
+          coordinates: storeSettings.coordinates,
+          mobileNumber: storeSettings.mobileNumber,
+        },
+      };
+    });
     const newCustomerData = {
       firstName,
       lastName,
